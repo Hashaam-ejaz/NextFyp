@@ -1,6 +1,4 @@
 import { NextResponse, NextRequest } from "next/server";
-import { useRouter } from "next/router";
-
 import connectMongoDB from "../../../../libs/mongodb";
 import { User } from "../../../../models/users";
 import { IUser } from "../../../../models/users";
