@@ -7,7 +7,7 @@ interface IOrder {
   amount: number;
   quantity: number;
   paymentStatus: string;
-  date: string;
+  date: Date;
   trackingNo?: string;
 }
 
@@ -37,7 +37,7 @@ const orderSchema = new Schema<IOrder>({
     required: true,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
   },
   trackingNo: {
