@@ -2,20 +2,18 @@ import { NextResponse, NextRequest } from "next/server";
 import { useRouter } from "next/router";
 
 import connectMongoDB from "../../../../libs/mongodb";
-import User from "../../../../models/users";
-import { UserI } from "../users";
+import { User } from "../../../../models/users";
+import { IUser } from "../../../../models/users";
 
-const mongoClient = await connectMongoDB();
+await connectMongoDB();
 
-// { params }: { params: { slug: string } }
-// const slug = params.slug // 'a', 'b', or 'c'
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
   try {
-    const user: UserI | null = await User.findById(id);
+    const user: IUser | null = await User.findById(id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
@@ -33,7 +31,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const updatedUserData: UserI = await request.json();
+  const updatedUserData: IUser = await request.json();
   const id = params.id;
   try {
     const user = await User.findByIdAndUpdate(id, updatedUserData, {
@@ -54,7 +52,7 @@ export async function DELETE(
 ) {
   const id = params.id;
   try {
-    const user: UserI | null = await User.findByIdAndDelete(id);
+    const user: IUser | null = await User.findByIdAndDelete(id);
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }

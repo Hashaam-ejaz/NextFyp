@@ -1,8 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 
 import connectMongoDB from "../../../libs/mongodb";
-import User from "../../../models/users";
-import { UserI } from "./users";
+import { User } from "../../../models/users";
+import { IUser } from "../../../models/users";
 
 const mongoClient = await connectMongoDB();
 
@@ -17,6 +17,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
-  const users: UserI[] = await User.find();
+  const users: IUser[] = await User.find();
   return NextResponse.json({ users });
 }
