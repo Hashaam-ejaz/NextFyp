@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
           { status: 404 }
         );
       }
-    //check if orderId exists in the User collection
+    //check if orderId exists in the Orders collection
     const order = await Order.findById(orderHistoryData.orderID);
     if (!order) {
         return NextResponse.json(
