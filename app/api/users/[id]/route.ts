@@ -10,8 +10,11 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
+  const emailLower = id.toLowerCase();
   try {
-    const user: IUser | null = await User.findById(id);
+    const user: IUser | null = await User.findOne({
+      email: emailLower,
+    });
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
