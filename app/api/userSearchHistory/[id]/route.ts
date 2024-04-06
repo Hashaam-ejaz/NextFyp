@@ -26,41 +26,35 @@ export async function PUT(
     }
 }
 
-//Delete method for deleting all search history for a specific user
+//Delete method for deleting all search history for a specific user using try catch block and also check if the user exists
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { userID: string } }
+    { params }: { params: { id: string } }
 ) {
-    const userID = params.userID; // Optional chaining to avoid undefined error
-    if (!userID) {
-        return NextResponse.json(
-            { message: "UserID is missing" },
-            { status: 400 }
-        );
-    }
+    const userID = params.id;
     try {
-        const deletionResult = await UserSearchHistory.deleteMany({ userID: userID });
-        if (deletionResult.deletedCount === 0) {
+        const userSearchHistory = await UserSearchHistory.find({ userID });
+        if (userSearchHistory.length === 0) {
             return NextResponse.json(
-                { message: "Search History not found" },
+                { message: "No Search History found for the User" },
                 { status: 404 }
             );
         }
-        return NextResponse.json({ message: "Search History for the Given User has been deleted" });
+        await UserSearchHistory.deleteMany({ userID });
+        return NextResponse.json({ message: "Search History for the given user has been deleted" });
     } catch (error) {
         return NextResponse.json(
             { message: "Error deleting Search History" },
-            { status: 400 }
+            { status: 500 }
         );
     }
 }
-
 //GET method for fetching all search history for a specific user
 export async function GET(
     request: NextRequest,
-    { params }: { params: { userID: string } }
+    { params }: { params: { id: string } }
 ) {
-    const userID = params.userID;
+    const userID = params.id;
     try {
         const userSearchHistory: IUserSearchHistory[] = await UserSearchHistory.find({ userID });
         if (userSearchHistory.length === 0) {
