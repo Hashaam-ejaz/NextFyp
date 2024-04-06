@@ -8,7 +8,7 @@ import loginLogo from "../../public/logo.svg";
 import googleLogo from "../../public/google.svg";
 import { IUser } from "@/models/users";
 
-const Login = () => {
+const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
