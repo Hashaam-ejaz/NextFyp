@@ -11,7 +11,6 @@
   "dependencies": {
     "@ant-design/icons": "^5.3.5",
     "@fortawesome/react-fontawesome": "fortawesome/react-fontawesome",
-    "chakra-ui": "^0.3.9",
     "fortawesome": "^0.0.1-security",
     "mongoose": "^8.2.3",
     "next": "14.1.3",
