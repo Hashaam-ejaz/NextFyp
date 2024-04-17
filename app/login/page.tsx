@@ -16,24 +16,27 @@ const Login: React.FC = () => {
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    setUsername(username.toLowerCase());
     event.preventDefault();
     if (password.length < 5) {
       setError("Please enter the password");
       return;
     }
-
-    const response = await fetch(`http://localhost:3000/api/users/${username}`);
-    if (response.status === 404) {
+    const response = await fetch(
+      `http://localhost:3000/api/users?email=${username}`
+    );
+    if (response.status === 400) {
       setError("User not found.");
       return;
     }
     const data = await response.json();
-    const user: IUser = data.user;
+    const user: IUser = data.existingUser;
     if (user.email === username) {
       if (user.password === password) {
         router.push("/home");
       } else {
         setError("Password does not match.");
+        return;
       }
     }
   };
@@ -70,7 +73,7 @@ const Login: React.FC = () => {
               width={163}
               height={39.52}
               alt="Logo"
-              className="lg:mb-10" // Apply margin-bottom only for screens wider than lg breakpoint
+              className="lg:mb-10"
             />
           </div>
 
@@ -84,8 +87,6 @@ const Login: React.FC = () => {
             {error && <div className="text-red-500 m-4">{error}</div>}
           </div>
           <div className="mb-4 w-full md:w-[24.752rem]">
-            {" "}
-            {/* Adjust width for larger screens */}
             <input
               type="email"
               placeholder="Email or Phone number"
@@ -95,8 +96,6 @@ const Login: React.FC = () => {
             />
           </div>
           <div className="mb-4 w-full md:w-[24.752rem]">
-            {" "}
-            {/* Adjust width for larger screens */}
             <input
               type="password"
               placeholder="Enter password"
