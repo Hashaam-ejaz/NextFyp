@@ -1,19 +1,19 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, Types } from "mongoose";
 
 interface IOrder {
-  buyerID: string;
+  buyerID: Types.ObjectId;
   buyerName: string;
   productID: string[];
   amount: number;
   quantity: number;
   paymentStatus: string;
-  date: string;
+  date: Date;
   trackingNo?: string;
 }
 
 const orderSchema = new Schema<IOrder>({
   buyerID: {
-    type: String,
+    type: Schema.Types.ObjectId, ref: 'User',
     required: true,
   },
   buyerName: { 
@@ -37,7 +37,7 @@ const orderSchema = new Schema<IOrder>({
     required: true,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
   },
   trackingNo: {
