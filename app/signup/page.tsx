@@ -53,7 +53,7 @@ const Signup: React.FC = () => {
         body: JSON.stringify(newUser),
       });
       if (!response.ok) {
-        setError("This phone number is allready in use.");
+        setError("This phone number is already in use.");
         return;
       }
     } catch (error) {
