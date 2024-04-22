@@ -1,17 +1,21 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, use, useState } from "react";
 import Image from "next/image";
 
 import homepageRect from "../../public/homepage.svg";
 import loginLogo from "../../public/logo.svg";
 import googleLogo from "../../public/google.svg";
 import { IUser } from "@/models/users";
+import { signIn, useSession } from "next-auth/react";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  
+  const session = useSession();
+  console.log(session);
 
   const router = useRouter();
 
@@ -129,7 +133,7 @@ const Login: React.FC = () => {
           >
             Sign in
           </button>
-          <button className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]">
+          <button onClick={()=>signIn('google')} className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]">
             <Image
               src={googleLogo}
               width={22}
