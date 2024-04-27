@@ -1,0 +1,41 @@
+{
+    "Categories":
+    
+        [
+
+            {
+                "name":"Groceries & Pets",
+                "subCategories":
+                [ 
+                    {"name":"Fresh Produce"},
+                    {"name":"Cat"},
+                    {"name":"Dog"},
+                    {"name":"Fish"}
+                    
+                ]
+            },
+            {
+                "name":"Health & Beauty",
+                "subCategories":
+                [ 
+                    {"name":"Makeup"},
+                    {"name":"Skincare"},
+                    {"name":"Beauty Tools"},
+                    {"name":"Bath & Body"}
+                    
+                ]
+            },
+            {
+                "name":"Men's Fashion",
+                "subCategories":
+                [ 
+                    {"name":"Shirts & Polo"},
+                    {"name":"T-Shirts & Tanks"}
+                    
+                ]
+            }
+           
+        ]
+    
+    
+}

@@ -1,0 +1,20 @@
+{
+    "products":
+    [
+        {
+            "id":1,
+            "name":"DELL 21.5 inch Full HD Monitor (E2216HV)",
+            "description":"Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit ratione omnis tempore dolorum fugiat vel asperiores consequatur amet et at, recusandae perferendis minus autem maiores, commodi sed error velit! Numquam.",
+            "price":30.00,
+            "currency":"Dollar",
+            "currencySymbol":"$",
+            "category":"Electronic  Accessories",
+            "subCategory":"Headphones",
+            "rating":
+            {
+                "averageRating":4.5,
+                "reviewCount":100
+            }
+        }
+    ]
+}

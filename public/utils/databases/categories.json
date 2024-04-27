@@ -1,0 +1,16 @@
+{
+    "categoryName":"accessories",
+    "subcategories":
+    [
+        
+        {
+            "subcategoryName":"Smart Watches",
+            "imageLabel":
+            {
+                "src":"@/public/images/categoryCard.jpg",
+                "alt":"subcategory-image-label-watches"
+            }
+            
+        }
+    ]
+}

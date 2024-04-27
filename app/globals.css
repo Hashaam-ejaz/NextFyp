@@ -18,8 +18,55 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  padding: 1rem;
+  /* padding: 1rem; */
+  min-width: 400px;
+  width: 100%;
 }
+
+.media-scroller
+{
+  background-color: blueviolet;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  /* scroll-padding-inline: 0px; */
+}
+
+/* .media-scroller::-webkit-scrollbar */
+#slider::-webkit-scrollbar
+{
+  display: none;
+
+}
+#recommendationSlider::-webkit-scrollbar
+{
+  display: none;
+
+}
+#categoryDiv::-webkit-scrollbar
+{
+  display: none;
+
+}
+#slider
+{
+  scroll-snap-type: block;
+}
+.media-scroller > *
+{
+  scroll-snap-align: start;
+  background-color: hotpink;
+  
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 
 @layer utilities {
   .text-balance {
