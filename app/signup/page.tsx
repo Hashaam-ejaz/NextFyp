@@ -32,7 +32,7 @@ const Signup: React.FC = () => {
     const response = await fetch(
       `http://localhost:3000/api/users?email=${email.toLowerCase()}`
     );
-    if (response.status === 400) {
+    if (response.status === 202) {
       setError("This Email is already registered.");
       return;
     }
