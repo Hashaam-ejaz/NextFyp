@@ -12,26 +12,28 @@ import dynamic from 'next/dynamic'
 const FeaturedProductsDiv = () => {
     const slideLeft=()=>
         {
-          var slider=document.getElementById('slider');
+          var slider=document.getElementById('featuredProductsSlider');
           // slider?.scrollLeft=slider?.scrollLeft-500;
           if(slider)
-            slider.scrollLeft=slider.scrollLeft-(slider?.scrollWidth);
+            // slider.scrollLeft=slider.scrollLeft-(slider?.scrollWidth);
+            slider.scrollLeft=slider.scrollLeft-200;
       
         }
         const slideRight=()=>
         {
-          var slider=document.getElementById('slider');
+          var slider=document.getElementById('featuredProductsSlider');
           if(slider)
-            slider.scrollLeft=slider.scrollLeft+500;
+            slider.scrollLeft=slider.scrollLeft+200;
+            // slider.scrollLeft=slider.scrollLeft+500;
       
         }
     return (
         <>
-        <div className='my-[10px] mt-[20px]' >
-            <div className='font-semibold text-xl w-[90%] mx-auto '>
+        <div className=' mt-[20px] my-[10px] w-full max-w-full justify-items-center h-auto' >
+            <div className='font-semibold text-xl w-[90%] mx-auto mb-[10px]'>
                 Featured Items
             </div>
-            <div className="relative flex items-center ">
+            <div className="relative flex items-center h-auto">
                 <div className="">
                 {/* <div className="absolute top-[calc(50%-18.5px)] left-[-18.5px] "> */}
                         
@@ -41,17 +43,17 @@ const FeaturedProductsDiv = () => {
                 </div>
                 {/* left carousel arrow */}
 
-                <div id="slider" className='w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth'>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw] '><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
-                    <div className='inline-block  cursor-pointer w-[30vw] md:w-[18vw]'><SingleProductDiv/></div>
+                <div id="featuredProductsSlider" className='w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth snap-mandatory snap-x my-[20px]'>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw] '><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
+                    <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
                 </div>
                 
                 <div className="">
@@ -62,7 +64,7 @@ const FeaturedProductsDiv = () => {
 
                 </div>
 
-                </div>
+            </div>
         </div>
         
 

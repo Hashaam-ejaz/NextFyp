@@ -21,6 +21,11 @@ const Navbar = () => {
       setSearchValue(value);
       //searchValue is the value of search bar after pressing enter
     }
+  const showCategoryDiv=(value:boolean)=>
+    {
+      console.log('navbar showcategoryDiv',value)
+      setShowCategories(value);
+    }
     // const showCategoryDropdown=(value:boolean)=>
     //   {
     //     setShowCategories(value);
@@ -88,13 +93,23 @@ const Navbar = () => {
                 </div>
                 {/* search bar */}
                 {/* <SearchBar /> */}
-                <SearchBar onSearch={handleSearch}/>
+                <SearchBar onSearch={handleSearch} hoverOverButton={showCategoryDiv}/>
                 {/* <SearchBar onSearch={handleSearch} showCategories={showCategoryDropdown}/> */}
                 {/* / */}
+
+
+
+                {
+                  (showCategories) && 
                 
-                
-                
-                
+                  <div className="absolute top-full z-50">
+
+                    <CategoryDropdownMenu/>
+                  </div>
+                }
+
+
+
                 {/* category drop down */}
                 {/* {showCategories &&
                 (

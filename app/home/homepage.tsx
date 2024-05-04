@@ -4,7 +4,7 @@ import CategoryDiv from '../components/homepageComponents/categoryDiv';
 import Carousel from '../components/homepageComponents/carousel';
 import DealsTimeDiv from '../components/homepageComponents/deals-time-div';
 import DealsCategoryDiv from '../components/homepageComponents/deals-category-div';
-import CategoryCardDiv from '../components/homepageComponents/category-card-div.jsx';
+import CategoryCardDiv from '../components/homepageComponents/category-card-div';
 import BestSellingProductsDiv from '../components/homepageComponents/bestSellingProductsDiv';
 import RecommendedProductsDiv from '../components/homepageComponents/recommendedProductsDiv';
 import FeaturedProductsDiv from '../components/homepageComponents/featuredProductsDiv';

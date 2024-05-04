@@ -31,7 +31,7 @@ export default function Home() {
       {/* <header className="  top-0 z-[1000]"><Navbar/></header> */}
       {/* <RecommendedProductsDiv/> */}
       {/* <ScrollerDiv/> */}
-      {/* <Homepage /> */}
+      <Homepage />
       {/* <CategoryCardDiv/> */}
       {/* <FeaturedProductsDiv/> */}
       {/* <DropdownMenu/> */}
@@ -39,7 +39,7 @@ export default function Home() {
       {/* <Carousel/> */}
       {/* <SearchBar onSearch={handleSearch}/> */}
       {/* <Navbar/> */}
-      <CategoryDropdownMenu/>
+      {/* <CategoryDropdownMenu/> */}
     </>
   );
 }

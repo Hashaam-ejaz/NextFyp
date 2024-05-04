@@ -42,8 +42,8 @@ const RecommendedProductsDiv = () => {
                     </div>
                     {/* left carousel arrow */}
 
-                    <div id="recommendationSlider" className='w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth snap-mandatory snap-x '>
-                        <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw] h-[184px] '><SingleProductDiv/></div>
+                    <div id="recommendationSlider" className='w-full h-full overflow-x-scroll scroll whitespace-nowrap scroll-smooth snap-mandatory snap-x my-[20px]'>
+                        <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]  '><SingleProductDiv/></div>
                         <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
                         <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>
                         <div className='snap-start inline-block  cursor-pointer w-[30vw] max-w-[30vw] min-w-[30vw] md:w-[18vw] md:max-w-[18vw] md:min-w-[18vw]'><SingleProductDiv/></div>

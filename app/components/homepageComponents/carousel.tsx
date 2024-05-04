@@ -21,7 +21,7 @@ const Carousel = () => {
 
   return (
     <>
-        <div className="flex flex-row w-[90%] mx-auto relative my-[10px]   group">
+        <div className="flex flex-row w-[90%] mx-auto relative my-[10px] z-1  group">
         {/*overflow-x-hidden shrink-0 grow-0
          {Array.from({ length: 6 }).map((_, index)=>( */}
             {/* <CarouselDivs key={index}/> */}
@@ -32,7 +32,7 @@ const Carousel = () => {
             {/* </div> */}
 
             {/* right Carousel button */}
-            <div className="hidden group-hover:block absolute top-[calc(50%-18.5px)] right-[-18.5px] cursor-pointer">
+            <div className="hidden group-hover:block absolute  top-[calc(50%-18.5px)] right-[-18.5px] cursor-pointer">
               
               <button className=''onClick={()=>nextSlide()}>
                   <Image src={CarouselArrow} alt="CarouselArrowRight" className='rotate-180'/>
