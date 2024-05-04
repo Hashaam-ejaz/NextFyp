@@ -9,18 +9,40 @@ import WishlistLogo from '../../public/images/wishlist.svg'
 import SearchBar from './searchBar';
 import MainLogoLargeScreen from '../../public/images/main-logo-md-screen.svg'
 import { useState } from 'react'
+import CategoryDropdownMenu from './categoryDropdownMenu';
+import CategoriesName from '../../public/utils/databases/categoriesName.json';
 const Navbar = () => {
   const [searchValue,setSearchValue]=useState('');
+  const [showCategories,setShowCategories]=useState(false);
+  const [mainCategoryIndex,setMainCategoryIndex]=useState(-1);
   const handleSearch=(value:string)=>
     {
       console.log(value);
       setSearchValue(value);
       //searchValue is the value of search bar after pressing enter
     }
+    // const showCategoryDropdown=(value:boolean)=>
+    //   {
+    //     setShowCategories(value);
+    //     console.log('show categories',value)
+    //   }
+
+    //   const mouseOver=(mainCategoryIndex: number, event: React.MouseEvent<HTMLDivElement>)=>{
+
+    //     // console.log(CategoriesName.Categories[0].subCategories[0].name)
+    //     setMainCategoryIndex(mainCategoryIndex);
+    //     console.log('main category index',mainCategoryIndex);
+    //     console.log('subcategory: ',CategoriesName.Categories[mainCategoryIndex].subCategories[0].name)
+    //     let subcategoryMenu=document.querySelector('#mainCategoryMenu #subCategoryMenu');
+    //     const mainCategoryMenu=document.getElementById('mainCategoryDiv');
+    //     const rect=mainCategoryMenu?.getBoundingClientRect()
+    //     console.log('space Left',rect?.height);
+    // };
+
   return (
     <>
     {/*  ko finish */}
-        <nav>
+        <nav className='relative'>
             <div className="flex flex-row bg-[#F7FAFC] md:bg-[#FFFFFF] min-w-full max-w-full  justify-between flex-wrap p-1 sticky top-0">
                 <div className="flex flex-col justify-center ml-2 ">
                   {/* src={require(`../../images/main-logo.svg`)} */}
@@ -67,7 +89,59 @@ const Navbar = () => {
                 {/* search bar */}
                 {/* <SearchBar /> */}
                 <SearchBar onSearch={handleSearch}/>
+                {/* <SearchBar onSearch={handleSearch} showCategories={showCategoryDropdown}/> */}
+                {/* / */}
                 
+                
+                
+                
+                {/* category drop down */}
+                {/* {showCategories &&
+                (
+                  <div id='dropdownHead' className="w-auto  select-none group/mainDiv  bg-purple-200  ">
+
+                {/* <div className='flex justify-end'>
+                        <button id='category-btn' className=' justify-end shrink text-[#806491] text-sm border-[#806491] border-[0.8px] rounded-md p-1 pl-2 hover:ring-1 hover:ring-[#806491] md:bg-white '>
+                            <span>All Categories</span>
+                            <Image src={ExpandLogo} alt="expandMoreLogo" className='inline-block ml-1' />
+                        </button>
+                </div> */}
+                  {/* <div className=' hidden  max-w-full min-w-full bg-green-100 group-hover/mainDiv:block'>
+                    <div className="grid grid-cols-5">
+                      {CategoriesName.Categories.map((category,keyIndex)=>(
+                        <div key={keyIndex} className='p-2 text-md text-[#806491] hover:bg-gray-100/50 hover:p-2 cursor-pointer bg-yellow-200 group/individualMainCategory'  onMouseOver={(event) =>mouseOver(keyIndex,event)}> */}
+                      {/* onMouseOver={mouseOver(keyIndex)} */}
+                          {/* <Link href='#' className=''>
+
+                          {category.name}
+                          </Link>
+                          <div className='grid grid-flow-row '>
+                              
+                            {category.subCategories.map((subcategory,subIndex)=>(
+                                <div key={subIndex} className='bg-red-100 text-sm hover:text-blue-400'>
+                                    <Link href='#'>
+                                    {subcategory.name}
+                                    </Link>
+                                </div>
+                            ))}
+                        
+
+                        
+                        
+
+                          </div> */}
+                {/* {if(isSubMenuRight) && } 
+                    
+                        </div> 
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+                )
+                } */}
+                
+
             </div>
         </nav>
         

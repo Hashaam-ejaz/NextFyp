@@ -3,16 +3,28 @@
 import Image from 'next/image'
 import SearchLogo from '../../public/images/Search.svg'
 import ExpandLogo from '../../public/images/expand_more.svg'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import DropdownMenu from './dropdownMenu';
+import CategoryDropdownMenu from './categoryDropdownMenu';
 
 export type SearchProps=
 {
     onSearch:(value:string)=>void
+    // showCategories:(value:boolean)=>void
 }
 
 const SearchBar = (props: SearchProps) => {
+// const SearchBar = ({onSearch: SearchProps,hoverValue:SearchProps}: SearchProps) => {
     const {onSearch} = props;
+    // const {showCategories} =hoverValue ;
     const [value,setValue]=useState('Enter Search...')
+    const [isHover,setIsHover]=useState(false);
+
+    // useEffect(()=>{
+    //     showCategories(isHover);
+    //     }
+    //     ,[isHover,showCategories]);
+
     const searchHandler=(event: ChangeEvent<HTMLInputElement>)=>
     {
         const {target}= event;
@@ -50,7 +62,8 @@ const SearchBar = (props: SearchProps) => {
                     onKeyDown={handleKeyDown}
                     />
                     {/* <input className="hidden md:block p-3 bg-[#F3F9FB] rounded-md w-full min-w-full pl-10" type="text" name="searchBar" id="searchBar" placeholder='Search essentials, groceries and more ...'  /> */}
-                    <input className="hidden md:block p-3 bg-[#F3F9FB] rounded-md w-full min-w-full pl-10" 
+                    <input className="hidden md:block p-3 bg-[#F3F9FB] rounded-md w-full min-w-full pl-10
+                    overflow-hidden text-ellipsis whitespace-nowrap " 
                     type={"search"} 
                     name={"searchBar"} 
                     id="searchBar" 
@@ -64,12 +77,18 @@ const SearchBar = (props: SearchProps) => {
                             className=''
                         />
                     </div>
-                    <div className="absolute right-3 top-3 w-auto h-[2/3] ">
-                        <button className='shrink text-[#806491] text-sm border-[#806491] border-[0.8px] rounded-md p-1 pl-2 hover:ring-1 hover ring-[#806491] md:bg-white '>
+                    {/* <div className="absolute right-3 top-3 w-auto h-[2/3] group/allCategoriesBtn ">
+                        <button className='shrink text-[#806491] text-sm border-[#806491] border-[0.8px] rounded-md p-1 pl-2 hover:ring-1 hover ring-[#806491] md:bg-white  ' >
                             <span>All Categories</span><Image src={ExpandLogo} alt="expandMoreLogo" className='inline-block ml-1' />
-                        </button>
+                        </button> */}
+                        {/* <DropdownMenu/> */}
+                        {/* <div className='hidden group-hover/allCategoriesBtn:block'>
+                            <CategoryDropdownMenu /> */}
+                            {/* <div className='bg-pink-500 w-'>hello</div> */}
+                        {/* </div> */}
+                        <CategoryDropdownMenu />
 
-                    </div>
+                    {/* </div> */}
 
                 {/* </div> */}
                 {/* <div>

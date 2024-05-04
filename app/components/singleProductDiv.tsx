@@ -54,7 +54,7 @@ const SingleProductDiv = () => {
                         <span className='text-[#77878F]'>{'('}{product.rating.reviewCount}{')'}</span>
                     </div>
                     <div id='productName' className="flex flex-row text-[#191C1F] text-xs md:text-sm font-normal mt-1  ">
-                        <p className='max-h-[14px] md:max-h-[20px] md:h-[20px] overflow-hidden text-ellipsis whitespace-nowrap inline-block'>
+                        <p className='max-h-[14px] md:max-h-[20px] md:h-[20px]  overflow-hidden text-ellipsis whitespace-nowrap inline-block'>
 
                             {product.name}
                         </p>

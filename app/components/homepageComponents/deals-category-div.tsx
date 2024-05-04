@@ -5,7 +5,7 @@ const DealsCategoryDiv = () => {
     <>
     {/* <Link href="#"> */}
 
-    <div className="flex flex-row w-full h-full ">
+    <div className="flex flex-row w-full h-full cursor-pointer ">
         {/* <Link href='#'>     */}
             <div className="flex flex-col items-center m-[0.25px] transition-shadow shadow  hover:shadow-md p-2 w-full">
                 <div className="flex flex-row h-2/3   justify-center">

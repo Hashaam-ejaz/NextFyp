@@ -15,6 +15,7 @@ import CategoryCard from "./components/homepageComponents/category-card";
 import SearchBar from "./components/searchBar";
 import { useState } from "react";
 import DropdownMenu from "./components/dropdownMenu";
+import CategoryDropdownMenu from "./components/categoryDropdownMenu";
 
 export default function Home() {
   // const [searchValue,setSearchValue]=useState('');
@@ -30,7 +31,7 @@ export default function Home() {
       {/* <header className="  top-0 z-[1000]"><Navbar/></header> */}
       {/* <RecommendedProductsDiv/> */}
       {/* <ScrollerDiv/> */}
-      <Homepage />
+      {/* <Homepage /> */}
       {/* <CategoryCardDiv/> */}
       {/* <FeaturedProductsDiv/> */}
       {/* <DropdownMenu/> */}
@@ -38,6 +39,7 @@ export default function Home() {
       {/* <Carousel/> */}
       {/* <SearchBar onSearch={handleSearch}/> */}
       {/* <Navbar/> */}
+      <CategoryDropdownMenu/>
     </>
   );
 }

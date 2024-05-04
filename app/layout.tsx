@@ -19,9 +19,9 @@ export default function RootLayout({
   return (
 
     <html lang="en">
-      <header className="bg-red-50"><Navbar/></header>
+      {/* <header className="bg-red-50"><Navbar/></header> */}
       <body className={inter.className} suppressHydrationWarning={true} >{children}</body>
-      <footer><Footer/></footer>
+      {/* <footer><Footer/></footer> */}
     </html>
   );
 }
