@@ -32,7 +32,7 @@ const Signup: React.FC = () => {
     const response = await fetch(
       `http://localhost:3000/api/users?email=${email.toLowerCase()}`
     );
-    if (response.status === 400) {
+    if (response.status === 202) {
       setError("This Email is already registered.");
       return;
     }
@@ -53,7 +53,7 @@ const Signup: React.FC = () => {
         body: JSON.stringify(newUser),
       });
       if (!response.ok) {
-        setError("This phone number is allready in use.");
+        setError("This phone number is already in use.");
         return;
       }
     } catch (error) {

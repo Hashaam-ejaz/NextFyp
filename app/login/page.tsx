@@ -1,22 +1,25 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, use, useState } from "react";
 import Image from "next/image";
 
 import homepageRect from "../../public/homepage.svg";
 import loginLogo from "../../public/logo.svg";
 import googleLogo from "../../public/google.svg";
 import { IUser } from "@/models/users";
+import { signIn, useSession } from "next-auth/react";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const session = useSession();
+  console.log(session);
+
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    setUsername(username.toLowerCase());
     event.preventDefault();
     if (password.length < 5) {
       setError("Please enter the password");
@@ -29,15 +32,19 @@ const Login: React.FC = () => {
       setError("User not found.");
       return;
     }
-    const data = await response.json();
-    const user: IUser = data.existingUser;
-    if (user.email === username) {
-      if (user.password === password) {
-        router.push("/home");
-      } else {
-        setError("Password does not match.");
+    try {
+      const rslt = await signIn("credentials", {
+        username,
+        password,
+        redirect: false,
+      });
+      if (rslt?.error) {
+        setError("Invalid Credentials");
         return;
       }
+      router.replace("/home");
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -129,7 +136,10 @@ const Login: React.FC = () => {
           >
             Sign in
           </button>
-          <button className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]">
+          <button
+            onClick={() => signIn("google", { callbackUrl: "/home" })}
+            className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]"
+          >
             <Image
               src={googleLogo}
               width={22}
@@ -141,7 +151,7 @@ const Login: React.FC = () => {
           </button>
           <div className="mt-10">
             Don&apos;t have an account?{" "}
-            <a className="text-[#806491]" href="#">
+            <a className="text-[#806491]" href="/signup">
               Sign up now!
             </a>
           </div>

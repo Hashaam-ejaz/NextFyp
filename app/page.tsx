@@ -1,16 +1,12 @@
 "use client";
 import Image from "next/image";
 import logo from "../public/safeCommerceLogo.svg";
-import PasswordField from "./components/PasswordField";
-import EmailField from "./components/EmailField";
-import { ChakraProvider } from "@chakra-ui/react";
-import { Switch } from "@chakra-ui/react";
 import Link from "next/link";
 import GoogleLogo from "../public/GoogleLogo.svg";
 
 export default function Home() {
   return (
-    <ChakraProvider>
+
       <main className="flex flex-col md:flex-row">
         <div className="w-full h-screen bg-[#F7F1FB]  hidden md:block">
           <div className="flex flex-col">
@@ -34,11 +30,10 @@ export default function Home() {
           <div className="flex font-normal text-[#1A1A1A] text-xs">
             Enter your credentials to continue
           </div>
-          <EmailField />
-          <PasswordField />
+         
           <div className="flex items-center justify-between text-xs">
             <div>
-              <Switch id="email-alerts" size="sm" />
+              
               <span className="ml-2">Remember me</span>
             </div>
             <div className="text-[#806491] font-normal">
@@ -64,6 +59,6 @@ export default function Home() {
           </div>
         </div>
       </main>
-    </ChakraProvider>
+  
   );
 }
