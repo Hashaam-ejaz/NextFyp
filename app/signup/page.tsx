@@ -156,7 +156,7 @@ const Signup: React.FC = () => {
               type="number"
               placeholder="Phone Number"
               className="w-full md:w-[20.753rem] px-3 py-3 pl-16 md:pl-10 rounded-r-lg border bg-[#F2F2F2] border-[55] border-[#E5E5E5] focus:outline-none focus:border-[#806491] rounded-md-[0.375]"
-              value={phoneNumber}
+              value={phoneNumber || ""}
               onChange={(e) => {
                 const newValue = parseInt(e.target.value);
                 // Update the state only if newValue is a valid number, otherwise set to undefined
@@ -196,7 +196,7 @@ const Signup: React.FC = () => {
         </button>
         <div className="mt-10">
           Already have an account?{" "}
-          <a className="text-[#806491]" href="#">
+          <a className="text-[#806491]" href="/login">
             Sign in now!
           </a>
         </div>

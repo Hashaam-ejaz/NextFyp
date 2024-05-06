@@ -136,26 +136,26 @@ const Login: React.FC = () => {
           >
             Sign in
           </button>
-          <button
-            onClick={() => signIn("google", { callbackUrl: "/home" })}
-            className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]"
-          >
-            <Image
-              src={googleLogo}
-              width={22}
-              height={22}
-              alt="Google Logo"
-              className="mr-2"
-            />
-            Or Sign in with Google
-          </button>
-          <div className="mt-10">
-            Don&apos;t have an account?{" "}
-            <a className="text-[#806491]" href="/signup">
-              Sign up now!
-            </a>
-          </div>
         </form>
+        <button
+          onClick={() => signIn("google", { callbackUrl: "/home" })}
+          className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]"
+        >
+          <Image
+            src={googleLogo}
+            width={22}
+            height={22}
+            alt="Google Logo"
+            className="mr-2"
+          />
+          Or Sign in with Google
+        </button>
+        <div className="mt-10">
+          Don&apos;t have an account?{" "}
+          <a className="text-[#806491]" href="/signup">
+            Sign up now!
+          </a>
+        </div>
       </div>
     </div>
   );
