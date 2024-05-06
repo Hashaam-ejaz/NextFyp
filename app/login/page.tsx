@@ -6,7 +6,6 @@ import Image from "next/image";
 import homepageRect from "../../public/homepage.svg";
 import loginLogo from "../../public/logo.svg";
 import googleLogo from "../../public/google.svg";
-import { IUser } from "@/models/users";
 import { signIn, useSession } from "next-auth/react";
 
 const Login: React.FC = () => {
