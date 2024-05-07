@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "models/users.ts"
-  ],
+, "libs/mongodb.js"  ],
   "exclude": ["node_modules"]
 }
