@@ -62,10 +62,12 @@ const Login: React.FC = () => {
           <Image src={loginLogo} width={163} height={39.52} alt="Logo" />
         </div>
         <p className="text-black text-xl mt-5">
-          Your <span className="text-[#806491]">Slogan</span> goes here
+          <span className="text-[#806491] text-[1.5rem] text-center m-4">
+            Your Blockchain Bazaar
+          </span>
         </p>
         <p className="text-black mt-20">
-          Welcome to <span className="text-[#806491]">Logoipsum</span>
+          Welcome to <span className="text-[#806491]">Blockmarket</span>
         </p>
       </div>
 
