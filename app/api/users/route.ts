@@ -24,6 +24,7 @@ export async function GET(request: NextRequest) {
   const email = searchParams.get("email");
   if (email) {
     const existingUser: IUser | null = await User.findOne({ email });
+    // console.log(existingUser);
     if (existingUser) {
       return NextResponse.json({ existingUser }, { status: 202 });
     }

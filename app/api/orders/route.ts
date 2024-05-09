@@ -4,7 +4,7 @@ import { Order } from "../../../models/orders";
 import { IOrder } from "../../../models/orders";
 import { User } from "../../../models/users";
 
-await connectMongoDB();
+// await connectMongoDB();
 
 export async function POST(request: NextRequest) {
     const orderData = new Order(await request.json());

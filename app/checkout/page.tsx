@@ -2,18 +2,16 @@
 import React from 'react';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import  connectMongoDB from '../../libs/mongodb';
-import { useRouter } from 'next/router';
-import { IShoppingCart } from '../../models/shoppingCart';
-import { ShoppingCart } from '../../models/shoppingCart';
+import { useRouter } from 'next/navigation'
 import { IOrder } from '../../models/orders';
-import { Order } from '../../models/orders';
-import { Product } from '../../models/products';
 
 
 const CheckoutPage: React.FC = () => {
+    const router = useRouter();
     const { data: session, status } = useSession();
     const [error, setError] = useState<string | null>(null);
+    // console.log(session);
+
     const [shippingFormData, setShippingFormData] = useState({
         fullName: '',
         address: '',
@@ -42,164 +40,105 @@ const CheckoutPage: React.FC = () => {
           }));
         }
       };
-      const handleShippingSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
+      const handleSubmits = async () => {
         if (!session || !session.user) return;
-    
         try {
-          const router = useRouter();
+          // await connectMongoDB();
+          console.log('Submitting form');
           const response = await fetch(
             `http://localhost:3000/api/users?email=${session.user.email}`
           );
+          console.log("response" , response);
+          if (!response) {
+            setError("User not found.");
+            return;
+          }
           const user1 = await response.json();
           const buyer = user1.existingUser;
+          console.log("buyer" , buyer);
           // Find the buyer ID using the user's email
           if (!buyer || !buyer._id)  setError("User not found or missing ID");
-
-          const newOrder : Partial<IOrder> = {
-            buyerID: buyer._id,
-            buyerName: shippingFormData.fullName,
-            productID: [], // Add product IDs here
-            amount: 0, // Set the correct amount
-            quantity: 0, // Set the correct quantity
-            paymentStatus: 'pending', // Change status as required
-            address: shippingFormData.address + ', ' + shippingFormData.city + ', ' + shippingFormData.postalCode,
-            phoneNo: shippingFormData.phoneNumber,
-            date: new Date(),
-          }
-          try {
-            const response = await fetch("http://localhost:3000/api/orders", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(newOrder),
-            });
-            if (!response.ok) {
-              setError("Payment Not Verified, Order Not Created.");
-              return;
-            }
-          } catch (error) {
-            console.error("Error sending user data:", error);
-          }
-
-          // await db.collection('orders').insertOne({
-          //   buyerID: buyer._id,
-          //   buyerName: shippingFormData.fullName,
-          //   productID: [], // Add product IDs here
-          //   amount: 0, // Set the correct amount
-          //   quantity: 0, // Set the correct quantity
-          //   paymentStatus: 'pending', // Change status as required
-          //   address: shippingFormData.address + ', ' + shippingFormData.city + ', ' + shippingFormData.postalCode,
-          //   phoneNo: shippingFormData.phoneNumber,
-          //   date: new Date(),
-          // });
-          console.log('Order Placed successfully');
-          // Redirect to success page
-          router.push('/success');
-        } catch (error) {
-          console.error('Error saving shipping order:', error);
-        }
-      };
-    
-      const handleBillingSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!session || !session.user) return;
-    
-        try {
-          const router = useRouter();
-          // Find the buyer ID using the user's email
-          // const buyer = await db.collection('users').findOne({ email: session.user.email });
-          const response = await fetch(
-            `http://localhost:3000/api/users?email=${session.user.email}`
-          );
-          const user1 = await response.json();
-          const buyer = user1.existingUser;
-          if (!buyer || !buyer._id) setError("User not found or missing ID");
-          // Step 1: Find the user's previous order
-
-          // http://localhost:3000/api/orders?buyerID=660a79d1f570eb8e957c9d3f&paymentStatus=Paid
-          const response2 = await fetch(`http://localhost:3000/api/orders?buyerID=${buyer._id}&paymentStatus=pending`);
-          const res2 = await response2.json();
-          const existingOrder = res2.existingOrder;
+          // // Step 1: Find the user's previous order
+          // const response2 = await fetch(`http://localhost:3000/api/orders?buyerID=${buyer._id}&paymentStatus=pending`);
+          // const res2 = await response2.json();
+          // const existingOrder = res2.existingOrder;
           // Step 2: Find products in the user's shopping cart
-          const userShoppingCart: IShoppingCart[] = await ShoppingCart.find({ userID: buyer._id });
+          // console.log("testingurl" , `http://localhost:3000/api/shoppingCart/${buyer._id}`);
+          const response3 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`);
+          const res3 = await response3.json();
+          console.log("res3" , res3);
+          const userShoppingCart = res3.shoppingCart;
+
           // Step 3: Calculate total amount and quantity for the order
           let totalAmount: number = 0;
           let totalQuantity: number = 0;
           const productIDs: string[] = [];
 
+
+          console.log("userShoppingCart" ,  userShoppingCart);
           // Calculate total amount for each product
           for (const entry of userShoppingCart) {
-            const product = await Product.findById(entry.productID);
+            const response4 = await fetch(`http://localhost:3000/api/products/${entry.productID}`);
+            const res4 = await response4.json();
+            const product = res4.existingProduct;
+            console.log(product);
+            // const product = await Product.findById(entry.productID);
             if (product) {
               totalAmount += product.price * entry.quantity;
               totalQuantity += entry.quantity;
               productIDs.push(entry.productID.toString());
             }
           }
+          
            //Generate random tracking number
            const trackingNo = Math.random().toString(36).substring(7);
-          // Step 4: Prepare update data
-          const updateData: Partial<IOrder> = {
+          const newOrder : Partial<IOrder> = {
+            buyerID: buyer._id,
             buyerName: shippingFormData.fullName,
-            productID: productIDs,
-            amount: totalAmount,
-            quantity: totalQuantity,
-            paymentStatus: 'Paid', // Change status as required
+            productID: productIDs, 
+            amount: totalAmount, 
+            quantity: totalQuantity, 
+            paymentStatus: 'Paid', 
+            address: shippingFormData.address + ', ' + shippingFormData.city + ', ' + shippingFormData.postalCode,
+            phoneNo: shippingFormData.phoneNumber,
             date: new Date(),
             trackingNo: trackingNo,
-          };
+          }
 
-          // Step 5: Update the previous order if it exists, otherwise insert a new one
-          if (previousOrder) {
-            await Order.findOneAndUpdate({ _id: previousOrder._id }, {$set: updateData}, { new: true });
-            console.log('Order Updated successfully');
-          } else {
-            //insert new order
-            const newOrder: IOrder = new Order({
-              buyerID: buyer._id,
-              buyerName: shippingFormData.fullName,
-              productID: productIDs,
-              amount: totalAmount,
-              quantity: totalQuantity,
-              paymentStatus: 'Paid',
-              date: new Date(),
-              trackingNo: trackingNo,
-            });
-            try {
-              const response = await fetch("http://localhost:3000/api/orders", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(newOrder),
-              });
-              if (!response.ok) {
-                setError("Payment Not Verified, Order Not Created.");
-                return;
-              }
-            } catch (error) {
-              console.error("Error sending user data:", error);
-            }
-            // await db.collection('orders').insertOne({
-            //   buyerID: buyer._id,
-            //   buyerName: shippingFormData.fullName,
-            //   productID: productIDs,
-            //   amount: totalAmount,
-            //   quantity: totalQuantity,
-            //   paymentStatus: 'Paid',
-            //   date: new Date(),
-            //   trackingNo: trackingNo,
-            // });
-            console.log('New Order Inserted successfully');
-          }
-          // Redirect to success page
-          router.push('/success');
-          }
-           catch (error) {
-          console.error('Error saving billing order:', error);
+          console.log("New Order" , newOrder);
+
+          // try {
+          //   const response = await fetch("http://localhost:3000/api/orders", {
+          //     method: "POST",
+          //     headers: {
+          //       "Content-Type": "application/json",
+          //     },
+          //     body: JSON.stringify(newOrder),
+          //   });
+          //   console.log("response fetched" , response);
+          //   if (!response.ok) {
+          //     setError("Payment Not Verified, Order Not Created.");
+          //     return;
+          //   }
+          //   console.log("Order created successfully");
+          //   //Clear the user's shopping cart
+          //   const response5 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`, {
+          //     method: "DELETE",
+          //     body: JSON.stringify({}),
+          //   });
+          //   console.log("response delete" , response5)
+          //   if (!response5.ok) {
+          //     console.log("Error clearing shopping cart");
+          //     return;
+          //   }
+          //   console.log("Shopping cart cleared successfully");
+          // } catch (error) {
+          //   console.error("Error sending user data:", error);
+          // }
+        } catch (error) {
+          console.error('Error saving shipping order:', error);
         }
+      
       };
 
 
@@ -216,10 +155,10 @@ const CheckoutPage: React.FC = () => {
 
             <div className="bg-white p-6">
               {/* Shipping form */}
-              <form onSubmit={handleShippingSubmit}>
+              <form>
                 <div className="mb-4">
                   <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">Full Name <span className="text-red-500">*</span></label>
-                  <input type="text" id="fullName" name="fullame" value={shippingFormData.fullName} onChange={(e) => handleChange(e, 'shipping')} className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" placeholder="Full Name" required />
+                  <input type="text" id="fullName" name="fullName" value={shippingFormData.fullName} onChange={(e) => handleChange(e, 'shipping')} className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" placeholder="Full Name" required />
                 </div>
                 <div className="mb-4">
                   <label htmlFor="address" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">Address <span className="text-red-500">*</span></label>
@@ -248,7 +187,7 @@ const CheckoutPage: React.FC = () => {
 
             <div className="bg-white p-6">
               {/* Billing form */}
-              <form onSubmit={handleBillingSubmit}>
+              <form>
                 <div className="mb-4">
                   <label htmlFor="cardNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">Card Number <span className="text-red-500">*</span></label>
                   <input type="text" id="cardNumber" value={billingFormData.cardNumber} onChange={(e) => handleChange(e, 'billing')} name="cardNumber" placeholder="1234 5678 9012 3456" className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" required/>
@@ -269,7 +208,7 @@ const CheckoutPage: React.FC = () => {
                   {error && <p className="text-red-500 text-sm">{error}</p>}
                 </div>
                 <div>
-                  <button type="submit" className="text-white mt-2 px-4 py-3 rounded rounded-md-[0.2] shadow bg-[#806491] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.75rem] ">Pay Now</button>
+                  <button type="button" onClick={handleSubmits} className="text-white mt-2 px-4 py-3 rounded rounded-md-[0.2] shadow bg-[#806491] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.75rem] ">Pay Now</button>
                 </div>
               </form>
               <p className="text-sm text-gray-500 mt-4">Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our privacy policy.</p>

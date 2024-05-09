@@ -3,7 +3,7 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Order } from "../../../../models/orders";
 import { IOrder } from "../../../../models/orders";
 
-await connectMongoDB();
+// await connectMongoDB();
 
 export async function GET(
   request: NextRequest,

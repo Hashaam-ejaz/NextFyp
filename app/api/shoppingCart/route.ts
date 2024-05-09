@@ -4,8 +4,9 @@ import { ShoppingCart } from "../../../models/shoppingCart";
 import { IShoppingCart } from "../../../models/shoppingCart";
 import { User } from "../../../models/users";
 import { Product } from "../../../models/products";
+import { use } from "react";
 
-await connectMongoDB();
+// await connectMongoDB();
 
 // POST method for adding a product to the shopping cart using try catch
 export async function POST(request: NextRequest) {
@@ -41,7 +42,19 @@ export async function POST(request: NextRequest) {
 }
 
   //GET method for fetching all products in the shopping cart
-    export async function GET() {
+    export async function GET(request: NextRequest) {
+      // const searchParams = request.nextUrl.searchParams;
+      // const userID = searchParams.get("userID");
+      // console.log("userid" , userID);
+      // if (userID) {
+      //   const existingShoppingCart: IShoppingCart[] | null = await ShoppingCart.find({
+      //     userID: userID,
+      // })
+      // if (existingShoppingCart) {
+      //   return NextResponse.json({ existingShoppingCart }, { status: 202 });
+      // }
+      // return NextResponse.json({ existingShoppingCart }, { status: 300 });
+      // }
         const shoppingCart: IShoppingCart[] = await ShoppingCart.find();
         return NextResponse.json({ shoppingCart });
     }
