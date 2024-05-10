@@ -4,7 +4,7 @@ import { ShoppingCart } from "../../../../models/shoppingCart";
 import { IShoppingCart } from "../../../../models/shoppingCart";
 import { User } from "../../../../models/users";
 
-// await connectMongoDB();
+await connectMongoDB();
 
 //DELETE method for removing a product from the shopping cart using id
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
@@ -76,8 +76,8 @@ export async function GET(
     { params }: { params: { id: string } }) {
     try {
         const id = params.id;
-        const shoppingCart: IShoppingCart[] = await ShoppingCart.find({ userID: id });
-        return NextResponse.json({ shoppingCart });
+        const userShoppingCart: IShoppingCart[] = await ShoppingCart.find({ userID: id });
+        return NextResponse.json({ userShoppingCart });
     }
     catch (error) {
         return NextResponse.json(

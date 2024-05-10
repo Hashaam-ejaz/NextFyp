@@ -4,7 +4,7 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Product } from "../../../../models/products";
 import { IProduct } from "../../../../models/products";
 
-// await connectMongoDB();
+await connectMongoDB();
 
 export async function GET(
   request: NextRequest,
@@ -12,14 +12,14 @@ export async function GET(
 ) {
   const id = params.id;
   try {
-    const product: IProduct | null = await Product.findById(id);
-    if (!product) {
+    const existingProduct: IProduct | null = await Product.findById(id);
+    if (!existingProduct) {
       return NextResponse.json(
         { message: "Product not found" },
         { status: 404 }
       );
     }
-    return NextResponse.json({ product });
+    return NextResponse.json({ existingProduct });
   } catch (error) {
     // Handle errors, e.g., database error
     return NextResponse.json(

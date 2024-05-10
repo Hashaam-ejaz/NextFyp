@@ -4,7 +4,7 @@ import connectMongoDB from "../../../libs/mongodb";
 import { Product } from "../../../models/products";
 import { IProduct } from "../../../models/products";
 
-// await connectMongoDB();
+await connectMongoDB();
 
 export async function POST(request: NextRequest) {
   const productData = new Product(await request.json());

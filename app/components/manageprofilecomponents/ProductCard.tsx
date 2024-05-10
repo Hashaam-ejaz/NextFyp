@@ -4,9 +4,10 @@ interface ProductProps {
   productName: string;
   description: string;
   price: number;
+  onAddToCart: () => void; // Function to handle Add to Cart
 }
 
-const ProductCard: React.FC<ProductProps> = ({ productName, description, price }) => {
+const ProductCard: React.FC<ProductProps> = ({ productName, description, price, onAddToCart }) => {
   return (
     <div className="border rounded-lg p-4 flex flex-col sm:flex-row items-center justify-between">
       {/* <!-- Product Icon --> */}
@@ -21,7 +22,7 @@ const ProductCard: React.FC<ProductProps> = ({ productName, description, price }
       {/* <!-- Price and Add to Cart --> */}
       <div className="flex flex-col">
           <div className="font-semibold mb-2 ml-8">Rs. {price}</div>
-          <button className="bg-white text-xs text-[#806491] hover:bg-[#806491] hover:text-white border border-[#806491] h-[1.5rem] py-1 px-4 rounded-[0.278rem] sm:ml-4">Add to Cart</button>
+          <button onClick={onAddToCart} className="bg-white text-xs text-[#806491] hover:bg-[#806491] hover:text-white border border-[#806491] h-[1.5rem] py-1 px-4 rounded-[0.278rem] sm:ml-4">Add to Cart</button>
         </div>
     </div>
   );
