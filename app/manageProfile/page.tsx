@@ -3,14 +3,20 @@ import React from 'react';
 import ProductCard from '../components/manageprofilecomponents/ProductCard';
 import OrderHistory from '../components/manageprofilecomponents/OrderHistory';
 import Pagination from '../components/manageprofilecomponents/Pagination';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { IUser } from '../../models/users';
+import { IWishlist } from '../../models/wishlist'; 
+import { IProduct } from '../../models/products'; 
+import { IShoppingCart } from '../../models/shoppingCart';
+import { ObjectId } from 'mongodb'; 
 import icon from "../assets/profile-icon.png";
+import { set, Types } from 'mongoose';
 
 const ProfilePage: React.FC = () => {
   const { data: session, status } = useSession();
   const [error, setError] = useState<string | null>(null);
+  const [userId, setUserId] = useState<ObjectId | null>(null);
   const [updateFormData, setUpdateFormData] = useState({
     name: '',
     city: '',
@@ -18,31 +24,80 @@ const ProfilePage: React.FC = () => {
     phone: '',
   });
 
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUpdateFormData({
       ...updateFormData,
       [e.target.id]: e.target.value,
     });
   }
+  const [wishlistEntries, setWishlistEntries] = useState<IWishlist[]>([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const [cart, setCart] = useState<IShoppingCart[]>([]); // State to manage cart items
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (!session || !session.user) return;
+
+        const userResponse = await fetch( `http://localhost:3000/api/users?email=${session.user.email}`);
+        if (!userResponse.ok) {
+          setError("User not found.");
+          return;
+        }
+        const userData = await userResponse.json();
+        console.log("userData" , userData);
+        const user = userData.existingUser;
+        setUserId(user._id);
+        if (!user || !user._id) {
+          setError("User not found or missing ID.");
+          return;
+        }
+
+        const wishlistResponse = await fetch(
+          `http://localhost:3000/api/wishlist?userID=${user._id}`
+        );
+        if (!wishlistResponse.ok) {
+          setError("Failed to fetch wishlist.");
+          return;
+        }
+        const wishlistData = await wishlistResponse.json();
+        console.log("wishlistData" , wishlistData);
+        setWishlistEntries(wishlistData.wishlist);
+
+        // const productIDs = wishlistData.wishlist.map((entry: IWishlist) => entry.productID);
+        // console.log("productIDs" , productIDs);
+        
+
+        const fetchedProducts: IProduct[] = [];
+        for (const entry of wishlistData.wishlist) {
+          const productResponse = await fetch(
+            `http://localhost:3000/api/products/${entry.productID}`
+          );
+          if (!productResponse.ok) {
+            setError("Failed to fetch product.");
+            return;
+          }
+          const productData = await productResponse.json();
+          console.log("productData" , productData);
+          console.log("productData.existingProduct" , productData.existingProduct);
+          fetchedProducts.push(productData.existingProduct);
+        }
+        setProducts(fetchedProducts);
+        console.log("fetchedProducts" , fetchedProducts);
+      } catch (error) {
+        setError("An unexpected error occurred.");
+      }
+    };
+    fetchData();
+  }, [session]);
 
   const handleUpdate = async() => {
     if (!session || !session.user) return;
         try {
           console.log('Submitting form');
-          const response = await fetch(
-            `http://localhost:3000/api/users?email=${session.user.email}`
-          );
-          console.log("response" , response);
-          if (!response) {
-            setError("User not found.");
-            return;
-          }
-          const user1 = await response.json();
-          const buyer = user1.existingUser;
-          console.log("buyer" , buyer);
-          // Find the buyer ID using the user's email
-          if (!buyer || !buyer._id)  setError("User not found or missing ID");
-          const buyerId = buyer._id;
+          const buyerId = userId;
+          console.log("buyerId" , buyerId);
           const updatedData : Partial<IUser> = {
             name: updateFormData.name,
             address: updateFormData.address + ", " + updateFormData.city,
@@ -73,6 +128,40 @@ const ProfilePage: React.FC = () => {
   }
   
 }
+    // Function to handle adding a product to the cart
+    const addToCart = async (product: IProduct) => {
+      console.log("button clicked...");
+      if (userId) {
+        const newCartItem = {
+          userID: userId,
+          productID: product._id,
+          quantity: 1,
+        } as IShoppingCart;
+        try {
+          console.log("newCartItem" , newCartItem);
+          console.log("making POST request for shoppingcart");
+          const response = await fetch('http://localhost:3000/api/shoppingCart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newCartItem),
+          });
+          console.log("response for shoppingcart: " , response);
+          if (!response.ok) {
+            throw new Error('Failed to add item to cart');
+          }
+        setCart([...cart, newCartItem]);
+      } catch (error) {
+        console.error('Error adding item to cart:', error);
+        setError('Failed to add item to cart');
+      }
+    }
+       else {
+        // Handle the case where userId is null
+        setError("User ID is not available.");
+      }
+    };
   const orders = [
     {
       number: 'NU881911',
@@ -140,8 +229,17 @@ const ProfilePage: React.FC = () => {
       <div className="mt-8 mx-4 sm:mx-auto lg:mx-auto w-full max-w-4xl bg-white p-6 rounded-lg">
         <h2 className="text-xl font-semibold mb-4">Wishlist</h2>
         <div className="space-y-4">
-          {/* Product Cards go here */}
-          <ProductCard 
+          {products.map((product: IProduct) => (
+            <ProductCard 
+            key={product._id}
+            productName={product.name}
+            price={product.price}
+            description={product.description}
+            onAddToCart={() => addToCart(product)} // Add to Cart function as a prop here
+          />
+          ))}
+          
+          {/* <ProductCard 
             productName="TOZO T6 True Wireless Earbuds"
             price={3000}
             description="Description of Product 1"
@@ -150,12 +248,7 @@ const ProfilePage: React.FC = () => {
             productName="TOZO T6 True Wireless Earbuds"
             price={3000}
             description="Description of Product 1"
-          />
-          <ProductCard 
-            productName="TOZO T6 True Wireless Earbuds"
-            price={3000}
-            description="Description of Product 1"
-          />
+          /> */}
         </div>
         <div className='flex justify-end'>
           <Pagination />
