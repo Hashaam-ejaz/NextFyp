@@ -42,4 +42,8 @@ async function connectMongoDB() {
   return cached.conn;
 }
 
+if (!MONGODB_URI) {
+  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
+}
+
 export default connectMongoDB;
