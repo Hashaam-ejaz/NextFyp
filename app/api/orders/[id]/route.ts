@@ -5,27 +5,22 @@ import { IOrder } from "../../../../models/orders";
 
 await connectMongoDB();
 
+//GET method for fetching all orders for a specific user using try catch
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
   try {
-    const order: IOrder | null = await Order.findById(id);  //find order by id 
-    if (!order) {
-      return NextResponse.json(
-        { message: "Order not found" },
-        { status: 404 }
-      );
-    }
-    return NextResponse.json({ order });
-    } catch (error) {
-    // Handle errors, e.g., database error
+    const orders: IOrder[] = await Order.find({ buyerID: id });
+    return NextResponse.json({ orders });
+  }
+  catch (error) {
     return NextResponse.json(
-      { message: "Error retrieving order" },
-      { status: 500 }
+      { message: "Error fetching Orders" },
+      { status: 400 }
     );
-    }
+  }
 }
 
 export async function PUT(

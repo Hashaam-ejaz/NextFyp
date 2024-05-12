@@ -1,19 +1,34 @@
-import { Schema, Types, model, Document } from "mongoose";
+import { Schema, model, Document } from "mongoose";
 
-interface IProduct extends Document {
+interface IProduct extends Document{
   name: string;
   category: string;
   price: number;
-  discount?: string;
-  variation?: string[];
-  color: string[];
-  imageLink: string;
+  discount?: number;
+  size?: string[];
+  color?: string[];
   description: string;
-  reviews: string[];
-  rating: number;
-  weight: number;
+  reviews: {
+    rating: string;
+    date: string;
+    userID: string;
+    reviewDescription: string;
+    images?: {
+      src: string;
+      alt: string;
+    }[];
+  }[];
+  noReviews?: number;
+  avgRating: number;
+  weight: string;
   quantity: number;
   sellerId: string;
+  sku: string;
+  status: boolean; //calculated from quantity
+  images: {
+    src: string;
+    alt: string;
+  }[];
 }
 
 const productSchema = new Schema<IProduct>({
@@ -30,33 +45,40 @@ const productSchema = new Schema<IProduct>({
     required: true,
   },
   discount: {
-    type: String,
+    type: Number,
   },
-  variation: {
+  size: {
     type: [String],
+    required: false,
   },
   color: {
     type: [String],
-    required: true,
-  },
-  imageLink: {
-    type: String,
-    required: true,
+    required: false,
   },
   description: {
     type: String,
     required: true,
   },
-  reviews: {
-    type: [String],
-    required: true,
-  },
-  rating: {
+  reviews: [
+    {
+      rating: { type: Number, required: true },
+      date: { type: String, required: true },
+      userID: { type: String, required: true },
+      reviewDescription: { type: String, required: true },
+      images: [
+        {
+          src: { type: String, required: false },
+          alt: { type: String, required: false },
+        },
+      ],
+    },
+  ],
+  avgRating: {
     type: Number,
     required: true,
   },
   weight: {
-    type: Number,
+    type: String,
     required: true,
   },
   quantity: {
@@ -67,6 +89,24 @@ const productSchema = new Schema<IProduct>({
     type: String,
     required: true,
   },
+  sku: {
+    type: String,
+    required: true,
+  },
+  noReviews: {
+    type: Number,
+    required: false,
+  },
+  status: {
+    type: Boolean,
+    required: true,
+  },
+  images: [
+    {
+      src: { type: String, required: true },
+      alt: { type: String, required: true },
+    },
+  ],
 });
 
 const Product = model<IProduct>("Product", productSchema);

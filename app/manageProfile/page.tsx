@@ -10,6 +10,8 @@ import { IWishlist } from '../../models/wishlist';
 import { IProduct } from '../../models/products'; 
 import { IShoppingCart } from '../../models/shoppingCart';
 import { ObjectId } from 'mongodb'; 
+import { IOrder } from '../../models/orders';
+import { Order } from '../../app/components/manageprofilecomponents/OrderHistory';
 import icon from "../assets/profile-icon.png";
 import { set, Types } from 'mongoose';
 
@@ -34,6 +36,7 @@ const ProfilePage: React.FC = () => {
   const [wishlistEntries, setWishlistEntries] = useState<IWishlist[]>([]);
   const [products, setProducts] = useState<IProduct[]>([]);
   const [cart, setCart] = useState<IShoppingCart[]>([]); // State to manage cart items
+  const [orderHistory, setOrderHistory] = useState<Order[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,37 +57,78 @@ const ProfilePage: React.FC = () => {
           return;
         }
 
-        const wishlistResponse = await fetch(
-          `http://localhost:3000/api/wishlist?userID=${user._id}`
-        );
-        if (!wishlistResponse.ok) {
-          setError("Failed to fetch wishlist.");
+        // const wishlistResponse = await fetch(
+        //   `http://localhost:3000/api/wishlist?userID=${user._id}`
+        // );
+        // if (!wishlistResponse.ok) {
+        //   setError("Failed to fetch wishlist.");
+        //   return;
+        // }
+        // const wishlistData = await wishlistResponse.json();
+        // console.log("wishlistData" , wishlistData);
+        // setWishlistEntries(wishlistData.wishlist);
+
+        // const fetchedProducts: IProduct[] = [];
+        // for (const entry of wishlistData.wishlist) {
+        //   const productResponse = await fetch(
+        //     `http://localhost:3000/api/products/${entry.productID}`
+        //   );
+        //   if (!productResponse.ok) {
+        //     setError("Failed to fetch product.");
+        //     return;
+        //   }
+        //   const productData = await productResponse.json();
+        //   console.log("productData" , productData);
+        //   console.log("productData.existingProduct" , productData.existingProduct);
+        //   fetchedProducts.push(productData.existingProduct);
+        // }
+        // setProducts(fetchedProducts);
+        // console.log("fetchedProducts" , fetchedProducts);
+
+        // Fetch order history
+        const orderResponse = await fetch(`http://localhost:3000/api/orders/${user._id}`);
+        if (!orderResponse.ok) {
+          setError("Failed to fetch order history.");
           return;
         }
-        const wishlistData = await wishlistResponse.json();
-        console.log("wishlistData" , wishlistData);
-        setWishlistEntries(wishlistData.wishlist);
-
-        // const productIDs = wishlistData.wishlist.map((entry: IWishlist) => entry.productID);
-        // console.log("productIDs" , productIDs);
-        
-
-        const fetchedProducts: IProduct[] = [];
-        for (const entry of wishlistData.wishlist) {
-          const productResponse = await fetch(
-            `http://localhost:3000/api/products/${entry.productID}`
-          );
-          if (!productResponse.ok) {
-            setError("Failed to fetch product.");
-            return;
+        const orderData = await orderResponse.json();
+        const orders = orderData.orders;
+        console.log("Order Data:",orders);
+        // Fetch product details for each product in orders
+        const transformedOrders = [];
+        for (const order of orders) {
+          console.log("Order:",order);
+          console.log("Fetching Products");
+          const productsWithDetails = [];
+          for (const productId of order.productID) {
+            console.log("Product ID:",productId);
+            console.log("Starting Fetch");
+            const productResponse = await fetch(`http://localhost:3000/api/products/${productId}`);
+            if (!productResponse.ok) {
+              throw new Error(`Failed to fetch product with ID ${productId}`);
+            }
+            const productData = await productResponse.json(); 
+            console.log("productData", productData);
+            const product = productData.existingProduct;
+            console.log("Product:",product);
+            productsWithDetails.push({
+              id: product._id,
+              name: product.name,
+              price: product.price,
+              imageSrc: product.images[0].src,
+              imageAlt: product.images[0].alt,
+            });
           }
-          const productData = await productResponse.json();
-          console.log("productData" , productData);
-          console.log("productData.existingProduct" , productData.existingProduct);
-          fetchedProducts.push(productData.existingProduct);
+
+          transformedOrders.push({
+            number: order._id,
+            date: extractDate(order.date),
+            products: productsWithDetails,
+          });
         }
-        setProducts(fetchedProducts);
-        console.log("fetchedProducts" , fetchedProducts);
+
+        console.log("transformedOrders" , transformedOrders);
+        setOrderHistory(transformedOrders);
       } catch (error) {
         setError("An unexpected error occurred.");
       }
@@ -122,12 +166,12 @@ const ProfilePage: React.FC = () => {
             return;
           }
 
-  }
-  catch (error) {
-    setError("An unexpected error occurred.");
-  }
-  
-}
+          }
+          catch (error) {
+            setError("An unexpected error occurred.");
+          }
+          
+        }
     // Function to handle adding a product to the cart
     const addToCart = async (product: IProduct) => {
       console.log("button clicked...");
@@ -162,25 +206,32 @@ const ProfilePage: React.FC = () => {
         setError("User ID is not available.");
       }
     };
-  const orders = [
-    {
-      number: 'NU881911',
-      date: 'January 22, 2021',
-      datetime: '2021-01-22',
-      products: [
-        {
-          id: 1,
-          name: 'TOZO T6 True Wireless Earbuds',
-          href: '#',
-          price: 'Rs. 3000',
-          imageSrc: 'https://tailwindui.com/img/ecommerce-images/order-history-page-02-product-01.jpg',
-          imageAlt: 'Any text here',
-        },
-        // More products...
-      ],
-    },
-    // More orders...
-  ];
+            // Function to extract date from ISO string
+        const extractDate = (isoDate: string): string => {
+          const dateObj = new Date(isoDate);
+          const year = dateObj.getFullYear();
+          const month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Add leading zero if needed
+          const day = String(dateObj.getDate()).padStart(2, '0'); // Add leading zero if needed
+          return `${year}-${month}-${day}`;
+        };
+  // const orders = [
+  //   {
+  //     number: 'NU881911',
+  //     date: 'January 22, 2021',
+  //     datetime: '2021-01-22',
+  //     products: [
+  //       {
+  //         id: 1,
+  //         name: 'TOZO T6 True Wireless Earbuds',
+  //         price: 'Rs. 3000',
+  //         imageSrc: 'https://tailwindui.com/img/ecommerce-images/order-history-page-02-product-01.jpg',
+  //         imageAlt: 'Any text here',
+  //       },
+  //       // More products...
+  //     ],
+  //   },
+  //   // More orders...
+  // ];
 
   return (
     <div className="bg-gray-100 min-h-screen flex flex-col justify-start items-center">
@@ -258,7 +309,7 @@ const ProfilePage: React.FC = () => {
       {/* Order History */}
       <div className="mt-8 mx-4 sm:mx-auto lg:mx-auto w-full max-w-4xl bg-white p-6 rounded-lg">
         <h2 className="text-xl font-semibold">Order History</h2>
-        <OrderHistory orders={orders} />
+        <OrderHistory orders={orderHistory} userID={userId}/>
         <div className='flex justify-end'>
           <Pagination />
         </div>
