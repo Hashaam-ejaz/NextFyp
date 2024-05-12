@@ -4,13 +4,12 @@ import { ShoppingCart } from "../../../../models/shoppingCart";
 import { IShoppingCart } from "../../../../models/shoppingCart";
 import { User } from "../../../../models/users";
 
-await connectMongoDB();
 
 //DELETE method for removing a product from the shopping cart using id
 export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
     try {
         const userID = params.id;
-
+        await connectMongoDB();
         if (userID) {
             // Delete all shopping carts by userID
             const deletedShoppingCarts = await ShoppingCart.deleteMany({ userID });
@@ -46,6 +45,7 @@ export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+        await connectMongoDB();
         const updatedShoppingCartData: IShoppingCart = await request.json();
         const id = params.id;
         const shoppingCart = await ShoppingCart.findByIdAndUpdate(id, updatedShoppingCartData, {
@@ -75,6 +75,7 @@ export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+        await connectMongoDB();
         const id = params.id;
         const userShoppingCart: IShoppingCart[] = await ShoppingCart.find({ userID: id });
         return NextResponse.json({ userShoppingCart });

@@ -4,7 +4,6 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Product } from "../../../../models/products";
 import { IProduct } from "../../../../models/products";
 
-await connectMongoDB();
 
 export async function GET(
   request: NextRequest,
@@ -12,6 +11,7 @@ export async function GET(
 ) {
   const id = params.id;
   try {
+    await connectMongoDB();
     const existingProduct: IProduct | null = await Product.findById(id);
     if (!existingProduct) {
       return NextResponse.json(
@@ -36,6 +36,7 @@ export async function PUT(
   const updatedProductData: IProduct = await request.json();
   const id = params.id;
   try {
+    await connectMongoDB();
     const product = await Product.findByIdAndUpdate(id, updatedProductData, {
       new: true,
     });
@@ -54,6 +55,7 @@ export async function DELETE(
 ) {
   const id = params.id;
   try {
+    await connectMongoDB();
     const product: IProduct | null = await Product.findByIdAndDelete(id);
     if (!product) {
       return NextResponse.json(

@@ -4,9 +4,9 @@ import { Order } from "../../../models/orders";
 import { IOrder } from "../../../models/orders";
 import { User } from "../../../models/users";
 
-await connectMongoDB();
 
 export async function POST(request: NextRequest) {
+  await connectMongoDB();
     const orderData = new Order(await request.json());
     const { buyerName } = orderData;
     if (!buyerName) {
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
   }
 
   export async function GET(request: NextRequest) {
-
+    await connectMongoDB();
     const searchParams = request.nextUrl.searchParams;
     const buyerID = searchParams.get("buyerID");
     const PaymentStatus = searchParams.get("paymentStatus");
@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
   //create DELETE method to delete all orders of a specific buyer using try-catch block
   export async function DELETE(request: NextRequest) {
     try {
+      await connectMongoDB();
       const searchParams = request.nextUrl.searchParams;
       const buyerID = searchParams.get("buyerID");
       if (!buyerID) {

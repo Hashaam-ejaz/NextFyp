@@ -57,33 +57,33 @@ const ProfilePage: React.FC = () => {
           return;
         }
 
-        // const wishlistResponse = await fetch(
-        //   `http://localhost:3000/api/wishlist?userID=${user._id}`
-        // );
-        // if (!wishlistResponse.ok) {
-        //   setError("Failed to fetch wishlist.");
-        //   return;
-        // }
-        // const wishlistData = await wishlistResponse.json();
-        // console.log("wishlistData" , wishlistData);
-        // setWishlistEntries(wishlistData.wishlist);
+        const wishlistResponse = await fetch(
+          `http://localhost:3000/api/wishlist?userID=${userId}`
+        );
+        if (!wishlistResponse.ok) {
+          setError("Failed to fetch wishlist.");
+          return;
+        }
+        const wishlistData = await wishlistResponse.json();
+        console.log("wishlistData" , wishlistData);
+        setWishlistEntries(wishlistData.wishlist);
 
-        // const fetchedProducts: IProduct[] = [];
-        // for (const entry of wishlistData.wishlist) {
-        //   const productResponse = await fetch(
-        //     `http://localhost:3000/api/products/${entry.productID}`
-        //   );
-        //   if (!productResponse.ok) {
-        //     setError("Failed to fetch product.");
-        //     return;
-        //   }
-        //   const productData = await productResponse.json();
-        //   console.log("productData" , productData);
-        //   console.log("productData.existingProduct" , productData.existingProduct);
-        //   fetchedProducts.push(productData.existingProduct);
-        // }
-        // setProducts(fetchedProducts);
-        // console.log("fetchedProducts" , fetchedProducts);
+        const fetchedProducts: IProduct[] = [];
+        for (const entry of wishlistData.wishlist) {
+          const productResponse = await fetch(
+            `http://localhost:3000/api/products/${entry.productID}`
+          );
+          if (!productResponse.ok) {
+            setError("Failed to fetch product.");
+            return;
+          }
+          const productData = await productResponse.json();
+          console.log("productData" , productData);
+          console.log("productData.existingProduct" , productData.existingProduct);
+          fetchedProducts.push(productData.existingProduct);
+        }
+        setProducts(fetchedProducts);
+        console.log("fetchedProducts" , fetchedProducts);
 
         // Fetch order history
         const orderResponse = await fetch(`http://localhost:3000/api/orders/${user._id}`);

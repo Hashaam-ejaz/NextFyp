@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, Types, model, models } from "mongoose";
 
 interface IWishlist {
     userID: Types.ObjectId;
@@ -16,7 +16,7 @@ const wishlistSchema = new Schema<IWishlist>({
     },
 });
 
-const Wishlist = model<IWishlist>("Wishlist", wishlistSchema);
+const Wishlist = models.Wishlist || model<IWishlist>("Wishlist", wishlistSchema);
 
 export {Wishlist};
 export type {IWishlist};

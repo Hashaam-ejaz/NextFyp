@@ -5,12 +5,12 @@ import { User, IUser } from "../../../../models/users";
 import bcrypt from "bcryptjs";
 
 
-const mongoClient = await connectMongoDB();
 
 export async function PUT (
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+        await connectMongoDB();
         const id  = params.id;
         const updatedUserData: IUser =  await request.json();
         const user = await User.findByIdAndUpdate(id, updatedUserData, {

@@ -67,10 +67,10 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ product, onSubmit, onClose, use
         throw new Error('Failed to submit review');
       }
       console.log('Review submitted successfully', response);
-      //insert delay to allow time for the PUT request to complete
+      //insert delay to allow time to see success message
       setTimeout(() => {
         onClose();
-      }, 5000);
+      }, 2000);
       onSubmit(newReview);
       // onClose();
     } catch (error) {
