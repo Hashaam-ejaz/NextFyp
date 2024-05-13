@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { OrderProduct } from './OrderHistory'; // Import OrderProduct interface
 import { Types } from 'mongoose';
 
@@ -24,12 +24,9 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ product, onSubmit, onClose, use
   const [rating, setRating] = useState<number>(0);
   const [reviewDescription, setReviewDescription] = useState<string>('');
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     console.log('Submitting review...');
-    console.log('Product Id:', product.id);
-    setTimeout(() => {
-      onClose();
-    }, 2000);
     try {
       const response1 = await fetch(`http://localhost:3000/api/products/${product.id}`);
       if (!response1.ok) {
@@ -37,8 +34,6 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ product, onSubmit, onClose, use
       }
       const data = await response1.json();
       const currentProduct = data.existingProduct;
-      console.log('User ID:', userID);
-      console.log('Current product:', currentProduct);
       const newNoReviews = currentProduct.noReviews ? currentProduct.noReviews + 1 : 1;
        // Construct the new review object
        const newReview: Review = {
@@ -48,9 +43,7 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ product, onSubmit, onClose, use
         reviewDescription: reviewDescription,
         images: [],
       };
-      console.log('New review:', newReview);
       // Send review to server by appending the reviews array and other data
-      console.log("Making PUT Request");
       const response = await fetch(`http://localhost:3000/api/products/${product.id}`, {
         method: 'PUT',
         headers: {
@@ -66,13 +59,9 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ product, onSubmit, onClose, use
       if (!response.ok) {
         throw new Error('Failed to submit review');
       }
-      console.log('Review submitted successfully', response);
-      //insert delay to allow time to see success message
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      console.log('Review submitted successfully');
       onSubmit(newReview);
-      // onClose();
+      onClose();
     } catch (error) {
       console.error('Error submitting review:', error);
     }
@@ -82,6 +71,7 @@ const ReviewPage: React.FC<ReviewPageProps> = ({ product, onSubmit, onClose, use
         const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
         return totalRating / reviews.length;
       };
+
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 flex justify-center items-center">

@@ -27,8 +27,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders, userID }) => {
   const [selectedProduct, setSelectedProduct] = useState<OrderProduct | null>(null);
 
   const handleReviewSubmit = (review: any) => {
-    console.log('Review submitted:', review);
-    // setShowReviewModal(false);
+    setShowReviewModal(false);
   };
 
   return (
@@ -79,7 +78,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders, userID }) => {
                           <td className="hidden py-6 pr-8 sm:table-cell">{product.price}</td>
                           <td className="hidden py-6 pr-8 sm:table-cell">Delivered</td>
                           <td className="whitespace-nowrap py-6 text-right font-medium">
-                            <button
+                            <a
                               onClick={() => {
                                 setSelectedProduct(product);
                                 setShowReviewModal(true);
@@ -88,7 +87,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders, userID }) => {
                             >
                               Review<span className="hidden lg:inline"> Product</span>
                               <span className="sr-only">, {product.name}</span>
-                            </button>
+                            </a>
                           </td>
                         </tr>
                       </tbody>

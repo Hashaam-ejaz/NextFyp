@@ -9,10 +9,10 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
-    await connectMongoDB();
-    const existingProduct: IProduct | null = await Product.findById(id);
+    const existingProduct = await Product.findById(id);
     if (!existingProduct) {
       return NextResponse.json(
         { message: "Product not found" },
@@ -35,8 +35,8 @@ export async function PUT(
 ) {
   const updatedProductData: IProduct = await request.json();
   const id = params.id;
+  await connectMongoDB();
   try {
-    await connectMongoDB();
     const product = await Product.findByIdAndUpdate(id, updatedProductData, {
       new: true,
     });
@@ -54,8 +54,8 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   const id = params.id;
+  await connectMongoDB();
   try {
-    await connectMongoDB();
     const product: IProduct | null = await Product.findByIdAndDelete(id);
     if (!product) {
       return NextResponse.json(
