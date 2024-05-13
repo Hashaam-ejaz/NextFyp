@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import BasicInfoForm from './BasicInfoForm';
 import AddressInfoForm from './AddressInfoForm';
 import BankInfoForm from './BankInfoForm';
@@ -8,12 +9,16 @@ interface StepperProps {
   steps: number;
 }
 
+
 const Stepper: React.FC<StepperProps> = ({ steps }) => {
+  const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState<any>({});
+  const stepperRef = useRef({}); // Ref to store formData
 
   const handleNext = (data: object) => {
     setFormData({ ...formData, ...data });
+    stepperRef.current = { ...formData, ...data };
     if (currentStep < steps) {
       setCurrentStep(currentStep + 1);
     }
@@ -24,10 +29,42 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       setCurrentStep(currentStep - 1);
     }
   };
+  useEffect(() => {
+    console.log('formData:', formData);
+  },[formData]);
 
-  const handleSubmit = () => {
-    // Submit form data
-    console.log('Form submitted:', formData);
+  const handleSubmit = async () => {
+    console.log('Form Data:', formData);
+    console.log('Stepper Data:', stepperRef.current);
+    const finalData = { ...formData, ...stepperRef.current }; // Merge data
+
+    console.log('Final Data:', finalData);
+    if (!session || !session.user) return;
+    try {
+      const userResponse = await fetch(`http://localhost:3000/api/users?email=${session.user.email}`);
+      const userData = await userResponse.json();
+      const user = userData.existingUser;
+      console.log('UserID:', user._id);
+      console.log('FormData:', formData);
+      const updatedUserData = {
+
+      }
+      // const response = await fetch(`http://localhost:3000/api/users/${user._id}`, {
+      //   method: 'PUT',
+      //   headers: {
+      //     'Content-Type': 'application/json',
+      //   },
+      //   body: JSON.stringify(formData),
+      // });
+
+      // if (!response.ok) {
+      //   throw new Error('Failed to submit user data');
+      // }
+      // console.log('User data submitted successfully');
+      // console.log('Response:', response);
+    } catch (error) {
+      console.error('Error submitting user data:', error);
+    }
   };
 
   const stepNames = ['Basic Information', 'Address Information', 'Bank Information'];
@@ -39,7 +76,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       case 2:
         return <AddressInfoForm onNext={handleNext} />;
       case 3:
-        return <BankInfoForm onNext={handleNext} />;
+        return <BankInfoForm formData={formData} onNext={handleNext} />;
       default:
         return null;
     }

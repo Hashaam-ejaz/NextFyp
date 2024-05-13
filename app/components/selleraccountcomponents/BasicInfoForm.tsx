@@ -11,7 +11,8 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ onNext }) => {
   const [email, setEmail] = useState('');
   const [mobileNo, setMobileNo] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     onNext({ name, email, mobileNo });
   };
 

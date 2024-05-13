@@ -12,7 +12,8 @@ const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ onNext }) => {
   const [city, setCity] = useState('');
   const [district, setDistrict] = useState('');
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     onNext({ address, area, city, district});
   };
 
