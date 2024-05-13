@@ -1,6 +1,6 @@
-import { Schema, model, Types, models, Document } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
-interface ISellerTransactions extends Document{
+interface ISellerTransactions extends Document {
   userID: Types.ObjectId;
   orderID: Types.ObjectId;
   amount: number;
@@ -10,11 +10,13 @@ interface ISellerTransactions extends Document{
 
 const SellerTransactionsSchema = new Schema<ISellerTransactions>({
   userID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   orderID: {
-    type: Schema.Types.ObjectId, ref: 'Order',
+    type: Schema.Types.ObjectId,
+    ref: "Order",
     required: true,
   },
   amount: {
@@ -31,7 +33,9 @@ const SellerTransactionsSchema = new Schema<ISellerTransactions>({
   },
 });
 
-const SellerTransactions = models.SellerTransactions || model<ISellerTransactions>("SellerTransactions", SellerTransactionsSchema);
+const SellerTransactions =
+  models.SellerTransactions ||
+  model<ISellerTransactions>("SellerTransactions", SellerTransactionsSchema);
 
 export { SellerTransactions };
 export type { ISellerTransactions };

@@ -1,4 +1,5 @@
 import { Schema, model, Types, models } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
 interface IOrderHistory {
   userID: Types.ObjectId;
@@ -8,11 +9,13 @@ interface IOrderHistory {
 
 const orderHistorySchema = new Schema<IOrderHistory>({
   userID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   orderID: {
-    type: Schema.Types.ObjectId, ref: 'Order',
+    type: Schema.Types.ObjectId,
+    ref: "Order",
     unique: true,
     required: true,
   },
@@ -22,7 +25,9 @@ const orderHistorySchema = new Schema<IOrderHistory>({
   },
 });
 
-const OrderHistory = models.OrderHistory || model<IOrderHistory>("OrderHistory", orderHistorySchema);
+const OrderHistory =
+  models.OrderHistory ||
+  model<IOrderHistory>("OrderHistory", orderHistorySchema);
 
 export { OrderHistory };
 export type { IOrderHistory };

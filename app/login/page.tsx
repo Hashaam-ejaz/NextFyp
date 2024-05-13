@@ -1,11 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, use, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 
-import homepageRect from "../../public/homepage.svg";
-import loginLogo from "../../public/logo.svg";
-import googleLogo from "../../public/google.svg";
+import homepageRect from "../../public/svg/homepage.svg";
+import loginLogo from "../../public/svg/logo.svg";
+import googleLogo from "../../public/svg/google.svg";
 import { signIn, useSession } from "next-auth/react";
 
 const Login: React.FC = () => {
@@ -14,8 +14,6 @@ const Login: React.FC = () => {
   const [error, setError] = useState("");
 
   const session = useSession();
-  console.log(session);
-
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
