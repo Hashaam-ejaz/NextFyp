@@ -3,35 +3,32 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Order } from "../../../../models/orders";
 import { IOrder } from "../../../../models/orders";
 
-await connectMongoDB();
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
-    const order: IOrder | null = await Order.findById(id);  //find order by id 
+    const order: IOrder | null = await Order.findById(id); //find order by id
     if (!order) {
-      return NextResponse.json(
-        { message: "Order not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
     return NextResponse.json({ order });
-    } catch (error) {
+  } catch (error) {
     // Handle errors, e.g., database error
     return NextResponse.json(
       { message: "Error retrieving order" },
       { status: 500 }
     );
-    }
+  }
 }
 
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const updatedOrderData: IOrder = await request.json();
   const id = params.id;
   try {
@@ -55,10 +52,7 @@ export async function DELETE(
   try {
     const order: IOrder | null = await Order.findByIdAndDelete(id);
     if (!order) {
-      return NextResponse.json(
-        { message: "Order not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
     return NextResponse.json({ message: "Order deleted" });
   } catch (error) {

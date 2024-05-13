@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
 interface IShoppingCart {
   userID: Types.ObjectId;
@@ -8,11 +8,13 @@ interface IShoppingCart {
 
 const ShoppingCartSchema = new Schema<IShoppingCart>({
   userID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   productID: {
-    type: Schema.Types.ObjectId, ref: 'Product',
+    type: Schema.Types.ObjectId,
+    ref: "Product",
     required: true,
   },
   quantity: {
@@ -21,7 +23,9 @@ const ShoppingCartSchema = new Schema<IShoppingCart>({
   },
 });
 
-const ShoppingCart = model<IShoppingCart>("ShoppingCart", ShoppingCartSchema);
+const ShoppingCart =
+  models.ShoppingCart ||
+  model<IShoppingCart>("ShoppingCart", ShoppingCartSchema);
 
 export { ShoppingCart };
 export type { IShoppingCart };

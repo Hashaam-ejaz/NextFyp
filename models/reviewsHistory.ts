@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
 interface IReviewsHistory {
   userID: Types.ObjectId;
@@ -9,11 +9,13 @@ interface IReviewsHistory {
 
 const reviewsHistorySchema = new Schema<IReviewsHistory>({
   userID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   productID: {
-    type: Schema.Types.ObjectId, ref: 'Product',
+    type: Schema.Types.ObjectId,
+    ref: "Product",
     required: true,
   },
   review: {
@@ -26,7 +28,9 @@ const reviewsHistorySchema = new Schema<IReviewsHistory>({
   },
 });
 
-const ReviewsHistory = model<IReviewsHistory>("ReviewsHistory", reviewsHistorySchema);
+const ReviewsHistory =
+  models.ReviewsHistory ||
+  model<IReviewsHistory>("ReviewsHistory", reviewsHistorySchema);
 
 export { ReviewsHistory };
 export type { IReviewsHistory };
