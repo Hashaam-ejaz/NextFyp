@@ -3,12 +3,13 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { OrderHistory } from "../../../../models/orderHistory";
 import { IOrderHistory } from "../../../../models/orderHistory";
 
-await connectMongoDB();
+
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     const orderHistory: IOrderHistory | null = await OrderHistory.findById(id);  //find orderHistory by id 
@@ -32,6 +33,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     const orderHistory: IOrderHistory | null = await OrderHistory.findByIdAndDelete(id);

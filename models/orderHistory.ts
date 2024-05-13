@@ -1,6 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models, Document } from "mongoose";
 
-interface IOrderHistory {
+interface IOrderHistory extends Document{
   userID: Types.ObjectId;
   orderID: Types.ObjectId;
   orderDate: Date;
@@ -22,7 +22,7 @@ const orderHistorySchema = new Schema<IOrderHistory>({
   },
 });
 
-const OrderHistory = model<IOrderHistory>("OrderHistory", orderHistorySchema);
+const OrderHistory = models.OrderHistory || model<IOrderHistory>("OrderHistory", orderHistorySchema);
 
 export { OrderHistory };
 export type { IOrderHistory };

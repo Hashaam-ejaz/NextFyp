@@ -5,11 +5,11 @@ import { ISellerTransactions } from "../../../models/sellerTransactions";
 import { User } from "../../../models/users";
 import { Order } from "../../../models/orders";
 
-await connectMongoDB();
 
 // POST method for creating a new transaction using try catch
 export async function POST(request: NextRequest) {
     try {
+      await connectMongoDB();
         const transaction = new SellerTransactions(await request.json());
         //check if userID exists in the User collection
         const user = await User.findById(transaction.userID);
@@ -42,6 +42,7 @@ export async function POST(request: NextRequest) {
 
 //GET method for fetching all transactions
 export async function GET() {
+  await connectMongoDB();
     const transactions: ISellerTransactions[] = await SellerTransactions.find();
     return NextResponse.json({ transactions });
 }

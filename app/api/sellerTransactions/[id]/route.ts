@@ -4,13 +4,13 @@ import { SellerTransactions } from "../../../../models/sellerTransactions";
 import { ISellerTransactions } from "../../../../models/sellerTransactions";
 import { User } from "../../../../models/users";
 
-await connectMongoDB();
 
 //GET method for fetching all transactions for a specific user using id and try catch
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         //check if userID exists in the User collection
         const user = await User.findById(id);
@@ -35,6 +35,7 @@ export async function DELETE(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         await SellerTransactions.deleteMany({ userID: id });
         return NextResponse.json(
@@ -54,6 +55,7 @@ export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         const transaction = await SellerTransactions.findById(id);
         if (!transaction) {

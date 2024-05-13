@@ -5,9 +5,10 @@ import { IOrderHistory } from "../../../models/orderHistory";
 import { User } from "../../../models/users";
 import { Order } from "../../../models/orders";
 
-await connectMongoDB();
+
 
 export async function POST(request: NextRequest) {
+  await connectMongoDB();
     try{
     const orderHistoryData = new OrderHistory(await request.json());
     if (!orderHistoryData.userID || !orderHistoryData.orderID || !orderHistoryData.orderDate) {
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
   }
 
   export async function GET() {
+    await connectMongoDB();
     const orderHistory: IOrderHistory[] = await OrderHistory.find();
     return NextResponse.json({ orderHistory });
   }

@@ -3,12 +3,12 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Order } from "../../../../models/orders";
 import { IOrder } from "../../../../models/orders";
 
-await connectMongoDB();
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     const order: IOrder | null = await Order.findById(id);  //find order by id 
@@ -32,6 +32,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const updatedOrderData: IOrder = await request.json();
   const id = params.id;
   try {
@@ -51,6 +52,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     const order: IOrder | null = await Order.findByIdAndDelete(id);

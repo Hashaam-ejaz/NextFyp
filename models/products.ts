@@ -1,6 +1,6 @@
-import { Schema, Types, model, Document } from "mongoose";
+import { Schema, model, Document, models } from "mongoose";
 
-interface IProduct extends Document {
+interface IProduct extends Document{
   name: string;
   category: string;
   price: number;
@@ -69,7 +69,7 @@ const productSchema = new Schema<IProduct>({
   },
 });
 
-const Product = model<IProduct>("Product", productSchema);
+const Product = models.Product || model<IProduct>("Product", productSchema);
 
 export { Product };
 export type { IProduct };

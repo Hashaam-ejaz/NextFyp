@@ -4,9 +4,9 @@ import { UserSearchHistory } from "../../../models/userSearchHistory";
 import { IUserSearchHistory } from "../../../models/userSearchHistory";
 import { User } from "../../../models/users";
 
-await connectMongoDB();
 
 export async function POST(request: NextRequest) {
+  await connectMongoDB();
     const searchHistory = new UserSearchHistory(await request.json());
     //check if userID exists in the User collection
     const user = await User.findById(searchHistory.userID);
@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
 
   //GET method for fetching all search history
     export async function GET() {
+      await connectMongoDB();
         const searchHistory: IUserSearchHistory[] = await UserSearchHistory.find();
         return NextResponse.json({ searchHistory });
     }
