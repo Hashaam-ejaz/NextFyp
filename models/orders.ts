@@ -1,4 +1,4 @@
-import { Schema, model, Types, Document } from "mongoose";
+import { Schema, model, Types, Document, models } from "mongoose";
 
 interface IOrder extends Document{
   buyerID: Types.ObjectId;
@@ -56,7 +56,7 @@ const orderSchema = new Schema<IOrder>({
   },
 });
 
-const Order = model<IOrder>("Order", orderSchema);
+const Order = models.Order || model<IOrder>("Order", orderSchema);
 
 export { Order };
 export type { IOrder };

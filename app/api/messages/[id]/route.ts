@@ -3,13 +3,14 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Messages } from "../../../../models/messages";
 import { IMessages } from "../../../../models/messages";
 
-await connectMongoDB();
+
 
 //GET method for fetching all messages for a specific user using id and try catch
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         const messages: IMessages[] = await Messages.find({ recipient: id });
         return NextResponse.json({ messages });
@@ -26,6 +27,7 @@ export async function DELETE(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         await Messages.deleteMany({ recipient: id });
         return NextResponse.json(

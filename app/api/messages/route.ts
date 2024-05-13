@@ -4,11 +4,12 @@ import { Messages } from "../../../models/messages";
 import { IMessages } from "../../../models/messages";
 import { User } from "../../../models/users";
 
-await connectMongoDB();
+
 
 // POST method for sending a message using try catch
 export async function POST(request: NextRequest) {
     try {
+      await connectMongoDB();
         const message = new Messages(await request.json());
         //check if recipient exists in the User collection
         const recipient = await User.findById(message.recipient);
@@ -41,6 +42,7 @@ export async function POST(request: NextRequest) {
 
 //GET method for fetching all messages
 export async function GET() {
+  await connectMongoDB();
     const messages: IMessages[] = await Messages.find();
     return NextResponse.json({ messages });
 }

@@ -1,6 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, Document, models } from "mongoose";
 
-interface IUserSearchHistory {
+interface IUserSearchHistory extends Document{
   userID: Types.ObjectId;
   productsID: Types.ObjectId[];
   date: Date;
@@ -26,7 +26,7 @@ const UserSearchHistorySchema = new Schema<IUserSearchHistory>({
   },
 });
 
-const UserSearchHistory = model<IUserSearchHistory>("UserSearchHistory", UserSearchHistorySchema);
+const UserSearchHistory = models.UserSearchHistory || model<IUserSearchHistory>("UserSearchHistory", UserSearchHistorySchema);
 
 export { UserSearchHistory };
 export type { IUserSearchHistory };

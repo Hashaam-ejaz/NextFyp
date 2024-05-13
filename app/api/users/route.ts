@@ -4,9 +4,9 @@ import connectMongoDB from "../../../libs/mongodb";
 import { User, IUser } from "../../../models/users";
 import bcrypt from "bcryptjs";
 
-const mongoClient = await connectMongoDB();
 
 export async function POST(request: NextRequest) {
+  await connectMongoDB();
   const userData = new User(await request.json());
   const { name, password } = userData;
   const hashedPassword: string = await bcrypt.hash(password, 10);
@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  await connectMongoDB();
   const users: IUser[] = await User.find();
   const searchParams = request.nextUrl.searchParams;
   const email = searchParams.get("email");

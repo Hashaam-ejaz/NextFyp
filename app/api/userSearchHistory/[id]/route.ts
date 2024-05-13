@@ -3,7 +3,6 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { UserSearchHistory } from "../../../../models/userSearchHistory";
 import { IUserSearchHistory } from "../../../../models/userSearchHistory";
 
-await connectMongoDB();
 
 
 //PUT method for updating a search history
@@ -11,6 +10,7 @@ export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
+    await connectMongoDB();
     const updatedSearchHistoryData: IUserSearchHistory = await request.json();
     const id = params.id;
     try {
@@ -31,6 +31,7 @@ export async function DELETE(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
+    await connectMongoDB();
     const userID = params.id;
     try {
         const userSearchHistory = await UserSearchHistory.find({ userID });
@@ -54,6 +55,7 @@ export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }
 ) {
+    await connectMongoDB();
     const userID = params.id;
     try {
         const userSearchHistory: IUserSearchHistory[] = await UserSearchHistory.find({ userID });

@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
 interface IOrderHistory {
   userID: Types.ObjectId;
@@ -22,7 +22,7 @@ const orderHistorySchema = new Schema<IOrderHistory>({
   },
 });
 
-const OrderHistory = model<IOrderHistory>("OrderHistory", orderHistorySchema);
+const OrderHistory = models.OrderHistory || model<IOrderHistory>("OrderHistory", orderHistorySchema);
 
 export { OrderHistory };
 export type { IOrderHistory };
