@@ -1,24 +1,17 @@
 // AddressInfoForm.tsx
 "use client";
 import React, { useState } from 'react';
+import { FormData } from './stepper';
 
 interface AddressInfoFormProps {
-  onNext: (data: object) => void;
+  formData: FormData;
+  setFormData: (data: FormData) => void;
 }
 
-const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ onNext }) => {
-  const [address, setAddress] = useState('');
-  const [area, setArea] = useState('');
-  const [city, setCity] = useState('');
-  const [district, setDistrict] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onNext({ address, area, city, district});
-  };
+const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ formData, setFormData }) => {
 
   return (
-    <form className="px-10" onSubmit={handleSubmit}>
+    <form className="px-10">
        <div className="mb-4">
        <h2 className='font-semibold text-lg text-[#5D6881]'> Create Seller Account </h2>
               <p className='text-xs'> Please complete the to do as soon as possible, and start your business journey！</p>
@@ -32,8 +25,8 @@ const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ onNext }) => {
           id="address"
           type="text"
           placeholder="Lorem Ipsum Address"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
+          value={formData.address}
+          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
           required
         />
       </div>
@@ -46,8 +39,8 @@ const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ onNext }) => {
           id="address"
           type="text"
           placeholder="Lorem Ipsum Area"
-          value={area}
-          onChange={(e) => setArea(e.target.value)}
+          value={formData.area}
+          onChange={(e) => setFormData({ ...formData, area: e.target.value })}
           required
         />
       </div>
@@ -60,8 +53,8 @@ const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ onNext }) => {
           id="address"
           type="text"
           placeholder="Rawalpindi"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
+          value={formData.city}
+          onChange={(e) => setFormData({ ...formData, city: e.target.value })}
           required
         
         />
@@ -75,8 +68,8 @@ const AddressInfoForm: React.FC<AddressInfoFormProps> = ({ onNext }) => {
           id="address"
           type="text"
           placeholder="Lorem Ipsum"
-          value={district}
-          onChange={(e) => setDistrict(e.target.value)}
+          value={formData.district}
+          onChange={(e) => setFormData({ ...formData, district: e.target.value })}
           required
         />
       </div>

@@ -9,16 +9,38 @@ interface StepperProps {
   steps: number;
 }
 
+interface FormData {
+  shopName: string;
+  mobileNo: string;
+  address: string;
+  area: string;
+  city: string;
+  district: string;
+  accName: string;
+  bankName: string;
+  iban: string;
+  cnic: string;
+}
+
 
 const Stepper: React.FC<StepperProps> = ({ steps }) => {
   const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState<any>({});
-  const stepperRef = useRef({}); // Ref to store formData
+  const [formData, setFormData] = useState<FormData>({
+    shopName: '',
+    mobileNo: '',
+    address: '',
+    area: '',
+    city: '',
+    district: '',
+    accName: '',
+    bankName: '',
+    iban: '',
+    cnic: '',
+  });
 
   const handleNext = (data: object) => {
     setFormData({ ...formData, ...data });
-    stepperRef.current = { ...formData, ...data };
     if (currentStep < steps) {
       setCurrentStep(currentStep + 1);
     }
@@ -29,39 +51,49 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       setCurrentStep(currentStep - 1);
     }
   };
-  useEffect(() => {
-    console.log('formData:', formData);
-  },[formData]);
 
   const handleSubmit = async () => {
-    console.log('Form Data:', formData);
-    console.log('Stepper Data:', stepperRef.current);
-    const finalData = { ...formData, ...stepperRef.current }; // Merge data
-
-    console.log('Final Data:', finalData);
     if (!session || !session.user) return;
     try {
       const userResponse = await fetch(`http://localhost:3000/api/users?email=${session.user.email}`);
       const userData = await userResponse.json();
       const user = userData.existingUser;
-      console.log('UserID:', user._id);
-      console.log('FormData:', formData);
       const updatedUserData = {
-
+        phone: formData.mobileNo,
+        address: formData.address + ', ' + formData.area + ', ' + formData.city + ', ' + formData.district,
+      };
+      const userBankInfo = {
+        userID: user._id,
+        shopName: formData.shopName,
+        bankName: formData.bankName,
+        iban: formData.iban,
+        accName: formData.accName,
+        cnic: formData.cnic,
+      };
+      console.log('Making request to submit user data...');
+      const response = await fetch(`http://localhost:3000/api/users/${user._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUserData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit user data');
       }
-      // const response = await fetch(`http://localhost:3000/api/users/${user._id}`, {
-      //   method: 'PUT',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(formData),
-      // });
+      console.log('Making request to submit bank info...');
+      const bankInfoResponse = await fetch('http://localhost:3000/api/bankInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userBankInfo),
+      });
+      if (!bankInfoResponse.ok) {
+        throw new Error('Failed to submit bank info');
+      }
+      console.log('Data submitted successfully');
 
-      // if (!response.ok) {
-      //   throw new Error('Failed to submit user data');
-      // }
-      // console.log('User data submitted successfully');
-      // console.log('Response:', response);
     } catch (error) {
       console.error('Error submitting user data:', error);
     }
@@ -72,11 +104,11 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
   const renderFormForStep = () => {
     switch (currentStep) {
       case 1:
-        return <BasicInfoForm onNext={handleNext} />;
+        return <BasicInfoForm formData={formData} setFormData={setFormData} />;
       case 2:
-        return <AddressInfoForm onNext={handleNext} />;
+        return <AddressInfoForm formData={formData} setFormData={setFormData} />;
       case 3:
-        return <BankInfoForm formData={formData} onNext={handleNext} />;
+        return <BankInfoForm formData={formData} setFormData={setFormData} />;
       default:
         return null;
     }
@@ -188,3 +220,4 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
 };
 
 export default Stepper;
+export type { FormData };

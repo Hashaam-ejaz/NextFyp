@@ -1,23 +1,17 @@
 // BasicInfoForm.tsx
 "use client";
 import React, { useState } from 'react';
+import { FormData } from './stepper';
 
 interface BasicInfoFormProps {
-  onNext: (data: object) => void;
+  formData: FormData;
+  setFormData: (data: FormData) => void;
 }
 
-const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ onNext }) => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [mobileNo, setMobileNo] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onNext({ name, email, mobileNo });
-  };
+const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ formData , setFormData }) => {
 
   return (
-    <form className="px-10" onSubmit={handleSubmit}>
+    <form className="px-10">
             <div className="mb-4">
               <h2 className='font-semibold text-lg text-[#5D6881]'> Create Seller Account </h2>
               <p className='text-xs'> Please complete the form and start your business journey！</p>
@@ -31,12 +25,12 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ onNext }) => {
           id="name"
           type="text"
           placeholder="Lorem Ipsum Store"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={formData.shopName}
+          onChange={(e) => setFormData({...formData, shopName: e.target.value})}
           required
         />
       </div>
-      <div className="mb-6">
+      {/* <div className="mb-6">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
           Email Address <span className="text-red-500">*</span>
         </label>
@@ -45,11 +39,11 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ onNext }) => {
           id="email"
           type="email"
           placeholder="olivia@untitledui.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={formData.email}
+          onChange={(e) => setFormData({...formData, email: e.target.value})}
           required
         />
-      </div>
+      </div> */}
       <div className="mb-6">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="phonenumber">
           Mobile Number <span className="text-red-500">*</span>
@@ -59,12 +53,11 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ onNext }) => {
           id="number"
           type="text"
           placeholder="+92 300 1234567"
-          value={mobileNo}
-          onChange={(e) => setMobileNo(e.target.value)}
+          value={formData.mobileNo}
+          onChange={(e) => setFormData({...formData, mobileNo: e.target.value})}
           required
           />
       </div>
-     
     </form>
   );
 };
