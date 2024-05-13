@@ -4,12 +4,13 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Product } from "../../../../models/products";
 import { IProduct } from "../../../../models/products";
 
-await connectMongoDB();
+// await connectMongoDB();
 
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     const product: IProduct | null = await Product.findById(id);
@@ -33,6 +34,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const updatedProductData: IProduct = await request.json();
   const id = params.id;
   try {
@@ -52,6 +54,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     const product: IProduct | null = await Product.findByIdAndDelete(id);

@@ -1,12 +1,14 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, Document, models } from "mongoose";
 
-interface IOrder {
+interface IOrder extends Document{
   buyerID: Types.ObjectId;
   buyerName: string;
   productID: string[];
   amount: number;
   quantity: number;
   paymentStatus: string;
+  address: string;
+  phoneNo?: string;
   date: Date;
   trackingNo?: string;
 }
@@ -36,6 +38,14 @@ const orderSchema = new Schema<IOrder>({
     type: String,
     required: true,
   },
+  address: {
+    type: String,
+    required: true,
+  },
+  phoneNo: {
+    type: String,
+    required: false,
+  },
   date: {
     type: Date,
     required: true,
@@ -46,7 +56,7 @@ const orderSchema = new Schema<IOrder>({
   },
 });
 
-const Order = model<IOrder>("Order", orderSchema);
+const Order = models.Order || model<IOrder>("Order", orderSchema);
 
 export { Order };
 export type { IOrder };

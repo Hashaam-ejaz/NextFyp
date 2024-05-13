@@ -4,9 +4,9 @@ import { Order } from "../../../models/orders";
 import { IOrder } from "../../../models/orders";
 import { User } from "../../../models/users";
 
-await connectMongoDB();
 
 export async function POST(request: NextRequest) {
+  await connectMongoDB();
     const orderData = new Order(await request.json());
     const { buyerName } = orderData;
     if (!buyerName) {
@@ -30,7 +30,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  export async function GET() {
+  export async function GET(request: NextRequest) {
+    await connectMongoDB();
+    const searchParams = request.nextUrl.searchParams;
+    const buyerID = searchParams.get("buyerID");
+    const PaymentStatus = searchParams.get("paymentStatus");
+
+    if (buyerID && PaymentStatus) {
+      const existingOrder: IOrder | null = await Order.findOne({
+        buyerID: buyerID,
+        paymentStatus: PaymentStatus,
+    })
+    if (existingOrder) {
+      return NextResponse.json({ existingOrder }, { status: 202 });
+    }
+    return NextResponse.json({ existingOrder }, { status: 300 });
+    }
+
+
     const orders: IOrder[] = await Order.find();
     return NextResponse.json({ orders });
   }

@@ -4,39 +4,49 @@ import { ShoppingCart } from "../../../../models/shoppingCart";
 import { IShoppingCart } from "../../../../models/shoppingCart";
 import { User } from "../../../../models/users";
 
-await connectMongoDB();
 
 //DELETE method for removing a product from the shopping cart using id
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
     try {
-        const id = params.id;
-        const shoppingCart = await ShoppingCart.findByIdAndDelete(id);
-        if (!shoppingCart) {
+        await connectMongoDB();
+        const userID = params.id;
+
+        if (userID) {
+            // Delete all shopping carts by userID
+            const deletedShoppingCarts = await ShoppingCart.deleteMany({ userID });
+            if (deletedShoppingCarts.deletedCount > 0) {
+                return NextResponse.json(
+                    { message: `All shopping carts removed for userID: ${userID}` },
+                    { status: 200 }
+                );
+            } else {
+                return NextResponse.json(
+                    { message: `No shopping carts found for userID: ${userID}` },
+                    { status: 404 }
+                );
+            }
+        }  else {
             return NextResponse.json(
-              { message: "Product Not Found" },
-              { status: 404 }
+                { message: `Invalid request: Missing userID or ID parameter` },
+                { status: 400 }
             );
-          }
+        }
+    } catch (error) {
+        console.error("Error removing from the database:", error);
         return NextResponse.json(
-          { message: `Product removed from the shopping cart` },
-          { status: 200 }
-        );
-    }
-    catch (error) {
-        return NextResponse.json(
-          { message: `Error removing from the database` },
-          { status: 500 }
+            { message: `Error removing from the database` },
+            { status: 500 }
         );
     }
 }
+
 
 //PUT method to change the quantity of a product in the shopping cart using id
 export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+        await connectMongoDB();
         const updatedShoppingCartData: IShoppingCart = await request.json();
         const id = params.id;
         const shoppingCart = await ShoppingCart.findByIdAndUpdate(id, updatedShoppingCartData, {
@@ -66,6 +76,7 @@ export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+        await connectMongoDB();
         const id = params.id;
         const shoppingCart: IShoppingCart[] = await ShoppingCart.find({ userID: id });
         return NextResponse.json({ shoppingCart });

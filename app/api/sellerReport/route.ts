@@ -4,11 +4,11 @@ import { SellerReport } from "../../../models/sellerReport";
 import { ISellerReport } from "../../../models/sellerReport";
 import { User } from "../../../models/users";
 
-await connectMongoDB();
 
 // POST method for creating a new report using try catch and also check the user exists
 export async function POST(request: NextRequest) {
     try {
+      await connectMongoDB();
         const report = new SellerReport(await request.json());
         //check if userID exists in the User collection
         const user = await User.findById(report.userID);
@@ -33,6 +33,7 @@ export async function POST(request: NextRequest) {
 
 //GET method for fetching all reports
 export async function GET() {
+  await connectMongoDB();
     const reports: ISellerReport[] = await SellerReport.find();
     return NextResponse.json({ reports });
 }

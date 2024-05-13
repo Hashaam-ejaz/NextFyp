@@ -1,6 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models, Document } from "mongoose";
 
-interface ISellerTransactions {
+interface ISellerTransactions extends Document{
   userID: Types.ObjectId;
   orderID: Types.ObjectId;
   amount: number;
@@ -31,7 +31,7 @@ const SellerTransactionsSchema = new Schema<ISellerTransactions>({
   },
 });
 
-const SellerTransactions = model<ISellerTransactions>("SellerTransactions", SellerTransactionsSchema);
+const SellerTransactions = models.SellerTransactions || model<ISellerTransactions>("SellerTransactions", SellerTransactionsSchema);
 
 export { SellerTransactions };
 export type { ISellerTransactions };

@@ -4,12 +4,13 @@ import { ShoppingCart } from "../../../models/shoppingCart";
 import { IShoppingCart } from "../../../models/shoppingCart";
 import { User } from "../../../models/users";
 import { Product } from "../../../models/products";
+import { use } from "react";
 
-await connectMongoDB();
 
 // POST method for adding a product to the shopping cart using try catch
 export async function POST(request: NextRequest) {
     try {
+      await connectMongoDB();
         const shoppingCart = new ShoppingCart(await request.json());
         //check if userID exists in the User collection
         const user = await User.findById(shoppingCart.userID);
@@ -41,7 +42,8 @@ export async function POST(request: NextRequest) {
 }
 
   //GET method for fetching all products in the shopping cart
-    export async function GET() {
+    export async function GET(request: NextRequest) {
+      await connectMongoDB();
         const shoppingCart: IShoppingCart[] = await ShoppingCart.find();
         return NextResponse.json({ shoppingCart });
     }

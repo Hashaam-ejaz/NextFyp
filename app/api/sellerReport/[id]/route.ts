@@ -4,13 +4,13 @@ import { SellerReport } from "../../../../models/sellerReport";
 import { ISellerReport } from "../../../../models/sellerReport";
 import { User } from "../../../../models/users";
 
-await connectMongoDB();
 
 //GET method for fetching all reports for a specific user using id and try catch
 export async function GET(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         //check if userID exists in the User collection
         const user = await User.findById(id);
@@ -35,6 +35,7 @@ export async function DELETE(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         await SellerReport.deleteMany({ userID: id });
         return NextResponse.json(
@@ -54,6 +55,7 @@ export async function PUT(
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+      await connectMongoDB();
         const id = params.id;
         const report = await SellerReport.findById(id);
         if (!report) {

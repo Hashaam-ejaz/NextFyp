@@ -4,9 +4,9 @@ import connectMongoDB from "../../../libs/mongodb";
 import { Product } from "../../../models/products";
 import { IProduct } from "../../../models/products";
 
-await connectMongoDB();
 
 export async function POST(request: NextRequest) {
+  await connectMongoDB();
   const productData = new Product(await request.json());
   const { name } = productData;
   await productData.save(); // Use Mongoose's built-in save() method
@@ -17,6 +17,7 @@ export async function POST(request: NextRequest) {
 }
 
 export async function GET(request: NextRequest) {
+  await connectMongoDB();
   const products: IProduct[] = await Product.find();
   return NextResponse.json({ products });
 }

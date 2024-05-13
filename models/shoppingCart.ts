@@ -1,6 +1,6 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, Document, models } from "mongoose";
 
-interface IShoppingCart {
+interface IShoppingCart extends Document{
   userID: Types.ObjectId;
   productID: Types.ObjectId;
   quantity: number;
@@ -21,7 +21,7 @@ const ShoppingCartSchema = new Schema<IShoppingCart>({
   },
 });
 
-const ShoppingCart = model<IShoppingCart>("ShoppingCart", ShoppingCartSchema);
+const ShoppingCart = models.ShoppingCart || model<IShoppingCart>("ShoppingCart", ShoppingCartSchema);
 
 export { ShoppingCart };
 export type { IShoppingCart };
