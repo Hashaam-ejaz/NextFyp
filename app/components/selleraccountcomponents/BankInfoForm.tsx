@@ -3,17 +3,19 @@
 import React, { useState } from 'react';
 
 interface BankInfoFormProps {
+  formData: object;
   onNext: (data: object) => void;
 }
 
-const BankInfoForm: React.FC<BankInfoFormProps> = ({ onNext }) => {
+const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, onNext }) => {
   const [name, setName] = useState('');
   const [iban, setIban] = useState('');
   const [bankName, setBankName] = useState('');
   const [cnic, setCnic] = useState('');
 
-  const handleSubmit = () => {
-    onNext({ name, iban, bankName, cnic});
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onNext({ ...formData, name, iban, bankName, cnic});
   };
 
   return (
