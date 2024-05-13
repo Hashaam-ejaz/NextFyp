@@ -1,25 +1,17 @@
 // BankInfoForm.tsx
 "use client";
 import React, { useState } from 'react';
+import { FormData } from './stepper';
 
 interface BankInfoFormProps {
-  formData: object;
-  onNext: (data: object) => void;
+  formData: FormData;
+  setFormData: (data: FormData) => void;
 }
 
-const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, onNext }) => {
-  const [name, setName] = useState('');
-  const [iban, setIban] = useState('');
-  const [bankName, setBankName] = useState('');
-  const [cnic, setCnic] = useState('');
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onNext({ ...formData, name, iban, bankName, cnic});
-  };
+const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, setFormData}) => {
 
   return (
-    <form className="px-10" onSubmit={handleSubmit}>
+    <form className="px-10">
       <div className="mb-4">
       <h2 className='font-semibold text-lg text-[#5D6881]'> Create Seller Account </h2>
               <p className='text-xs'> Please complete the to do as soon as possible, and start your business journey！</p>
@@ -33,8 +25,8 @@ const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, onNext }) => {
           id="bankInfo"
           type="text"
           placeholder="John Doe"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={formData.accName}
+          onChange={(e) => setFormData({ ...formData, accName: e.target.value })}
           required
         />
       </div>
@@ -47,8 +39,8 @@ const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, onNext }) => {
           id="bankInfo"
           type="text"
           placeholder="PK36 SCBL 0000 0011 2345 6702"
-          value={iban}
-          onChange={(e) => setIban(e.target.value)}
+          value={formData.iban}
+          onChange={(e) => setFormData({ ...formData, iban: e.target.value })}
           required
         
         />
@@ -62,8 +54,8 @@ const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, onNext }) => {
           id="bankInfo"
           type="text"
           placeholder="Habib Bank Limited"
-          value={bankName}
-          onChange={(e) => setBankName(e.target.value)}
+          value={formData.bankName}
+          onChange={(e) => setFormData({ ...formData, bankName: e.target.value })}
           required
         />
       </div>
@@ -76,8 +68,8 @@ const BankInfoForm: React.FC<BankInfoFormProps> = ({ formData, onNext }) => {
           id="bankInfo"
           type="text"
           placeholder="00000-0000000-0"
-          value={cnic}
-          onChange={(e) => setCnic(e.target.value)}
+          value={formData.cnic}
+          onChange={(e) => setFormData({ ...formData, cnic: e.target.value })}
           required
         />
       </div>
