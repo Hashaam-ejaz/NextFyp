@@ -1,10 +1,12 @@
-import React from 'react';
+"use client";
+import React, { useState } from 'react';
+import  ReviewPage from '../manageprofilecomponents/ReviewModal';
+import { Types } from 'mongoose';
 
 interface OrderProduct {
   id: number;
   name: string;
-  href: string;
-  price: string;
+  price: number;
   imageSrc: string;
   imageAlt: string;
 }
@@ -12,15 +14,22 @@ interface OrderProduct {
 interface Order {
   number: string;
   date: string;
-  datetime: string;
   products: OrderProduct[];
 }
 
 interface OrderHistoryProps {
   orders: Order[];
+  userID: Types.ObjectId | null;
 }
 
-const OrderHistory: React.FC<OrderHistoryProps> = ({ orders }) => {
+const OrderHistory: React.FC<OrderHistoryProps> = ({ orders, userID }) => {
+  const [showReviewModal, setShowReviewModal] = useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] = useState<OrderProduct | null>(null);
+
+  const handleReviewSubmit = (review: any) => {
+    setShowReviewModal(false);
+  };
+
   return (
     <div className="bg-white">
       <div className="mx-auto max-w-7xl px-4 py-2 sm:px-6 lg:px-8 lg:pb-24">
@@ -52,7 +61,7 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders }) => {
                             <div className="flex items-center">
                               <img
                                 src={product.imageSrc}
-                                alt={product.imageAlt}
+                                alt={product.name}
                                 className="mr-6 h-16 w-16 rounded object-cover object-center"
                               />
                               <div>
@@ -69,7 +78,13 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders }) => {
                           <td className="hidden py-6 pr-8 sm:table-cell">{product.price}</td>
                           <td className="hidden py-6 pr-8 sm:table-cell">Delivered</td>
                           <td className="whitespace-nowrap py-6 text-right font-medium">
-                            <a href={product.href} className="text-[#806491] border border-[#806491] hover:bg-[#806491] hover:text-white h-[1.5rem] py-3 px-4 rounded-[0.278rem] sm:ml-3">
+                            <a
+                              onClick={() => {
+                                setSelectedProduct(product);
+                                setShowReviewModal(true);
+                              }}
+                              className="text-[#806491] border border-[#806491] hover:bg-[#806491] hover:text-white h-[1.5rem] py-3 px-4 rounded-[0.278rem] sm:ml-3"
+                            >
                               Review<span className="hidden lg:inline"> Product</span>
                               <span className="sr-only">, {product.name}</span>
                             </a>
@@ -85,8 +100,18 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders }) => {
           </div>
         </div>
       </div>
+      {showReviewModal && selectedProduct && (
+        <ReviewPage
+          product={selectedProduct}
+          onSubmit={handleReviewSubmit}
+          onClose={() => setShowReviewModal(false)}
+          userID={userID}
+        />
+      )}
     </div>
   );
 };
 
 export default OrderHistory;
+export type { OrderProduct };
+export type { Order };

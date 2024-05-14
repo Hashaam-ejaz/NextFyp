@@ -11,7 +11,7 @@ export async function GET(
   await connectMongoDB();
   const id = params.id;
   try {
-    const existingProduct: IProduct | null = await Product.findById(id);
+    const existingProduct = await Product.findById(id);
     if (!existingProduct) {
       return NextResponse.json(
         { message: "Product not found" },
@@ -35,6 +35,7 @@ export async function PUT(
   await connectMongoDB();
   const updatedProductData: IProduct = await request.json();
   const id = params.id;
+  await connectMongoDB();
   try {
     const product = await Product.findByIdAndUpdate(id, updatedProductData, {
       new: true,
@@ -54,6 +55,7 @@ export async function DELETE(
 ) {
   await connectMongoDB();
   const id = params.id;
+  await connectMongoDB();
   try {
     const product: IProduct | null = await Product.findByIdAndDelete(id);
     if (!product) {

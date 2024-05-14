@@ -29,8 +29,49 @@ export async function POST(request: NextRequest) {
   );
 }
 
-export async function GET() {
-  await connectMongoDB();
-  const orders: IOrder[] = await Order.find();
-  return NextResponse.json({ orders });
-}
+  export async function GET(request: NextRequest) {
+    await connectMongoDB();
+    const searchParams = request.nextUrl.searchParams;
+    const buyerID = searchParams.get("buyerID");
+    const PaymentStatus = searchParams.get("paymentStatus");
+
+    if (buyerID && PaymentStatus) {
+      const existingOrder: IOrder | null = await Order.findOne({
+        buyerID: buyerID,
+        paymentStatus: PaymentStatus,
+    })
+    if (existingOrder) {
+      return NextResponse.json({ existingOrder }, { status: 202 });
+    }
+    return NextResponse.json({ existingOrder }, { status: 300 });
+    }
+
+
+    const orders: IOrder[] = await Order.find();
+    return NextResponse.json({ orders });
+  }
+
+  //create DELETE method to delete all orders of a specific buyer using try-catch block
+  export async function DELETE(request: NextRequest) {
+    try {
+      await connectMongoDB();
+      const searchParams = request.nextUrl.searchParams;
+      const buyerID = searchParams.get("buyerID");
+      if (!buyerID) {
+        return NextResponse.json(
+          { message: "Please provide UserID" },
+          { status: 400 }
+        );
+      }
+      await Order.deleteMany({ buyerID: buyerID });
+      return NextResponse.json(
+        { message: `All orders of ${buyerID} deleted` },
+        { status: 200 }
+      );
+    } catch (error) {
+      return NextResponse.json(
+        { message: "Error deleting orders" },
+        { status: 500 }
+      );
+    }
+  }

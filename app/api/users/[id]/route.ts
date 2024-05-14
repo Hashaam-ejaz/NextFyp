@@ -5,14 +5,18 @@ import { User, IUser } from "../../../../models/users";
 import bcrypt from "bcryptjs";
 
 
-const mongoClient = await connectMongoDB();
 
 export async function PUT (
     request: NextRequest,
     { params }: { params: { id: string } }) {
     try {
+        await connectMongoDB();
         const id  = params.id;
         const updatedUserData: IUser =  await request.json();
+        if (updatedUserData.password) {
+            const hashedPassword: string = await bcrypt.hash(updatedUserData.password, 10);
+            updatedUserData.password = hashedPassword;
+        }
         const user = await User.findByIdAndUpdate(id, updatedUserData, {
             new: true,
         });

@@ -1,4 +1,4 @@
-import { Schema, model, Types, models } from "mongoose";
+import { Schema, model, Types, Document, models } from "mongoose";
 
 interface IOrder {
   buyerID: Types.ObjectId;
