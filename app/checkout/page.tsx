@@ -64,10 +64,10 @@ const CheckoutPage: React.FC = () => {
           // const existingOrder = res2.existingOrder;
           // Step 2: Find products in the user's shopping cart
           // console.log("testingurl" , `http://localhost:3000/api/shoppingCart/${buyer._id}`);
-          const response3 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`);
+          const response3 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`,{cache: 'no-cache'});
           const res3 = await response3.json();
           console.log("res3" , res3);
-          const userShoppingCart = res3.shoppingCart;
+          const userShoppingCart = res3.userShoppingCart;
 
           // Step 3: Calculate total amount and quantity for the order
           let totalAmount: number = 0;
@@ -80,6 +80,7 @@ const CheckoutPage: React.FC = () => {
           for (const entry of userShoppingCart) {
             const response4 = await fetch(`http://localhost:3000/api/products/${entry.productID}`);
             const res4 = await response4.json();
+            console.log("res4" , res4);
             const product = res4.existingProduct;
             console.log(product);
             // const product = await Product.findById(entry.productID);
@@ -107,34 +108,34 @@ const CheckoutPage: React.FC = () => {
 
           console.log("New Order" , newOrder);
 
-          // try {
-          //   const response = await fetch("http://localhost:3000/api/orders", {
-          //     method: "POST",
-          //     headers: {
-          //       "Content-Type": "application/json",
-          //     },
-          //     body: JSON.stringify(newOrder),
-          //   });
-          //   console.log("response fetched" , response);
-          //   if (!response.ok) {
-          //     setError("Payment Not Verified, Order Not Created.");
-          //     return;
-          //   }
-          //   console.log("Order created successfully");
-          //   //Clear the user's shopping cart
-          //   const response5 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`, {
-          //     method: "DELETE",
-          //     body: JSON.stringify({}),
-          //   });
-          //   console.log("response delete" , response5)
-          //   if (!response5.ok) {
-          //     console.log("Error clearing shopping cart");
-          //     return;
-          //   }
-          //   console.log("Shopping cart cleared successfully");
-          // } catch (error) {
-          //   console.error("Error sending user data:", error);
-          // }
+          try {
+            const response = await fetch("http://localhost:3000/api/orders", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newOrder),
+            });
+            console.log("response fetched" , response);
+            if (!response.ok) {
+              setError("Payment Not Verified, Order Not Created.");
+              return;
+            }
+            console.log("Order created successfully");
+            //Clear the user's shopping cart
+            const response5 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`, {
+              method: "DELETE",
+              body: JSON.stringify({}),
+            });
+            console.log("response delete" , response5)
+            if (!response5.ok) {
+              console.log("Error clearing shopping cart");
+              return;
+            }
+            console.log("Shopping cart cleared successfully");
+          } catch (error) {
+            console.error("Error sending user data:", error);
+          }
         } catch (error) {
           console.error('Error saving shipping order:', error);
         }
@@ -174,7 +175,7 @@ const CheckoutPage: React.FC = () => {
                 </div>
                 <div className="mb-4">
                   <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">Phone Number <span className="text-red-500">*</span></label>
-                  <input type="text" id="phoneNumber" value={shippingFormData.phoneNumber} onChange={(e) => handleChange(e, 'shipping')} name="phoneNumber" placeholder="+92 300 1234567" className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" required/>
+                  <input type="text" id="phoneNumber" value={shippingFormData.phoneNumber} onChange={(e) => handleChange(e, 'shipping')} name="phoneNumber" placeholder="+92 300 3000567" className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" required/>
                   
                 </div>
               </form>
@@ -190,7 +191,7 @@ const CheckoutPage: React.FC = () => {
               <form>
                 <div className="mb-4">
                   <label htmlFor="cardNumber" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">Card Number <span className="text-red-500">*</span></label>
-                  <input type="text" id="cardNumber" value={billingFormData.cardNumber} onChange={(e) => handleChange(e, 'billing')} name="cardNumber" placeholder="1234 5678 9012 3456" className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" required/>
+                  <input type="text" id="cardNumber" value={billingFormData.cardNumber} onChange={(e) => handleChange(e, 'billing')} name="cardNumber" placeholder="3000 5678 9012 3456" className="bg-white border border-gray-500 text-gray-900 text-sm rounded-[0.2rem] w-full sm:w-[21.563rem] lg:w-[31.563rem] h-[2.875rem] p-2.5" required/>
                 </div>
                 <div className="mb-4">
                   <label htmlFor="expiry" className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray">Expiration Date <span className="text-red-500">*</span></label>
