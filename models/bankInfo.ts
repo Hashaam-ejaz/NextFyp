@@ -2,6 +2,9 @@ import { Schema, Types, model, Document, models } from "mongoose";
 
 interface IBankInfo extends Document {
     shopName: string;
+    shopAddress: string;
+    returnAddress: string;
+    customerCarePhone?: string;
     bankName: string;
     iban: string;
     accName: string;
@@ -13,6 +16,18 @@ const bankInfoSchema = new Schema<IBankInfo>({
     shopName: {
         type: String,
         required: true,
+    },
+    shopAddress: {
+        type: String,
+        required: true,
+    },
+    returnAddress: {
+        type: String,
+        required: true,
+    },
+    customerCarePhone: {
+        type: String,
+        required: false,
     },
     bankName: {
         type: String,

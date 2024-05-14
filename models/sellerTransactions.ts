@@ -2,8 +2,11 @@ import { Schema, model, Types, models } from "mongoose";
 
 interface ISellerTransactions {
   userID: Types.ObjectId;
+  transactionID: number;
   orderID: Types.ObjectId;
   amount: number;
+  buyerName: string;
+  buyerPhone: string;
   date: Date;
   status: string;
 }
@@ -14,6 +17,10 @@ const SellerTransactionsSchema = new Schema<ISellerTransactions>({
     ref: "User",
     required: true,
   },
+  transactionID: {
+    type: Number,
+    required: true,
+  },
   orderID: {
     type: Schema.Types.ObjectId,
     ref: "Order",
@@ -21,6 +28,14 @@ const SellerTransactionsSchema = new Schema<ISellerTransactions>({
   },
   amount: {
     type: Number,
+    required: true,
+  },
+  buyerName: {
+    type: String,
+    required: true,
+  },
+  buyerPhone: {
+    type: String,
     required: true,
   },
   date: {
