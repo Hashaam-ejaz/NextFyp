@@ -4,7 +4,6 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Product } from "../../../../models/products";
 import { IProduct } from "../../../../models/products";
 
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -33,6 +32,7 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const updatedProductData: IProduct = await request.json();
   const id = params.id;
   await connectMongoDB();
@@ -53,6 +53,7 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   await connectMongoDB();
   try {

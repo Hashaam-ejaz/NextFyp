@@ -8,9 +8,9 @@ export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
-    await connectMongoDB();
     const orders: IOrder[] = await Order.find({ buyerID: id });
     return NextResponse.json({ orders });
   }
@@ -46,15 +46,13 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  await connectMongoDB();
   const id = params.id;
   try {
     await connectMongoDB();
     const order: IOrder | null = await Order.findByIdAndDelete(id);
     if (!order) {
-      return NextResponse.json(
-        { message: "Order not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ message: "Order not found" }, { status: 404 });
     }
     return NextResponse.json({ message: "Order deleted" });
   } catch (error) {

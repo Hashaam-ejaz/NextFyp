@@ -9,7 +9,7 @@ interface IProduct extends Document{
   color?: string[];
   description: string;
   reviews: {
-    rating: string;
+    rating: number;
     date: string;
     userID: string;
     reviewDescription: string;

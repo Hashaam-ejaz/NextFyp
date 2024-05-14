@@ -39,7 +39,6 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     }
 }
 
-
 //PUT method to change the quantity of a product in the shopping cart using id
 export async function PUT(
     request: NextRequest,
@@ -68,7 +67,7 @@ export async function PUT(
           { status: 500 }
         );
     }
-}
+  }
 
 //GET method for fetching all products in the shopping cart for a specific user using userID and try catch
 export async function GET(

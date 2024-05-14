@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
 interface ISellerTransactions {
   userID: Types.ObjectId;
@@ -10,11 +10,13 @@ interface ISellerTransactions {
 
 const SellerTransactionsSchema = new Schema<ISellerTransactions>({
   userID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   orderID: {
-    type: Schema.Types.ObjectId, ref: 'Order',
+    type: Schema.Types.ObjectId,
+    ref: "Order",
     required: true,
   },
   amount: {
@@ -31,7 +33,9 @@ const SellerTransactionsSchema = new Schema<ISellerTransactions>({
   },
 });
 
-const SellerTransactions = model<ISellerTransactions>("SellerTransactions", SellerTransactionsSchema);
+const SellerTransactions =
+  models.SellerTransactions ||
+  model<ISellerTransactions>("SellerTransactions", SellerTransactionsSchema);
 
 export { SellerTransactions };
 export type { ISellerTransactions };

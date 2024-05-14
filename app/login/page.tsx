@@ -1,12 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import React, { FormEvent, use, useState } from "react";
+import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 
-import homepageRect from "../../public/homepage.svg";
-import loginLogo from "../../public/logo.svg";
-import googleLogo from "../../public/google.svg";
-import { IUser } from "@/models/users";
+import homepageRect from "../../public/svg/homepage.svg";
+import loginLogo from "../../public/svg/logo.svg";
+import googleLogo from "../../public/svg/google.svg";
 import { signIn, useSession } from "next-auth/react";
 
 const Login: React.FC = () => {
@@ -15,8 +14,6 @@ const Login: React.FC = () => {
   const [error, setError] = useState("");
 
   const session = useSession();
-  console.log(session);
-
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -63,10 +60,12 @@ const Login: React.FC = () => {
           <Image src={loginLogo} width={163} height={39.52} alt="Logo" />
         </div>
         <p className="text-black text-xl mt-5">
-          Your <span className="text-[#806491]">Slogan</span> goes here
+          <span className="text-[#806491] text-[1.5rem] text-center m-4">
+            Your Blockchain Bazaar
+          </span>
         </p>
         <p className="text-black mt-20">
-          Welcome to <span className="text-[#806491]">Logoipsum</span>
+          Welcome to <span className="text-[#806491]">Blockmarket</span>
         </p>
       </div>
 
@@ -136,26 +135,26 @@ const Login: React.FC = () => {
           >
             Sign in
           </button>
-          <button
-            onClick={() => signIn("google", { callbackUrl: "/home" })}
-            className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]"
-          >
-            <Image
-              src={googleLogo}
-              width={22}
-              height={22}
-              alt="Google Logo"
-              className="mr-2"
-            />
-            Or Sign in with Google
-          </button>
-          <div className="mt-10">
-            Don&apos;t have an account?{" "}
-            <a className="text-[#806491]" href="/signup">
-              Sign up now!
-            </a>
-          </div>
         </form>
+        <button
+          onClick={() => signIn("google", { callbackUrl: "/home" })}
+          className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]"
+        >
+          <Image
+            src={googleLogo}
+            width={22}
+            height={22}
+            alt="Google Logo"
+            className="mr-2"
+          />
+          Or Sign in with Google
+        </button>
+        <div className="mt-10">
+          Don&apos;t have an account?{" "}
+          <a className="text-[#806491]" href="/signup">
+            Sign up now!
+          </a>
+        </div>
       </div>
     </div>
   );
