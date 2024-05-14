@@ -1,5 +1,4 @@
 import { Schema, model, Types, models } from "mongoose";
-import { Schema, model, Types, models } from "mongoose";
 
 interface IOrderHistory {
   userID: Types.ObjectId;

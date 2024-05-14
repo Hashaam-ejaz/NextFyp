@@ -9,7 +9,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   await connectMongoDB();
-  await connectMongoDB();
   const id = params.id;
   try {
     const product: IProduct | null = await Product.findById(id);
@@ -33,7 +32,6 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  await connectMongoDB();
   await connectMongoDB();
   const updatedProductData: IProduct = await request.json();
   const id = params.id;

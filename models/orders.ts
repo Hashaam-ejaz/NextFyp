@@ -58,7 +58,6 @@ const orderSchema = new Schema<IOrder>({
 });
 
 const Order = models.Order || model<IOrder>("Order", orderSchema);
-const Order = models.Order || model<IOrder>("Order", orderSchema);
 
 export { Order };
 export type { IOrder };

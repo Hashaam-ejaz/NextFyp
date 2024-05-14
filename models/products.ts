@@ -110,7 +110,6 @@ const productSchema = new Schema<IProduct>({
 });
 
 const Product = models.Product || model<IProduct>("Product", productSchema);
-const Product = models.Product || model<IProduct>("Product", productSchema);
 
 export { Product };
 export type { IProduct };

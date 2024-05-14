@@ -8,7 +8,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   await connectMongoDB();
-  await connectMongoDB();
   const id = params.id;
   try {
     const orderHistory: IOrderHistory | null = await OrderHistory.findById(id); //find orderHistory by id
@@ -29,7 +28,6 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  await connectMongoDB();
   await connectMongoDB();
   const id = params.id;
   try {

@@ -8,7 +8,6 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   await connectMongoDB();
-  await connectMongoDB();
   const id = params.id;
   try {
     const order: IOrder | null = await Order.findById(id); //find order by id
@@ -29,7 +28,6 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  await connectMongoDB();
   await connectMongoDB();
   const updatedOrderData: IOrder = await request.json();
   const id = params.id;
