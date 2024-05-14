@@ -11,19 +11,27 @@ import { IProduct } from '../../models/products';
 import { IShoppingCart } from '../../models/shoppingCart';
 import { ObjectId } from 'mongodb'; 
 import { IOrder } from '../../models/orders';
-import { Order } from '../../app/components/manageprofilecomponents/OrderHistory';
+import { Order } from '../components/manageprofilecomponents/OrderHistory';
+import TogglePasswordButton from '../components/manageprofilecomponents/TogglePassword';
 import icon from "../../public/profile-icon.png";
+import bcrypt from "bcryptjs";
 
 const ProfilePage: React.FC = () => {
   const { data: session, status } = useSession();
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<ObjectId | null>(null);
+  const [userDetails, setUserDetails] = useState<IUser | null>(null);
   const [updateFormData, setUpdateFormData] = useState({
     name: '',
     city: '',
     address: '',
     phone: '',
   });
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,6 +45,65 @@ const ProfilePage: React.FC = () => {
   const [cart, setCart] = useState<IShoppingCart[]>([]); // State to manage cart items
   const [orderHistory, setOrderHistory] = useState<Order[]>([]);
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+      console.log('Submitting Password');
+      const hashedPreviousPassword = userDetails?.password;
+      if(!hashedPreviousPassword){
+        setPasswordError("User not found.");
+        return;
+      }
+      if(oldPassword.length === 0){
+        setPasswordError("Please enter your old password.");
+        return;
+      }
+      const passwordsMatch = await bcrypt.compare(oldPassword, hashedPreviousPassword);
+
+      if (passwordsMatch === false) {
+        setPasswordError("Old password is incorrect.");
+        return;
+      }
+      if (newPassword.length < 5) {
+          setPasswordError("Password must be at least 5 characters long.");
+          return;
+      }
+
+      if (newPassword === oldPassword) {
+        setPasswordError("New password must be different from old password.");
+        return;
+      }
+      const updatedPassword : Partial<IUser> = {
+        password: newPassword,
+      }
+      // Update the user's password
+      const updateResponse = await fetch(
+        `http://localhost:3000/api/users/${userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedPassword),
+        }
+      );
+      console.log("Password Updated");
+      if (!updateResponse.ok) {
+        setPasswordError("An unexpected error occurred.");
+        return;
+      }
+      setPasswordError("");
+      setNewPassword("");
+      setOldPassword("");
+  }
+
+  const toggleShowOldPassword = () => {
+    setShowOldPassword((prevShowOldPassword) => !prevShowOldPassword);
+  };
+
+  const toggleShowNewPassword = () => {
+    setShowNewPassword((prevShowNewPassword) => !prevShowNewPassword);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,6 +116,7 @@ const ProfilePage: React.FC = () => {
         }
         const userData = await userResponse.json();
         const user = userData.existingUser;
+        setUserDetails(user);
         setUserId(user._id);
         if (!user || !user._id) {
           setError("User not found or missing ID.");
@@ -147,7 +215,14 @@ const ProfilePage: React.FC = () => {
             setError("An unexpected error occurred.");
             return;
           }
-
+          setError("");
+          // Reset form fields
+          setUpdateFormData({
+          name: "",
+          address: "",
+          city: "",
+          phone: "",
+          });
           }
           catch (error) {
             setError("An unexpected error occurred.");
@@ -218,25 +293,72 @@ const ProfilePage: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex flex-col">
             <label htmlFor="name" className="text-gray-600 mb-1">Name</label>
-            <input type="text" id="name" placeholder='John Doe' onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
+            <input type="text" id="name" placeholder='John Doe' value={updateFormData.name} onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
           </div>
           <div className="flex flex-col">
             <label htmlFor="city" className="text-gray-600 mb-1">City</label>
-            <input type="text" id="city" placeholder='Rawalpindi' onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
+            <input type="text" id="city" placeholder='Rawalpindi' value={updateFormData.city} onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
           </div>
           <div className="flex flex-col">
             <label htmlFor="address" className="text-gray-600 mb-1">Address</label>
-            <input type="text" id="address" placeholder='123 Street, City' onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
+            <input type="text" id="address" placeholder='123 Street, City' value={updateFormData.address} onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
           </div>
           <div className="flex flex-col">
             <label htmlFor="phone" className="text-gray-600 mb-1">Contact</label>
-            <input type="tel" id="phone" placeholder='+92 123 456789' onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
+            <input type="tel" id="phone" placeholder='+92 123 456789' value={updateFormData.phone} onChange={handleChange} className="border border-gray-300 rounded px-4 py-2" />
           </div>
         </div>
         <div className="mx-4 sm:mx-auto bg-white p-6 rounded-lg w-full flex flex-col sm:flex-row items-center mt-4">
           <button onClick={handleUpdate} className="bg-[#806491] w-[9rem] text-white py-2 px-4 rounded-[0.278rem] mt-4 sm:mt-0 ml-auto">Update</button>
         </div>
       </div>
+
+      {/* Change Password Profile */}
+      <div className="relative mt-8 mx-4 sm:mx-auto lg:mx-auto w-full max-w-4xl bg-white p-6 rounded-lg">
+  <h2 className="text-xl font-semibold mb-6 text-[#806491]">Change Password</h2>
+  <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-4" style={{ minHeight: '150px' }}> {/* Add minHeight style */}
+    <div className="flex flex-col">
+      <label htmlFor="oldPassword" className="text-gray-600 mb-1">Old Password</label>
+      <div className="relative">
+        <input
+          type={showOldPassword ? "text" : "password"}
+          id="oldPassword"
+          placeholder="Old Password"
+          className="border border-gray-300 rounded-md px-4 py-2 w-full"
+          value={oldPassword}
+          onChange={(e) => setOldPassword(e.target.value)}
+          required
+        />
+        <TogglePasswordButton
+          showPassword={showOldPassword}
+          togglePassword={toggleShowOldPassword}
+        />
+      </div>
+    </div>
+    <div className="flex flex-col">
+      <label htmlFor="newPassword" className="text-gray-600 mb-1">New Password</label>
+      <div className="relative">
+        <input
+          type={showNewPassword ? "text" : "password"}
+          id="newPassword"
+          placeholder="New Password"
+          className="border border-gray-300 rounded-md px-4 py-2 w-full"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          required
+        />
+        <TogglePasswordButton
+          showPassword={showNewPassword}
+          togglePassword={toggleShowNewPassword}
+        />
+      </div>
+    </div>
+    {passwordError && <p className="text-red-500">{passwordError}</p>}
+    <div className="absolute bottom-0 right-0 mb-8 mr-8">
+      <button className="bg-[#806491] text-white py-2 px-4 rounded-md">Update Password</button>
+    </div>
+  </form>
+</div>
 
       {/* Wishlist */}
       <div className="mt-8 mx-4 sm:mx-auto lg:mx-auto w-full max-w-4xl bg-white p-6 rounded-lg">
