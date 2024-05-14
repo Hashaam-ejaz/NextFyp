@@ -1,6 +1,6 @@
 import { Schema, model, Types, models } from "mongoose";
 
-interface IUserSearchHistory extends Document {
+interface IUserSearchHistory {
   userID: Types.ObjectId;
   productsID: Types.ObjectId[];
   date: Date;

@@ -1,6 +1,6 @@
 import { Schema, model, Types, models } from "mongoose";
 
-interface ISellerReport extends Document {
+interface ISellerReport {
   userID: Types.ObjectId;
   rating: number;
   noOfProductsSold: number;

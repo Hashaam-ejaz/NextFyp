@@ -1,6 +1,6 @@
 import { Schema, model, Types, models } from "mongoose";
 
-interface IShoppingCart extends Document {
+interface IShoppingCart {
   userID: Types.ObjectId;
   productID: Types.ObjectId;
   quantity: number;

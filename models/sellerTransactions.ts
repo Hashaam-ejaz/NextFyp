@@ -1,6 +1,6 @@
 import { Schema, model, Types, models } from "mongoose";
 
-interface ISellerTransactions extends Document {
+interface ISellerTransactions {
   userID: Types.ObjectId;
   orderID: Types.ObjectId;
   amount: number;

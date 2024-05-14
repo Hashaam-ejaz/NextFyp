@@ -1,6 +1,6 @@
 import { Schema, model, Types, models } from "mongoose";
 
-interface IOrder extends Document {
+interface IOrder {
   buyerID: Types.ObjectId;
   buyerName: string;
   productID: string[];
