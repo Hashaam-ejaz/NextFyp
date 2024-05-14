@@ -1,6 +1,6 @@
 import React from 'react';
 import Stepper from '../components/selleraccountcomponents/stepper';
-import logo from '../../public/logo.svg'
+import logo from '../../public/assets/logo.png'
 
 const Page: React.FC = () => {
   return (

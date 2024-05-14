@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react';
 import BasicInfoForm from './BasicInfoForm';
 import AddressInfoForm from './AddressInfoForm';
 import BankInfoForm from './BankInfoForm';
+import { useRouter } from 'next/navigation';
 
 interface StepperProps {
   steps: number;
@@ -38,7 +39,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
     iban: '',
     cnic: '',
   });
-
+  const router = useRouter();
   const handleNext = (data: object) => {
     setFormData({ ...formData, ...data });
     if (currentStep < steps) {
@@ -93,7 +94,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
         throw new Error('Failed to submit bank info');
       }
       console.log('Data submitted successfully');
-
+      router.push('/sellerAccountCreated');
     } catch (error) {
       console.error('Error submitting user data:', error);
     }
