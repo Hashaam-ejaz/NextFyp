@@ -1,6 +1,6 @@
-import { Schema, model, Types, Document, models } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
-interface ISellerReport extends Document{
+interface ISellerReport {
   userID: Types.ObjectId;
   rating: number;
   noOfProductsSold: number;
@@ -11,7 +11,8 @@ interface ISellerReport extends Document{
 
 const SellerReportSchema = new Schema<ISellerReport>({
   userID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   rating: {
@@ -36,7 +37,9 @@ const SellerReportSchema = new Schema<ISellerReport>({
   },
 });
 
-const SellerReport = models.SellerReport || model<ISellerReport>("SellerReport", SellerReportSchema);
+const SellerReport =
+  models.SellerReport ||
+  model<ISellerReport>("SellerReport", SellerReportSchema);
 
 export { SellerReport };
 export type { ISellerReport };

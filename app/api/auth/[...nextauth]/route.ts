@@ -22,8 +22,6 @@ const handler = NextAuth({
         username = username.toLowerCase();
         try {
           await connectMongoDB();
-          // const existingUser: IUser | null = await User.findOne({ username });
-          // console.log("existing user: " + existingUser);
           const response = await fetch(
             `http://localhost:3000/api/users?email=${username}`
           );

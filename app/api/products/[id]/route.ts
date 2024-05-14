@@ -4,8 +4,6 @@ import connectMongoDB from "../../../../libs/mongodb";
 import { Product } from "../../../../models/products";
 import { IProduct } from "../../../../models/products";
 
-// await connectMongoDB();
-
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }

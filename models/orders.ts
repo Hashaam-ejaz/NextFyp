@@ -1,6 +1,6 @@
-import { Schema, model, Types, Document, models } from "mongoose";
+import { Schema, model, Types, models } from "mongoose";
 
-interface IOrder extends Document{
+interface IOrder {
   buyerID: Types.ObjectId;
   buyerName: string;
   productID: string[];
@@ -15,12 +15,13 @@ interface IOrder extends Document{
 
 const orderSchema = new Schema<IOrder>({
   buyerID: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
-  buyerName: { 
-    type: String, 
-    required: true 
+  buyerName: {
+    type: String,
+    required: true,
   },
   productID: {
     type: [String],

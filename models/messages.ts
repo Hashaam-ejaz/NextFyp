@@ -9,11 +9,13 @@ interface IMessages {
 
 const MessagesSchema = new Schema<IMessages>({
   recipient: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   sender: {
-    type: Schema.Types.ObjectId, ref: 'User',
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   message: {
@@ -26,7 +28,8 @@ const MessagesSchema = new Schema<IMessages>({
   },
 });
 
-const Messages = models.Messages || model<IMessages>("Messages", MessagesSchema);
+const Messages =
+  models.Messages || model<IMessages>("Messages", MessagesSchema);
 
 export { Messages };
 export type { IMessages };

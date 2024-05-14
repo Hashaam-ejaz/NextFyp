@@ -3,10 +3,10 @@ import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 
-import homepageRect from "../../public/homepage.svg";
-import loginLogo from "../../public/logo.svg";
-import googleLogo from "../../public/google.svg";
-import symbol from "../../public/pak.svg";
+import homepageRect from "../../public/svg/homepage.svg";
+import loginLogo from "../../public/svg/logo.svg";
+import googleLogo from "../../public/svg/google.svg";
+import symbol from "../../public/svg/pak.svg";
 import { IUser } from "@/models/users";
 
 const Signup: React.FC = () => {
