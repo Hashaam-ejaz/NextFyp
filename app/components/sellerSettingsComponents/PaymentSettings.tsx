@@ -1,30 +1,51 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import { useSession } from "next-auth/react";
 import { IBankInfo } from "../../../models/bankInfo";
+// import { ISellerTransactions } from "../../../models/sellerTransactions";
+// import { IUser } from "../../../models/users";
 
+interface ISellerTransactions {
+  _id: string;
+  transactionID: number;
+  orderID: string;
+  status: string;
+  buyerName: string;
+  buyerPhone: string;
+  amount: number;
+  date: string; // Assuming the date is a string in ISO format
+}
 const PaymentSettings: React.FC = () => {
   const { data: session } = useSession();
-  const [userData, setUserData] = useState<any>(null);
+  const [userId, setUserId] = useState<any>(null);
   const [bankData, setBankData] = React.useState({
     accName: "",
     iban: "",
     bankName: "",
   });
+  const [transactions, setTransactions] = useState<ISellerTransactions[]>([]);
 
   useEffect(() => {
     if (!session || !session.user) {
       return;
     }
-    const fetchUser = async () => {
-      const response = await fetch(
+    const fetchUserData = async () => {
+      // Fetch user data
+      const userResponse = await fetch(
         `http://localhost:3000/api/users?email=${session?.user?.email}`
       );
-      const userDetails = await response.json();
+      const userDetails = await userResponse.json();
       const user = userDetails.existingUser;
-      setUserData(user);
+      setUserId(user);
+
+      // Fetch transactions data
+      const transactionsResponse = await fetch(`http://localhost:3000/api/sellerTransactions/${user._id}`);
+      const transactionsData = await transactionsResponse.json();
+      const data: ISellerTransactions[] = transactionsData.transactions;
+      setTransactions(data);
     };
-    fetchUser();
+
+    fetchUserData();
   }, [session]);
 
 
@@ -32,7 +53,7 @@ const PaymentSettings: React.FC = () => {
     if (!session || !session.user) {
       return;
     }
-    if(!userData){
+    if(!userId){
       return;
     }
     const updatedBankData: Partial<IBankInfo> = {
@@ -41,7 +62,7 @@ const PaymentSettings: React.FC = () => {
       bankName: bankData.bankName,
     };
     console.log('Making request to submit bank info...');
-      const bankInfoResponse = await fetch(`http://localhost:3000/api/bankInfo/${userData._id}`, {
+      const bankInfoResponse = await fetch(`http://localhost:3000/api/bankInfo/${userId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -58,8 +79,14 @@ const PaymentSettings: React.FC = () => {
         bankName: "",
       });
   };
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
 
-
+  
   return (
     <div className="p-6">
       {/* Personal Details */}
@@ -88,7 +115,7 @@ const PaymentSettings: React.FC = () => {
               <label className="block mb-1">IBAN Number <span className="text-red-500">*</span></label>
               <input
                 type="tel"
-                placeholder="44 1245 572 135"
+                placeholder="PK36 SCBL 0000 0011 2345 6702"
                 className="border border-gray-300 rounded-md px-4 py-2 w-full"
                 value={bankData.iban}
                 onChange={(e) =>
@@ -151,20 +178,20 @@ const PaymentSettings: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Sample data */}
-            <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">1</td>
-              <td className="px-6 py-4">123456</td>
-              <td className="px-6 py-4">Paid</td>
-              <td className="px-6 py-4">John Doe</td>
-              <td className="px-6 py-4">123-456-7890</td>
-              <td className="px-6 py-4">$100</td>
-              <td className="px-6 py-4">2024-05-10</td>
+          {transactions.map(transaction => (
+            <tr key={transaction.transactionID} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+              <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{transaction.transactionID}</td>
+              <td className="px-6 py-4">{transaction.orderID}</td>
+              <td className="px-6 py-4">{transaction.status}</td>
+              <td className="px-6 py-4">{transaction.buyerName}</td>
+              <td className="px-6 py-4">{transaction.buyerPhone}</td>
+              <td className="px-6 py-4">Rs.{transaction.amount}</td>
+              <td className="px-6 py-4">{formatDate(new Date(transaction.date))}</td>
               <td className="px-6 py-4 text-right">
                 <button className="px-5 py-2 bg-[#806491] text-white rounded-md hover:bg-[#806480]">Print</button>
               </td>
             </tr>
-            {/* Add more rows as needed */}
+          ))}
           </tbody>
         </table>
       </div>
