@@ -65,7 +65,7 @@ const Login: React.FC = () => {
           </span>
         </p>
         <p className="text-black mt-20">
-          Welcome to <span className="text-[#806491]">Blockmarket</span>
+          Welcome to <span className="text-[#806491]">Safecommerce</span>
         </p>
       </div>
 
