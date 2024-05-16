@@ -4,8 +4,6 @@ import Image from "next/image";
 import SearchLogo from "../../public/svg/Search.svg";
 import ExpandLogo from "../../public/svg/expand_more.svg";
 import { ChangeEvent, useEffect, useState } from "react";
-import DropdownMenu from "./dropdownMenu";
-import CategoryDropdownMenu from "./categoryDropdownMenu";
 
 export type SearchProps = {
   onSearch: (value: string) => void;
@@ -33,6 +31,11 @@ const SearchBar = ({ onSearch, hoverOverButton }: CombinedProps) => {
     setIsHover(false);
 
     console.log("showcategoryDiv mouseout", isHover);
+  };
+
+  const toggleHover = () => {
+    // Concise logic to toggle hover state
+    setIsHover((prevIsHover) => !prevIsHover);
   };
   const searchHandler = (event: ChangeEvent<HTMLInputElement>) => {
     const { target } = event;
@@ -63,7 +66,7 @@ const SearchBar = ({ onSearch, hoverOverButton }: CombinedProps) => {
           type={"search"}
           name={"searchBar"}
           id="searchBar"
-          placeholder={"Search essentials, groceries and more ..."}
+          placeholder={"Search"}
           onChange={searchHandler}
           onKeyDown={handleKeyDown}
         />
@@ -73,8 +76,10 @@ const SearchBar = ({ onSearch, hoverOverButton }: CombinedProps) => {
         <div className="absolute right-3 top-3 w-auto h-[2/3] group/allCategoriesBtn ">
           <button
             className="shrink text-[#806491] text-sm border-[#806491] border-[0.8px] rounded-md p-1 pl-2 hover:ring-1 hover ring-[#806491] md:bg-white  "
-            onMouseOver={() => mouseOverAllCategories()}
-            onMouseOut={() => mouseOutAllCategories()}
+            // onMouseOver={() => mouseOverAllCategories()}
+            // onMouseOut={() => mouseOutAllCategories()}
+            onClick={() => toggleHover()}
+            onTouchStart={() => toggleHover()}
           >
             <span>All Categories</span>
             <Image

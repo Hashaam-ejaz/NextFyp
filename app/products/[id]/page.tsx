@@ -15,7 +15,7 @@ const ProductDetail = async ({ params }: { params: { id: string } }) => {
     return redirect("/login");
   }
   const products = await response.json();
-  const product: IProduct = products.product;
+  const product: IProduct = products.existingProduct;
   return (
     <>
       <div className="container scroll-smooth max-w-full my-0 mx-auto px-2 py-0">
