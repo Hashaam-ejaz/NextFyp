@@ -12,7 +12,6 @@ import CategoryDropdownMenu from "./categoryDropdownMenu";
 const Navbar = () => {
   const [searchValue, setSearchValue] = useState("");
   const [showCategories, setShowCategories] = useState(false);
-  // const [mainCategoryIndex, setMainCategoryIndex] = useState(-1);
   const handleSearch = (value: string) => {
     console.log(value);
     setSearchValue(value);
@@ -24,7 +23,7 @@ const Navbar = () => {
 
   return (
     <div className="relative z-50">
-      <div className="flex flex-row bg-[#F7FAFC] md:bg-[#FFFFFF] min-w-full max-w-full  justify-between flex-wrap p-1 sticky top-0">
+      <div className="flex flex-row bg-[#F7FAFC] md:bg-[#FFFFFF] min-w-full max-w-full  justify-between flex-wrap pt-1 sticky top-0">
         <div className="flex flex-col justify-center ml-2 ">
           <Link href="/">
             <Image src={MainLogo} alt="main-logo" className="md:hidden block" />

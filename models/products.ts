@@ -1,8 +1,9 @@
 import { Schema, model, Document, models } from "mongoose";
 
-interface IProduct extends Document{
+interface IProduct extends Document {
   name: string;
   category: string;
+  subCategory: string;
   price: number;
   discount?: number;
   size?: string[];
@@ -37,6 +38,10 @@ const productSchema = new Schema<IProduct>({
     required: true,
   },
   category: {
+    type: String,
+    required: true,
+  },
+  subCategory: {
     type: String,
     required: true,
   },

@@ -1,8 +1,7 @@
 import { NextResponse, NextRequest } from "next/server";
 
 import connectMongoDB from "../../../libs/mongodb";
-import { Product } from "../../../models/products";
-import { IProduct } from "../../../models/products";
+import { Product, IProduct } from "../../../models/products";
 
 export async function POST(request: NextRequest) {
   await connectMongoDB();

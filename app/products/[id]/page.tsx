@@ -20,7 +20,10 @@ const ProductDetail = async ({ params }: { params: { id: string } }) => {
     <>
       <div className="container scroll-smooth max-w-full my-0 mx-auto px-2 py-0">
         <div>
-          <RouteSummary category={product.category} />
+          <RouteSummary
+            category={product.category}
+            subCategory={product.subCategory}
+          />
         </div>
         <div>
           <ProductDetailDiv product={product} />
