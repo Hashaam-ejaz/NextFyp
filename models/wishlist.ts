@@ -1,6 +1,6 @@
-import { Schema, Types, model, models } from "mongoose";
+import { Schema, Types, model, Document, models } from "mongoose";
 
-interface IWishlist {
+interface IWishlist extends Document{
     userID: Types.ObjectId;
     productID: string;
     }
@@ -16,7 +16,7 @@ const wishlistSchema = new Schema<IWishlist>({
     },
 });
 
-const Wishlist = models.Wishlist || model<IWishlist>("Wishlist", wishlistSchema);
+const Wishlist = models.Wishlist ||  model<IWishlist>("Wishlist", wishlistSchema);
 
 export {Wishlist};
 export type {IWishlist};
