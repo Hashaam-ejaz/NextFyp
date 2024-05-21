@@ -44,7 +44,7 @@ const Navbar = () => {
           </Link>
         </div>
         {/* nav links */}
-        <div className="flex flex-col p-2 md:flex-shrink md:order-last md:w-[30%] md:max-w-[30%]">
+        <div className="flex flex-col p-2 md:flex-shrink md:order-last md:w-[30%] md:max-w-[30%] mt-4">
           <div className="flex flex-row ">
             <div className="flex flex-col p-3 justify-center md:border-r md:border-[#D9D9D9]  ">
               <Link href="/login">
