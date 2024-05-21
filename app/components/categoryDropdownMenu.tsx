@@ -3,8 +3,22 @@ import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { IProduct } from "@/models/products";
 import { ICategories } from "@/models/categories";
-const CategoryDropdownMenu = () => {
+interface SetCategoryFunction {
+  (category: string): void;
+}
+interface ShowCategoryFunction {
+  (value: boolean): void;
+}
+
+const CategoryDropdownMenu = ({
+  setCat,
+  showCat,
+}: {
+  setCat: SetCategoryFunction;
+  showCat: ShowCategoryFunction;
+}) => {
   const [data, setData] = useState<ICategories[] | null>();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,19 +78,23 @@ const CategoryDropdownMenu = () => {
                         cursor-pointer  group/individualMainCategory"
               onMouseOver={(event) => mouseOver(keyIndex, event)}
             >
-              <Link
-                href="#"
-                className="hover:underline my-8 text-wrap font-semibold"
-              >
-                {category.category}
-              </Link>
+              {category.category}
+
               <div className="grid grid-flow-row ">
                 {category.subCategories.map((subcategory, subIndex) => (
                   <div
                     key={`${keyIndex}-${subIndex}`}
                     className="text-sm hover:underline mb-2 text-wrap"
                   >
-                    <Link href="#">{subcategory.name}</Link>
+                    <div
+                      className=" hover:underline text-sm hover:text-[#806491] cursor-pointer"
+                      onClick={() => {
+                        // showCat(false);
+                        setCat(subcategory.name);
+                      }}
+                    >
+                      {subcategory.name}
+                    </div>
                   </div>
                 ))}
               </div>

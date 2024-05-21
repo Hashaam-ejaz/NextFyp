@@ -12,26 +12,22 @@ export type SearchProps = {
 export type HoverFunctionality = {
   hoverOverButton: (value: boolean) => void;
 };
+export type selectedCatI = {
+  selectedCat: string;
+};
+export type CombinedProps = SearchProps & HoverFunctionality & selectedCatI;
 
-export type CombinedProps = SearchProps & HoverFunctionality;
-
-const SearchBar = ({ onSearch, hoverOverButton }: CombinedProps) => {
+const SearchBar = ({
+  onSearch,
+  hoverOverButton,
+  selectedCat,
+}: CombinedProps) => {
   const [value, setValue] = useState("Enter Search...");
   const [isHover, setIsHover] = useState(false);
 
   useEffect(() => {
     hoverOverButton(isHover);
-    console.log("showcategoryDiv", isHover);
   }, [hoverOverButton, isHover]);
-
-  const mouseOverAllCategories = () => {
-    setIsHover(true);
-  };
-  const mouseOutAllCategories = () => {
-    setIsHover(false);
-
-    console.log("showcategoryDiv mouseout", isHover);
-  };
 
   const toggleHover = () => {
     // Concise logic to toggle hover state
@@ -44,7 +40,6 @@ const SearchBar = ({ onSearch, hoverOverButton }: CombinedProps) => {
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       onSearch(value);
-      console.log(value);
     }
   };
   return (
@@ -81,7 +76,7 @@ const SearchBar = ({ onSearch, hoverOverButton }: CombinedProps) => {
             onClick={() => toggleHover()}
             onTouchStart={() => toggleHover()}
           >
-            <span>All Categories</span>
+            <span>{selectedCat}</span>
             <Image
               src={ExpandLogo}
               alt="expandMoreLogo"

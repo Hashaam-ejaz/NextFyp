@@ -1,23 +1,30 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import MainLogo from "../../public/svg/main-logo.svg";
 import CartLogo from "../../public/svg/cart.svg";
 import UserLogo from "../../public/svg/user.svg";
 import WishlistLogo from "../../public/svg/wishlist.svg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MainLogoLargeScreen from "../../public/svg/main-logo-md-screen.svg";
 import SearchBar from "./searchBar";
 import CategoryDropdownMenu from "./categoryDropdownMenu";
 const Navbar = () => {
+  const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [showCategories, setShowCategories] = useState(false);
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("All Categories");
   const handleSearch = (value: string) => {
-    console.log(value);
     setSearchValue(value);
+    router.push(
+      `/search/categoryName=${encodeURIComponent(
+        selectedCategory
+      )}&query=${value}`
+    );
   };
   const showCategoryDiv = (value: boolean) => {
-    console.log("navbar showcategoryDiv", value);
     setShowCategories(value);
   };
 
@@ -69,10 +76,17 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        <SearchBar onSearch={handleSearch} hoverOverButton={showCategoryDiv} />
+        <SearchBar
+          onSearch={handleSearch}
+          hoverOverButton={showCategoryDiv}
+          selectedCat={selectedCategory}
+        />
         {showCategories && (
           <div className="absolute top-full">
-            <CategoryDropdownMenu />
+            <CategoryDropdownMenu
+              setCat={setSelectedCategory}
+              showCat={showCategoryDiv}
+            />
           </div>
         )}
       </div>

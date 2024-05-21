@@ -113,6 +113,7 @@ const productSchema = new Schema<IProduct>({
     },
   ],
 });
+productSchema.index({ name: "text", description: "text" });
 
 const Product = models.Product || model<IProduct>("Product", productSchema);
 

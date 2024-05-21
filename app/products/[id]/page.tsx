@@ -11,29 +11,26 @@ const ProductDetail = async ({ params }: { params: { id: string } }) => {
   const url = `http://localhost:3000/api/products/${id}`;
 
   const response = await fetch(url);
-  console.log("Status: " + response.status);
   const products = await response.json();
   const product: IProduct = products.existingProduct;
   if (response.status == 404 || product == undefined) {
     return redirect("/home");
   }
   return (
-    <>
-      <div className="container scroll-smooth max-w-full my-0 mx-auto px-2 py-0">
-        <div>
-          <RouteSummary
-            category={product.category}
-            subCategory={product.subCategory}
-          />
-        </div>
-        <div>
-          <ProductDetailDiv product={product} />
-        </div>
-        <div>
-          <Recommendations />
-        </div>
+    <div className="container scroll-smooth max-w-full my-0 mx-auto px-2 py-0">
+      <div>
+        <RouteSummary
+          category={product.category}
+          subCategory={product.subCategory}
+        />
       </div>
-    </>
+      <div>
+        <ProductDetailDiv product={product} />
+      </div>
+      <div>
+        <Recommendations />
+      </div>
+    </div>
   );
 };
 
