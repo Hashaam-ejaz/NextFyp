@@ -1,6 +1,6 @@
-import { Schema, model, Types, models } from "mongoose";
+import { Schema, model, Types, models, Document } from "mongoose";
 
-interface IOrderHistory {
+interface IOrderHistory extends Document{
   userID: Types.ObjectId;
   orderID: Types.ObjectId;
   orderDate: Date;

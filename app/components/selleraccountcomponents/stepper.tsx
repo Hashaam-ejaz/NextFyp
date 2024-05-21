@@ -1,17 +1,45 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import BasicInfoForm from './BasicInfoForm';
 import AddressInfoForm from './AddressInfoForm';
 import BankInfoForm from './BankInfoForm';
+import { useRouter } from 'next/navigation';
 
 interface StepperProps {
   steps: number;
 }
 
-const Stepper: React.FC<StepperProps> = ({ steps }) => {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({});
+interface FormData {
+  shopName: string;
+  mobileNo: string;
+  address: string;
+  area: string;
+  city: string;
+  district: string;
+  accName: string;
+  bankName: string;
+  iban: string;
+  cnic: string;
+}
 
+
+const Stepper: React.FC<StepperProps> = ({ steps }) => {
+  const { data: session, status } = useSession();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState<FormData>({
+    shopName: '',
+    mobileNo: '',
+    address: '',
+    area: '',
+    city: '',
+    district: '',
+    accName: '',
+    bankName: '',
+    iban: '',
+    cnic: '',
+  });
+  const router = useRouter();
   const handleNext = (data: object) => {
     setFormData({ ...formData, ...data });
     if (currentStep < steps) {
@@ -25,9 +53,51 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
     }
   };
 
-  const handleSubmit = () => {
-    // Submit form data
-    console.log('Form submitted:', formData);
+  const handleSubmit = async () => {
+    if (!session || !session.user) return;
+    try {
+      const userResponse = await fetch(`http://localhost:3000/api/users?email=${session.user.email}`);
+      const userData = await userResponse.json();
+      const user = userData.existingUser;
+      const updatedUserData = {
+        phone: formData.mobileNo,
+        address: formData.address + ', ' + formData.area + ', ' + formData.city + ', ' + formData.district,
+      };
+      const userBankInfo = {
+        userID: user._id,
+        shopName: formData.shopName,
+        bankName: formData.bankName,
+        iban: formData.iban,
+        accName: formData.accName,
+        cnic: formData.cnic,
+      };
+      console.log('Making request to submit user data...');
+      const response = await fetch(`http://localhost:3000/api/users/${user._id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUserData),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit user data');
+      }
+      console.log('Making request to submit bank info...');
+      const bankInfoResponse = await fetch('http://localhost:3000/api/bankInfo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userBankInfo),
+      });
+      if (!bankInfoResponse.ok) {
+        throw new Error('Failed to submit bank info');
+      }
+      console.log('Data submitted successfully');
+      router.push('/sellerAccountCreated');
+    } catch (error) {
+      console.error('Error submitting user data:', error);
+    }
   };
 
   const stepNames = ['Basic Information', 'Address Information', 'Bank Information'];
@@ -35,11 +105,11 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
   const renderFormForStep = () => {
     switch (currentStep) {
       case 1:
-        return <BasicInfoForm onNext={handleNext} />;
+        return <BasicInfoForm formData={formData} setFormData={setFormData} />;
       case 2:
-        return <AddressInfoForm onNext={handleNext} />;
+        return <AddressInfoForm formData={formData} setFormData={setFormData} />;
       case 3:
-        return <BankInfoForm formData={formData} onNext={handleNext} />;
+        return <BankInfoForm formData={formData} setFormData={setFormData} />;
       default:
         return null;
     }
@@ -151,3 +221,4 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
 };
 
 export default Stepper;
+export type { FormData };
