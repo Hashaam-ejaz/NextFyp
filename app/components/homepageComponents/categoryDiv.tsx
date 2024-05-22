@@ -36,12 +36,11 @@ const CategoryDiv = () => {
           </button>
         </div>
         {subCategories.map((item, index) => (
-          // <div key={index} className="flex flex-col mx-4 wrap">
           <div
             key={index}
             className="mx-4 snap-start inline-block  cursor-pointer"
           >
-            <Link href={`/categories/${item}`}>
+            <Link href={`/search/categoryName=${item}&query=Enter%20Search...`}>
               <div className=" rounded-[20px] py-1 px-2 bg-slate-200 ">
                 {item}
               </div>
