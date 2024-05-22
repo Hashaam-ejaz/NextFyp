@@ -1,0 +1,13 @@
+{
+    "deliveryInfo":
+    {
+        "mainHeading":"Order by 10pm for free next day delivery on Orders overs $100",
+        "subHeading":"We deliver Monday to Saturday - excluding Holidays"
+    },
+    "freeDeliveryInfo":
+    {
+        "mainHeading":"Free next day delivery to stores.",
+        "subHeading":"Home delivery is $4.99 for orders under $100 and is FREE for all orders over $100"
+    },
+    "freeReturnInfo":"30 days to return it to us for a refund. We have made returns SO EASY - you can now return your order to a store or send it with FedEx FOR FREE"
+}
