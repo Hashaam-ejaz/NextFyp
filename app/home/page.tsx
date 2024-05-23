@@ -30,10 +30,7 @@ const Page = () => {
         </button>
       </div>
       {products.map((product, index) => (
-        <div
-          key={product.id || index}
-          className="snap-start inline-block  cursor-pointer"
-        >
+        <div key={index} className="snap-start inline-block  cursor-pointer">
           <SingleProductDiv prod={product} />
         </div>
       ))}

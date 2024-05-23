@@ -29,8 +29,8 @@ const Navbar = () => {
   };
 
   return (
-    <div className="relative z-50">
-      <div className="flex flex-row bg-[#F7FAFC] md:bg-[#FFFFFF] min-w-full max-w-full  justify-between flex-wrap pt-1 sticky top-0">
+    <div className=" z-50 sticky top-0">
+      <div className="flex flex-row bg-[#F7FAFC] md:bg-[#FFFFFF] min-w-full max-w-full  justify-between flex-wrap pt-1">
         <div className="flex flex-col justify-center ml-2 ">
           <Link href="/">
             <Image src={MainLogo} alt="main-logo" className="md:hidden block" />

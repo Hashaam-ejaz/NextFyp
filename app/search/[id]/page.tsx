@@ -66,12 +66,9 @@ export default function Page({ params }: { params: { id: string } }) {
   }, [params.id]);
 
   return (
-    <div className="flex">
+    <div className="flex p-16 flex-col md:flex-row">
       {products.map((product, index) => (
-        <div
-          key={product.id || index}
-          className="snap-start inline-block  cursor-pointer"
-        >
+        <div key={product._id || index} className="cursor-pointer p-4">
           <SingleProductDiv prod={product} />
         </div>
       ))}

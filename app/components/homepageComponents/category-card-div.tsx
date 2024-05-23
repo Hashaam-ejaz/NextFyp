@@ -13,7 +13,6 @@ const CategoryCardDiv = () => {
         const response = await fetch("http://localhost:3000/api/categories");
         const data = await response.json();
         setCategories(data.categories);
-        console.log(data.categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
@@ -50,25 +49,25 @@ const CategoryCardDiv = () => {
               <div className="flex flex-row w-full max-w-full min-w-full h-full ">
                 <div className="flex flex-col w-full max-w-full min-w-full h-full">
                   <div className="flex flex-row flex-wrap w-full max-w-full min-w-full h-full md:flex-nowrap">
-                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-full">
+                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-auto">
                       <CategoryCard
                         name={subCategories[0]}
                         image={"/images/category1.png"}
                       />
                     </div>
-                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-full">
+                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-auto">
                       <CategoryCard
                         name={subCategories[1]}
                         image={"/images/category2.jpg"}
                       />
                     </div>
-                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-full">
+                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-auto">
                       <CategoryCard
                         name={subCategories[2]}
                         image={"/images/category3.jpg"}
                       />
                     </div>
-                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-full">
+                    <div className="w-1/2 max-w-1/2 min-w-1/2 md:w-1/4 md:max-w-1/4 md:min-w-1/4 flex flex-col  h-auto">
                       <CategoryCard
                         name={subCategories[3]}
                         image={"/images/category4.webp"}
@@ -76,25 +75,25 @@ const CategoryCardDiv = () => {
                     </div>
                   </div>
                   <div className="md:flex flex-row hidden h-full">
-                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-full">
+                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-auto">
                       <CategoryCard
                         name={subCategories[4]}
                         image={"/images/category5.webp"}
                       />
                     </div>
-                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-full">
+                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-auto">
                       <CategoryCard
                         name={subCategories[5]}
                         image={"/images/category6.png"}
                       />
                     </div>
-                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-full">
+                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-auto">
                       <CategoryCard
                         name={subCategories[6]}
                         image={"/images/category7.jpeg"}
                       />
                     </div>
-                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-full">
+                    <div className="w-1/4 max-w-1/4 min-w-1/4 hidden md:flex md:flex-col h-auto">
                       <CategoryCard
                         name={subCategories[7]}
                         image={"/images/category8.png"}

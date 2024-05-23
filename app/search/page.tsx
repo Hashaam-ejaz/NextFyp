@@ -6,7 +6,7 @@ const SearchPage: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/home");
+    router.push("/");
   }, []);
   return <></>;
 };

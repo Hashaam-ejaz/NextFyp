@@ -39,7 +39,7 @@ const Login: React.FC = () => {
         setError("Invalid Credentials");
         return;
       }
-      router.replace("/home");
+      router.replace("/");
     } catch (error) {
       console.log(error);
     }
@@ -137,7 +137,7 @@ const Login: React.FC = () => {
           </button>
         </form>
         <button
-          onClick={() => signIn("google", { callbackUrl: "/home" })}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           className="bg-black text-white flex items-center justify-center px-4 py-3 rounded-lg shadow rounded-md-[0.375] mt-4 w-full md:w-[24.752rem] h-[2.75rem] md:mt-[3.438rem]"
         >
           <Image

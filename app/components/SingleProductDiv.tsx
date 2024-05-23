@@ -5,8 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 const SingleprodDiv: React.FC<{ prod: IProduct }> = ({ prod }) => {
-  const product = prod?.id;
-
   const StarRating = ({ rating }: { rating: number }) => {
     const stars: JSX.Element[] = [];
 
@@ -58,7 +56,9 @@ const SingleprodDiv: React.FC<{ prod: IProduct }> = ({ prod }) => {
               id="prodName"
               className="flex flex-row text-[#191C1F] text-xs md:text-sm font-normal mt-1  "
             >
-              <p className="text-ellipsis inline-block">{prod?.name}</p>
+              <p className="text-ellipsis inline-block text-wrap">
+                {prod?.name}
+              </p>
             </div>
             <div
               id="prodPrice"

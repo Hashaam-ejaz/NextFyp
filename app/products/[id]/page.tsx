@@ -14,7 +14,7 @@ const ProductDetail = async ({ params }: { params: { id: string } }) => {
   const products = await response.json();
   const product: IProduct = products.existingProduct;
   if (response.status == 404 || product == undefined) {
-    return redirect("/home");
+    return redirect("/");
   }
   return (
     <div className="container scroll-smooth max-w-full my-0 mx-auto px-2 py-0">

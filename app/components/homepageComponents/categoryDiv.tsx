@@ -10,17 +10,15 @@ const CategoryDiv = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/categories"); // Make API call
-        const data = await response.json(); // Parse JSON response
-        setCategories(data.categories); // Update state with fetched categories
-        console.log(data.categories);
+        const response = await fetch("http://localhost:3000/api/categories");
+        const data = await response.json();
+        setCategories(data.categories);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }
     };
-
-    fetchCategories(); // Call function on component mount
-  }, []); // Empty dependency array for initial fetch only
+    fetchCategories();
+  }, []);
   categories?.map((item) =>
     item.subCategories.map((subCat) => subCategories.push(subCat.name))
   );
