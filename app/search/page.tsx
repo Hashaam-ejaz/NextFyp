@@ -1,16 +1,14 @@
 "use client";
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { IProduct } from "@/models/products";
+import React, { useEffect } from "react";
 
-const Products: React.FC = () => {
+const SearchPage: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
     router.push("/");
   }, []);
-
   return <></>;
 };
 
-export default Products;
+export default SearchPage;
