@@ -1,16 +1,17 @@
-// to get cart items in the layout and to avoid any messiness when adding essentials
 "use client";
-
-// import React from 'react'
 import Image from "next/image";
 import Cart from "../providers/individualUsercart.json";
 import Products from "../providers/products.json";
 import defaultImage from "../../public/images/defaultImage.png";
-import QuantityIterator from "./quantity-iterator";
-import { useEffect, useState } from "react";
-import { CartInfoType } from "../interfaces/cart";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-const CartItems = () => {
+const CartItems = ({
+  subtotal,
+  setSubtotal,
+}: {
+  subtotal: number;
+  setSubtotal: Dispatch<SetStateAction<number>>;
+}) => {
   const cartItems: (
     | {
         productID: number;
@@ -29,7 +30,6 @@ const CartItems = () => {
   )[] = [];
   const [itemCount, setItemCount] = useState(0);
   const [hasAddOns, setHasAddOns] = useState(true);
-  const [subtotal, setSubtotal] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
   Cart.subtotal = subtotal;
   Cart.noOfItems = totalQuantity;
@@ -42,12 +42,10 @@ const CartItems = () => {
     const updatedCartItems = Cart.cartItems.map((item, index) => {
       const product = Products.find((p) => p.productID === item.productID);
       const price = product?.price ?? 0;
-      // const totalPrice = settingInitialTotalPrice(index);
       const tPrice = item.totalPrice;
       const qty = item.quantity;
       newSubtotal += tPrice;
       newTotalQty += qty;
-      // newSubtotal += item.totalPrice;
 
       return {
         ...item,
@@ -61,8 +59,7 @@ const CartItems = () => {
     setSubtotal(newSubtotal);
     console.log("use effect subtotal", subtotal);
     setTotalQuantity(newTotalQty);
-    // console.log('use effect quantity',quantity);
-  }, [Cart, Products]);
+  }, [cartItems, setSubtotal, subtotal]);
   const settingInitialQuantity = (i: number) => {
     setItemCount(i);
   };
@@ -79,35 +76,26 @@ const CartItems = () => {
   };
   console.log("subtotal", subtotal);
 
-  const increaseQuantity = (i: number) =>
-    // const increaseQuantity=(i:number,prod:)=>
-    {
-      var subtotalTemp = subtotal,
-        totalQuantityTemp = totalQuantity;
-      cartItems[i].quantity += 1;
-      // if(cartItems[i].quantity===Products[])
-      // (cartItems[i].totalPrice)=(cartItems[i].totalPrice??0)*cartItems[i].quantity;
-      cartItems[i].totalPrice =
-        (cartItems[i].totalPrice ?? 0) + cartItems[i].price;
-      // console.log('increase quantity','index',i,'price',cartItems[i].totalPrice,'quantity',cartItems[i].quantity);
-      setItemCount(cartItems[i].quantity);
-      // temp+=cartItems[i].totalPrice;
-      subtotalTemp += cartItems[i].price;
-      totalQuantityTemp += 1;
-      setSubtotal(subtotalTemp);
-      setTotalQuantity(totalQuantityTemp);
-      console.log("subtotal increase", subtotal);
-    };
+  const increaseQuantity = (i: number) => {
+    var subtotalTemp = subtotal,
+      totalQuantityTemp = totalQuantity;
+    cartItems[i].quantity += 1;
+    cartItems[i].totalPrice =
+      (cartItems[i].totalPrice ?? 0) + cartItems[i].price;
+    setItemCount(cartItems[i].quantity);
+    subtotalTemp += cartItems[i].price;
+    totalQuantityTemp += 1;
+    setSubtotal(subtotalTemp);
+    setTotalQuantity(totalQuantityTemp);
+    console.log("subtotal increase", subtotal);
+  };
   const decreaseQuantity = (i: number) => {
     var subtotalTemp = subtotal,
       totalQuantityTemp = totalQuantity;
     cartItems[i].quantity -= 1;
-    // (cartItems[i].totalPrice)=(cartItems[i].totalPrice??0)*cartItems[i].quantity;
     cartItems[i].totalPrice =
       (cartItems[i].totalPrice ?? 0) - cartItems[i].price;
-    // console.log('decrease quantity','index',i,'price',cartItems[i].totalPrice,'quantity',cartItems[i].quantity);
     setItemCount(cartItems[i].quantity);
-    // temp-=cartItems[i].totalPrice;
     subtotalTemp -= cartItems[i].price;
     totalQuantityTemp -= 1;
     setSubtotal(subtotalTemp);
@@ -201,8 +189,6 @@ const CartItems = () => {
         })}
       </div>
     </>
-
-    // </CartContext.Consumer>
   );
 };
 

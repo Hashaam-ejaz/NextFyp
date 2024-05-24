@@ -12,6 +12,7 @@ import CartInfo from "../providers/individualUsercart.json";
 import { CartInfoType } from "../interfaces/cart";
 
 const Cart = () => {
+  const [newSubtotal, setNewsubtotal] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [couponValue, setCouponValue] = useState("");
   const [isValidCoupon, setIsValidCoupon] = useState(false);
@@ -26,6 +27,9 @@ const Cart = () => {
     (discount * CartInfo.subtotal) / 100;
   console.log("cart info", CartInfo);
 
+  useEffect(() => {
+    console.log("NEW SUBTOTAL CHANGED FROM CLIENT COMPONENT \n" + newSubtotal);
+  }, [newSubtotal]);
   useEffect(() => {
     console.log("useeffect discount", discount);
     setSubtotal(CartInfo.subtotal);
@@ -65,14 +69,14 @@ const Cart = () => {
       <div className="flex flex-col w-full max-w-full min-w-full h-auto md:w-[47.64%] md:max-w-[47.64%] md:min-w-[47.64%] md:mx-[2.22vw] border-b-[0.55px]">
         <div className="flex flex-row w-[94.485%] max-w-[94.485%] min-w-[94.485%] h-auto  place-self-center justify-between ">
           <div className="flex flex-col font-semibold text-[#5B4966] text-lg md:text-2xl">
-            Your Cart
+            Your Cart {subtotal}
           </div>
           <div className="flex flex-col text-[#9D9EA2] font-light text-[8.81px] leading-[13.22px] md:text-base  place-self-center">
             <p>({totalQuantity})</p>
           </div>
         </div>
         <div className="flex flex-row w-full max-w-full min-w-full h-auto justify-center">
-          <CartItems />
+          <CartItems subtotal={newSubtotal} setSubtotal={setNewsubtotal} />
         </div>
         <div className=" hidden md:flex flex-row w-full max-w-full min-w-full h-auto  justify-between">
           <div className="flex flex-col w-full max-w-full min-w-full h-auto">
@@ -130,7 +134,7 @@ const Cart = () => {
                 Subtotal
               </div>
               <div className="flex flex-col font-normal text-[14.79px] text-[#060709] leading-[22.18px] md:text-base">
-                {subtotal}
+                {newSubtotal}
               </div>
             </div>
             <div className="flex flex-row w-full max-w-full min-w-full h-auto justify-between">
