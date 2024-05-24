@@ -1,6 +1,7 @@
 import { Schema, Types, model, Document, models } from "mongoose";
 
-interface IProduct extends Document{
+interface IProduct {
+  _id: any;
   name: string;
   category: string;
   subCategory: string;
@@ -30,6 +31,8 @@ interface IProduct extends Document{
     src: string;
     alt: string;
   }[];
+  noSales: number;
+  featured: boolean;
 }
 
 const productSchema = new Schema<IProduct>({
@@ -112,7 +115,16 @@ const productSchema = new Schema<IProduct>({
       alt: { type: String, required: true },
     },
   ],
+  noSales: {
+    type: Number,
+    required: true,
+  },
+  featured: {
+    type: Boolean,
+    required: false,
+  },
 });
+productSchema.index({ name: "text", description: "text" });
 
 const Product = models.Product || model<IProduct>("Product", productSchema);
 

@@ -26,3 +26,6 @@ body {
     text-wrap: balance;
   }
 }
+*::-webkit-scrollbar {
+  width: 17px;
+}

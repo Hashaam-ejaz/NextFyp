@@ -15,10 +15,10 @@ export async function POST(request: NextRequest) {
     // Use Mongoose's built-in save() method to save the category
     await category.save();
 
-    return NextResponse.json({ message: "Category Created" }, { status: 200 });
+    return NextResponse.json({ message: `Category Created` }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "Error creating the category" },
+      { message: `Error creating the category` },
       { status: 500 }
     );
   }
