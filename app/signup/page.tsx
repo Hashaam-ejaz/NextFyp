@@ -82,7 +82,7 @@ const Signup: React.FC = () => {
           </span>
         </p>
         <p className="text-black mt-20">
-          Welcome to <span className="text-[#806491]">BlockMarket</span>
+          Welcome to <span className="text-[#806491]">SafeCommerce</span>
         </p>
       </div>
 
