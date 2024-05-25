@@ -56,7 +56,12 @@ const TopSellingProductsTable: React.FC<TopSellingProductsTableProps> = ({userID
               products.map((product, index) => (
                 <tr key={index} className="text-center">
                   <td className="py-2 px-4 border-b text-center mx-auto">
-                    <Image src={product.images[0].src || ""} alt={product.images[0].alt} width={32} height={32} />
+                  <Image 
+                    src={product.images.length > 0 && product.images[0].src ? product.images[0].src : ""} 
+                    alt={product.images.length > 0 && product.images[0].alt ? product.images[0].alt : "No image available"} 
+                    width={32} 
+                    height={32} 
+                  />
                   </td>
                   <td className="py-2 px-4 border-b text-center">{product.sku}</td>
                   <td className="py-2 px-4 border-b text-center">{product.name}</td>
