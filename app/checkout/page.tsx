@@ -55,6 +55,7 @@ const CheckoutPage: React.FC = () => {
           }
           const user1 = await response.json();
           const buyer = user1.existingUser;
+          console.log("UserID", buyer._id)
           console.log("buyer" , buyer);
           // Find the buyer ID using the user's email
           if (!buyer || !buyer._id)  setError("User not found or missing ID");
@@ -64,10 +65,10 @@ const CheckoutPage: React.FC = () => {
           // const existingOrder = res2.existingOrder;
           // Step 2: Find products in the user's shopping cart
           // console.log("testingurl" , `http://localhost:3000/api/shoppingCart/${buyer._id}`);
-          const response3 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`,{cache: 'no-cache'});
+          const response3 = await fetch(`http://localhost:3000/api/shoppingCart/${buyer._id}`);
           const res3 = await response3.json();
           console.log("res3" , res3);
-          const userShoppingCart = res3.userShoppingCart;
+          const userShoppingCart = res3.shoppingCart;
 
           // Step 3: Calculate total amount and quantity for the order
           let totalAmount: number = 0;

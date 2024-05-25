@@ -1,16 +1,27 @@
 import { Schema, model, Types, Document, models } from "mongoose";
 
+interface IProduct {
+  productID: Types.ObjectId;
+  productName: string;
+  productImage: string;
+  productPrice: number;
+  quantity: number;
+  subtotal: number;
+}
+
 interface IOrder {
   buyerID: Types.ObjectId;
   buyerName: string;
-  productID: string[];
-  amount: number;
-  quantity: number;
+  products: IProduct[];
+  totalAmount: number;
   paymentStatus: string;
+  orderStatus: string;
   address: string;
   phoneNo?: string;
   date: Date;
+  estimatedDelivery: Date;
   trackingNo?: string;
+  trackingLink?: string;
 }
 
 const orderSchema = new Schema<IOrder>({
@@ -23,19 +34,44 @@ const orderSchema = new Schema<IOrder>({
     type: String,
     required: true,
   },
-  productID: {
-    type: [String],
-    required: true,
-  },
-  amount: {
-    type: Number,
-    required: true,
-  },
-  quantity: {
+  products: [
+    {
+      productID: {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      productName: {
+        type: String,
+        required: true,
+      },
+      productPrice: {
+        type: Number,
+        required: true,
+      },
+      productImage: {
+        type: String,
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
+      subtotal: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
+  totalAmount: {
     type: Number,
     required: true,
   },
   paymentStatus: {
+    type: String,
+    required: true,
+  },
+  orderStatus: {
     type: String,
     required: true,
   },
@@ -51,7 +87,15 @@ const orderSchema = new Schema<IOrder>({
     type: Date,
     required: true,
   },
+  estimatedDelivery: {
+    type: Date,
+    required: true,
+  },
   trackingNo: {
+    type: String,
+    required: false,
+  },
+  trackingLink: {
     type: String,
     required: false,
   },
@@ -60,4 +104,5 @@ const orderSchema = new Schema<IOrder>({
 const Order = models.Order || model<IOrder>("Order", orderSchema);
 
 export { Order };
+export type { IProduct };
 export type { IOrder };
