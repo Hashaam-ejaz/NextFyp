@@ -13,6 +13,7 @@ interface StepperProps {
 interface formData {
   category: string;
   subCategory: string;
+  featured: boolean;
   sku: string;
   barcode: string;
   deliveryPrice: string;
@@ -38,6 +39,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
   const [formData, setFormData] = useState<formData> ({
   category: '',
   subCategory: '',
+  featured: false,
   sku: '',
   barcode: '',
   deliveryPrice: '',
@@ -94,6 +96,8 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
         avgRating: 0,
         noReviews: 0,
         sellerId: sellerId,
+        featured: formData.featured,
+        noSales: 0,
         status: parseInt(formData.stock) > 0 ? true : false,
         images: formData.productImages.map(image => ({
           src: image.src,
@@ -247,7 +251,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
           productName={formData.productName}
           productDescription={formData.productDescription}
           productPrice={parseInt(formData.productPrice)}
-          productImage={formData.productImages[0].src}
+          productImage={formData.productImages.length > 0 && formData.productImages[0].src ? formData.productImages[0].src : ''}
         />
       )}
     </div>

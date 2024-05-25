@@ -1,4 +1,6 @@
+'use client'
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 interface ProductListedModalProps {
   onClose: () => void;
@@ -15,6 +17,19 @@ const ProductListedModal: React.FC<ProductListedModalProps> = ({
   productPrice,
   productImage,
 }) => {
+  const router = useRouter();
+
+  const handleBackToDashboard = () => {
+    onClose();
+    router.push('/sellerDashboard');
+  };
+
+  const handleViewProduct = () => {
+    onClose();
+    router.push('/sellerProducts');
+  };
+
+
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-50">
       <div className="bg-white p-14 w-[40rem]">
@@ -41,13 +56,13 @@ const ProductListedModal: React.FC<ProductListedModalProps> = ({
             <div className="flex mt-4 ml-12">
               <button
                 className=" mr-2 px-3 py-2 bg-white text-[#806491] rounded-md border border-gray-300 hover:bg-gray-300"
-                onClick={onClose}
+                onClick={handleBackToDashboard}
               >
                 Back to Dashboard
               </button>
               <button
                 className="px-3 py-2 bg-[#806491] text-white rounded-md hover:bg-[#806470]"
-                onClick={() => console.log("View Product")} // Replace with your view product action
+                onClick={handleViewProduct}
               >
                 View Product
               </button>

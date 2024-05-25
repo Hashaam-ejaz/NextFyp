@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ImageUpload from "./UploadImage";
 import { formData } from "./stepper";
+import Checkbox from '../addProductComponents/checkboxcomponent';
 
 interface BasicInfoFormProps {
   formData: formData;
@@ -65,9 +66,8 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ formData, setFormData }) 
   const [selectedCategory, setSelectedCategory] = useState('');
   const [subCategories, setSubCategories] = useState<{ name: string; _id: string; }[]>([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState('');
+  const [isChecked, setIsChecked] = useState(formData.featured);
   //https://ecommerce-fyp.s3.amazonaws.com/Untitled+design.png
-  //https://ecommerce-fyp.s3.amazonaws.com/jewellery-1203951_640.jpg
-  //https://ecommerce-fyp.s3.amazonaws.com/pexels-dima-valkov-3266700.jpg
   const handleSubmit = async (e: React.FormEvent) => {
     console.log("Uploading Images...");
     e.preventDefault();
@@ -129,6 +129,11 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ formData, setFormData }) 
     setFormData({ ...formData, subCategory: selectedSubCat });
   };
 
+  const handleCheckboxChange = (checked: boolean) => {
+    setIsChecked(checked);
+    setFormData({ ...formData, featured: checked });
+  };
+
   return (
     <form className="px-10" onSubmit={handleSubmit}>
       <div>
@@ -156,37 +161,6 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ formData, setFormData }) 
               </button>
         </div>
       </div>
-      {/* <div className="mb-4">
-        <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-          Product Name <span className="text-red-500">*</span>
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="name"
-          type="text"
-          placeholder="Lorem Ipsum Store"
-          value={formData.name}
-          onChange={(e) => setFormData({...formData, name:e.target.value})}
-        />
-      </div> */}
-      {/* <div className="mb-6">
-        <label
-          className="block text-gray-700 text-sm font-bold mb-2"
-          htmlFor="email"
-        >
-          Category <span className="text-red-500">*</span>
-        </label>
-        <input
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          id="category"
-          type="text"
-          placeholder="Dairy Products"
-          value={formData.category}
-          onChange={(e) =>
-            setFormData({ ...formData, category: e.target.value })
-          }
-        />
-      </div> */}
       <div className="mb-6">
         <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="category">
           Category <span className="text-red-500">*</span>
@@ -220,6 +194,13 @@ const BasicInfoForm: React.FC<BasicInfoFormProps> = ({ formData, setFormData }) 
           ))}
         </select>
       </div>
+
+      <div>
+        <Checkbox checked={isChecked} onChange={handleCheckboxChange} />
+        <div className="mt-4">
+        </div>
+      </div>
+
       <div className="mb-6">
         <label
           className="block text-gray-700 text-sm font-bold mb-2"
