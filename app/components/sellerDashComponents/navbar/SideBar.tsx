@@ -43,7 +43,7 @@ const SideBar  = () => {
                  </Link>
                </li>
                <li className="flex items-center p-4 hover:bg-[#806491] hover:text-white">
-                <Link href='/seller/orders'> 
+                <Link href='/sellerOrders'> 
                   <FaClipboardList className="mr-2" />
                   <span>
                     Orders
@@ -58,7 +58,7 @@ const SideBar  = () => {
                </li>
                <hr className="my-4" />
              <li className="flex items-center p-4 hover:bg-[#806491] hover:text-white"> 
-             <Link href='/signIn'><FaSignOutAlt className="mr-2" /><span>Logout</span></Link>
+             <Link href='/login'><FaSignOutAlt className="mr-2" /><span>Logout</span></Link>
              </li>
              </ul>
            
