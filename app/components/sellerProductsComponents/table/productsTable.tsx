@@ -126,7 +126,7 @@ const ProductsTable: React.FC<ProductsTableProps> = ({Products}) => {
                 
                 <td className="py-2 px-4 border-b ">
                   <div className="flex">
-                    <Link href={`/seller/products/edit/product/${product._id}`}>
+                    <Link href={`/editProduct/${product._id}`}>
                       <button className="bg-[#806491] text-white hover:bg-[#604b6d] py-[9.52px] px-[15.23px] rounded-[7.62px] text-[13.33px] font-semibold leading-5 inline-block">
                           Edit
                       </button>
