@@ -51,10 +51,10 @@ const SideBar  = () => {
                  </Link>
                </li>
                <li className="flex items-center p-4 hover:bg-[#806491] hover:text-white">
-               <Link href='/seller/products'><FaBox className="mr-2" /><span>Products</span></Link>
+               <Link href='/sellerProducts'><FaBox className="mr-2" /><span>Products</span></Link>
                </li>
                <li className="flex items-center p-4 hover:bg-[#806491] hover:text-white">
-               <Link href='/seller/settings'><FaCog className="mr-2" /><span>Settings</span></Link>
+               <Link href='/sellerSettings'><FaCog className="mr-2" /><span>Settings</span></Link>
                </li>
                <hr className="my-4" />
              <li className="flex items-center p-4 hover:bg-[#806491] hover:text-white"> 

@@ -15,7 +15,6 @@ const TotalOrders: React.FC<totalOrderProps> = ({Orders}) => {
     if(!Orders) return;
     setNoOfOrders(Orders.length)
   },[Orders])
-  // console.log('Orders on TotalOrders',Orders)
   return (
     <>
     <div className="flex flex-row w-full max-w-full min-w-full h-auto items-center px-[7%] py-[8.27%] rounded-[20px] bg-white justify-around">
