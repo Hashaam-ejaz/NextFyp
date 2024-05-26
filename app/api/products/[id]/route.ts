@@ -35,7 +35,6 @@ export async function PUT(
   await connectMongoDB();
   const updatedProductData: IProduct = await request.json();
   const id = params.id;
-  await connectMongoDB();
   try {
     const product = await Product.findByIdAndUpdate(id, updatedProductData, {
       new: true,
@@ -55,7 +54,6 @@ export async function DELETE(
 ) {
   await connectMongoDB();
   const id = params.id;
-  await connectMongoDB();
   try {
     const product: IProduct | null = await Product.findByIdAndDelete(id);
     if (!product) {
