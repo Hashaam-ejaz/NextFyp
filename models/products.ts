@@ -1,7 +1,7 @@
 import { Schema, Types, model, Document, models } from "mongoose";
 
 interface IProduct {
-  // _id: any;
+  _id: any;
   name: string;
   category: string;
   subCategory: string;
