@@ -10,6 +10,7 @@ import symbol from "../../public/svg/pak.svg";
 import { IUser } from "@/models/users";
 
 const Signup: React.FC = () => {
+  const [userType, setUserType] = useState("buyer"); // Default to 'buyer'
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<number>();
@@ -47,7 +48,7 @@ const Signup: React.FC = () => {
       name: fullName,
       email: email.toLowerCase(),
       password: password,
-      role: "buyer",
+      role: userType,
       phone: phoneNumber,
       wishlist: [],
     };
@@ -68,7 +69,10 @@ const Signup: React.FC = () => {
       console.error("Error sending user data:", error);
       setLoading(false);
     }
-    setLoading(false);
+    if (userType == "seller") {
+      router.push("/sellerAccount");
+      return;
+    }
     router.push("/login");
   }
   if (loading) {
@@ -190,6 +194,17 @@ const Signup: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+          </div>
+          <div className="mb-4 w-full md:w-[24.752rem]">
+            {/* Adjust width for larger screens */}
+            <select
+              className="w-full px-3 py-3 rounded-md border bg-[#F2F2F2] border-[55] border-[#E5E5E5] focus:outline-none focus:border-[#806491] rounded-md-[0.375]"
+              value={userType}
+              onChange={(e) => setUserType(e.target.value)}
+            >
+              <option value="buyer">Buyer</option>
+              <option value="seller">Seller</option>
+            </select>
           </div>
 
           <button

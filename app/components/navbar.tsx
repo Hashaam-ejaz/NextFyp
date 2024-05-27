@@ -10,12 +10,18 @@ import { useEffect, useState } from "react";
 import MainLogoLargeScreen from "../../public/svg/main-logo-md-screen.svg";
 import SearchBar from "./searchBar";
 import CategoryDropdownMenu from "./categoryDropdownMenu";
+import { useSession } from "next-auth/react";
 const Navbar = () => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState("");
   const [showCategories, setShowCategories] = useState(false);
   const [selectedCategory, setSelectedCategory] =
     useState<string>("All Categories");
+  const [showProfile, setShowProfile] = useState<boolean>(false);
+  const { data: session } = useSession();
+  useEffect(() => {
+    setShowProfile(true);
+  }, [session]);
   const handleSearch = (value: string) => {
     setSearchValue(value);
     router.push(
@@ -47,10 +53,10 @@ const Navbar = () => {
         <div className="flex flex-col p-2 md:flex-shrink md:order-last md:w-[30%] md:max-w-[30%] mt-4">
           <div className="flex flex-row ">
             <div className="flex flex-col p-3 justify-center md:border-r md:border-[#D9D9D9]  ">
-              <Link href="/login">
+              <Link href={showProfile ? "/manageProfile" : "/login"}>
                 <Image src={UserLogo} alt="UserLogo" className="inline-block" />
                 <span className=" text-[#666666] ml-1 mt-1 hidden md:inline  md:text-sm ">
-                  Sign Up/Sign In
+                  {showProfile ? "Profile" : "Sign Up/Sign In"}
                 </span>
               </Link>
             </div>
