@@ -9,7 +9,6 @@ const CheckoutPage: React.FC = () => {
   const pathname = usePathname();
   const stringdata = decodeURIComponent(pathname.slice(10, pathname.length));
   const data2 = JSON.parse(stringdata);
-  console.log("data2", data2);
 
   const [shippingFormData, setShippingFormData] = useState({
     fullName: "",
@@ -45,8 +44,6 @@ const CheckoutPage: React.FC = () => {
   };
   const handleSubmits = async () => {
     try {
-      console.log("Submitting form");
-
       //Generate random tracking number
 
       const postOrders = async (data2: IOrder[]) => {
@@ -72,7 +69,6 @@ const CheckoutPage: React.FC = () => {
             trackingLink: "",
           };
 
-          console.log("New Order", newOrder);
           try {
             const response = await fetch("http://localhost:3000/api/orders", {
               method: "POST",
@@ -81,8 +77,6 @@ const CheckoutPage: React.FC = () => {
               },
               body: JSON.stringify(newOrder),
             });
-
-            console.log("response fetched", response);
             if (!response.ok) {
               console.error("Payment Not Verified, Order Not Created.");
               continue; // Move to the next order
@@ -94,7 +88,7 @@ const CheckoutPage: React.FC = () => {
         }
       };
       postOrders(data2);
-      console.log("buyer id", data2.buyerID);
+
       const response5 = await fetch(
         `http://localhost:3000/api/shoppingCart/${data2[0].buyerID}`,
         {
