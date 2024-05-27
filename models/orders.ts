@@ -12,6 +12,7 @@ interface IProduct {
 interface IOrder {
   buyerID: Types.ObjectId;
   buyerName: string;
+  sellerID: Types.ObjectId;
   products: IProduct[];
   totalAmount: number;
   paymentStatus: string;
@@ -22,6 +23,7 @@ interface IOrder {
   estimatedDelivery: Date;
   trackingNo?: string;
   trackingLink?: string;
+  walletAddress: string;
 }
 
 const orderSchema = new Schema<IOrder>({
@@ -32,6 +34,11 @@ const orderSchema = new Schema<IOrder>({
   },
   buyerName: {
     type: String,
+    required: true,
+  },
+  sellerID: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   products: [
@@ -98,6 +105,10 @@ const orderSchema = new Schema<IOrder>({
   trackingLink: {
     type: String,
     required: false,
+  },
+  walletAddress: {
+    type: String,
+    required: true,
   },
 });
 

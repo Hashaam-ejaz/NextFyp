@@ -5,78 +5,149 @@ import CartItems from "../components/cartItems";
 import DeliveryIcon from "../../public/images/deliveryIcon.svg";
 import FreeDeliveryIcon from "../../public/images/freeDeliveryIcon.svg";
 import FreeReturnsIcon from "../../public/images/freeReturnsIcon.svg";
-import DisplayMessages from "../providers/messages.json";
 import Mastercard from "../../public/images/mastercard.svg";
 import Visacard from "../../public/images/visacard.svg";
-import CartInfo from "../providers/individualUsercart.json";
-import { CartInfoType } from "../interfaces/cart";
+import { useSession } from "next-auth/react";
+import { IProduct } from "@/models/products";
+import { useRouter } from "next/navigation";
 
 const Cart = () => {
   const [newSubtotal, setNewsubtotal] = useState(0);
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState<number>(0);
   const [couponValue, setCouponValue] = useState("");
   const [isValidCoupon, setIsValidCoupon] = useState(false);
-  const [subtotal, setSubtotal] = useState(CartInfo.subtotal);
-  const [totalQuantity, setTotalQuantity] = useState(CartInfo.noOfItems);
-  const cartInfoVariable: CartInfoType = CartInfo;
-  const [cartValue, setCartValue] = useState(cartInfoVariable);
-
-  CartInfo.total =
-    CartInfo.subtotal +
-    CartInfo.shippingCost +
-    (discount * CartInfo.subtotal) / 100;
-  console.log("cart info", CartInfo);
+  const [userId, setUserId] = useState(null);
+  const [finalTotal, setfinalTotal] = useState<number>();
+  const [cartItems, setCartItems] = useState<
+    {
+      userID: string;
+      productID: string;
+      quantity: number;
+      totalPrice: number;
+    }[]
+  >([]);
+  const [products, setProducts] = useState<IProduct[]>([]);
+  const { data: session } = useSession();
+  const router = useRouter();
 
   useEffect(() => {
-    console.log("NEW SUBTOTAL CHANGED FROM CLIENT COMPONENT \n" + newSubtotal);
-  }, [newSubtotal]);
+    const newTotal = newSubtotal - discount + 500;
+    setfinalTotal(newTotal);
+  }, [discount, newSubtotal]);
+
+  const distinctSellers = new Set();
+  cartItems.forEach((item) => {
+    const prod = products.find((p) => p._id === item.productID);
+    distinctSellers.add(prod?.sellerId);
+  });
+
   useEffect(() => {
-    console.log("useeffect discount", discount);
-    setSubtotal(CartInfo.subtotal);
-    console.log("useeffect subtotal", subtotal);
-    setTotalQuantity(CartInfo.noOfItems);
-    console.log("useeffect qty", CartInfo.noOfItems);
-    CartInfo.total =
-      CartInfo.subtotal +
-      CartInfo.shippingCost +
-      (discount * CartInfo.subtotal) / 100;
-    console.log(
-      "CartInfo.subtotal",
-      (CartInfo.discount * CartInfo.subtotal) / 100
-    );
-    console.log("use effect cart info", CartInfo);
-  }, [discount, CartInfo, subtotal, totalQuantity]);
+    async function getProducts() {
+      const response = await fetch(`http://localhost:3000/api/products/`);
+      const res = await response.json();
+      setProducts(res.products);
+    }
+    getProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchCartInfo = async () => {
+      if (session) {
+        const response = await fetch(
+          `http://localhost:3000/api/users/?email=${session.user?.email}`
+        );
+        const data = await response.json();
+        setUserId(data.existingUser._id);
+        const response2 = await fetch(
+          `http://localhost:3000/api/shoppingCart/${data.existingUser._id}`
+        );
+        const data2 = await response2.json();
+      }
+    };
+
+    fetchCartInfo();
+  }, [session]);
 
   const settingCouponCodeValue = (value: string) => {
     setCouponValue(value);
   };
 
-  const sendOrderData = () => {};
-
   const applyCoupon = () => {
-    const coupon = CartInfo.couponCodes.find((c) => c.codeName === couponValue);
-    if (coupon === undefined) {
-      console.log("coupon doesnot exist");
-      setIsValidCoupon(false);
-    } else {
-      console.log("coupon exists");
+    const hardcodedCouponCode = "OFF300";
+    if (couponValue === hardcodedCouponCode) {
       setIsValidCoupon(true);
-      setDiscount(coupon.discount);
+      setDiscount(300);
+    } else {
+      setIsValidCoupon(false);
+      setDiscount(0);
     }
   };
+
+  const createOrders = () => {
+    const orders = Array.from(distinctSellers).map((sellerId) => {
+      const productsForSeller = cartItems
+        .filter((item) => {
+          const prod = products.find((p) => p._id === item.productID);
+          return prod?.sellerId === sellerId;
+        })
+        .map((item) => {
+          const prod = products.find((p) => p._id === item.productID);
+          return {
+            productID: item.productID,
+            productName: prod?.name,
+            productImage: prod?.images[0].src,
+            productPrice: prod?.price,
+            quantity: item.quantity,
+            subtotal: item.totalPrice,
+          };
+        });
+
+      return {
+        buyerID: userId,
+        buyerName: session?.user?.name,
+        sellerID: sellerId,
+        products: productsForSeller,
+        totalAmount: productsForSeller.reduce(
+          (acc, curr) => acc + curr.subtotal,
+          0
+        ),
+        paymentStatus: "",
+        orderStatus: "",
+        address: "",
+        phoneNo: "",
+        date: new Date(),
+        estimatedDelivery: new Date(
+          new Date().getTime() + 7 * 24 * 60 * 60 * 1000
+        ),
+        trackingNo: "",
+        trackingLink: "",
+      };
+    });
+    return orders;
+  };
+
+  const sendOrderData = () => {
+    const orders = createOrders();
+
+    router.push(`/checkout/${encodeURIComponent(JSON.stringify(orders))}`);
+  };
+
   return (
     <div className="flex flex-row bg-[#F7FAFC] md:bg-white w-full max-w-full min-w-full h-auto flex-wrap md:flex-nowrap md:justify-center">
       <div className="flex flex-col w-full max-w-full min-w-full h-auto md:w-[47.64%] md:max-w-[47.64%] md:min-w-[47.64%] md:mx-[2.22vw] border-b-[0.55px]">
         <div className="flex flex-row w-[94.485%] max-w-[94.485%] min-w-[94.485%] h-auto  place-self-center justify-between ">
           <div className="flex flex-col font-semibold text-[#5B4966] text-lg md:text-2xl">
-            Your Cart {subtotal}
-          </div>
-          <div className="flex flex-col text-[#9D9EA2] font-light text-[8.81px] leading-[13.22px] md:text-base  place-self-center">
-            <p>({totalQuantity})</p>
+            Your Cart
           </div>
         </div>
         <div className="flex flex-row w-full max-w-full min-w-full h-auto justify-center">
-          <CartItems subtotal={newSubtotal} setSubtotal={setNewsubtotal} />
+          {userId && (
+            <CartItems
+              setSubtotal={setNewsubtotal}
+              userId={userId}
+              parentSetCart={setCartItems}
+            />
+          )}
         </div>
         <div className=" hidden md:flex flex-row w-full max-w-full min-w-full h-auto  justify-between">
           <div className="flex flex-col w-full max-w-full min-w-full h-auto">
@@ -97,10 +168,11 @@ const Cart = () => {
                   <Image alt="delivery-div-icon" src={DeliveryIcon} />
                 </div>
                 <div className="flex flex-row w-full max-w-full min-w-full h-auto  mb-4 text-[#1A1E26] font-normal text-lg">
-                  {DisplayMessages.deliveryInfo.mainHeading}
+                  Order by 10pm for free next day delivery on Orders overs RS
+                  1000
                 </div>
                 <div className="flex flex-row w-full max-w-full min-w-full h-auto  mb-4 font-normal text-base text-[#717378] ">
-                  {DisplayMessages.deliveryInfo.subHeading}
+                  We deliver Monday to Saturday
                 </div>
               </div>
               <div className="flex flex-col w-[30%] max-w-[30%] min-w-[30%] h-auto p-4 border-[1px] border-[#F4F4F4] rounded-xl">
@@ -108,10 +180,11 @@ const Cart = () => {
                   <Image alt="free-delivery-div-icon" src={FreeDeliveryIcon} />
                 </div>
                 <div className="flex flex-row w-full max-w-full min-w-full h-auto  mb-4 text-[#1A1E26] font-normal text-lg">
-                  {DisplayMessages.freeDeliveryInfo.mainHeading}
+                  Free next day delivery to stores.
                 </div>
                 <div className="flex flex-row w-full max-w-full min-w-full h-auto  mb-4 font-normal text-base text-[#717378]">
-                  {DisplayMessages.freeDeliveryInfo.subHeading}
+                  Home delivery is RS. 500 for orders under 1000 and is FREE for
+                  all orders over RS. 1000
                 </div>
               </div>
               <div className="flex flex-col w-[30%] max-w-[30%] min-w-[30%] h-auto p-4 border-[1px] border-[#F4F4F4] rounded-xl">
@@ -119,7 +192,9 @@ const Cart = () => {
                   <Image alt="free-returns-icon" src={FreeReturnsIcon} />
                 </div>
                 <div className="flex flex-row w-full max-w-full min-w-full h-auto  mb-4 font-normal text-base text-[#717378]">
-                  {DisplayMessages.freeReturnInfo}
+                  We have made returns SO EASY - you can now return your order
+                  to a store or send it with PakPost FOR FREE. Subject to return
+                  date within 30 days of purchase.
                 </div>
               </div>
             </div>
@@ -150,8 +225,7 @@ const Cart = () => {
                 Shipping Costs
               </div>
               <div className="flex flex-col font-normal text-[14.79px] text-[#060709] leading-[22.18px] md:text-base ">
-                {CartInfo.shippingCostCurrencySymbol}
-                {CartInfo.shippingCost}
+                RS. 500
               </div>
             </div>
           </div>
@@ -197,7 +271,7 @@ const Cart = () => {
                 Total
               </div>
               <div className="flex flex-col font-normal text-[14.79px] text-[#060709] leading-[22.18px] md:text-base ">
-                {CartInfo.total}
+                {finalTotal}
               </div>
             </div>
           </div>
