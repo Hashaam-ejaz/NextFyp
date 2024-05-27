@@ -2,8 +2,6 @@ import Image from "next/image";
 import SingleProductDiv from "../SingleProductDiv";
 import SliderArrow from "../../../public/svg/productArrowButton.svg";
 import { IProduct } from "@/models/products";
-// import { useEffect, useState } from "react";
-// import { useSession } from "next-auth/react";
 
 const RecommendedProductsDiv = ({
   recommendations,

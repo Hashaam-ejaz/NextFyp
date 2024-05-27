@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
-
+import LoadingPage from "../components/loadingComponent";
 import homepageRect from "../../public/svg/homepage.svg";
 import loginLogo from "../../public/svg/logo.svg";
 import googleLogo from "../../public/svg/google.svg";
@@ -12,21 +12,25 @@ const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const session = useSession();
   const router = useRouter();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setError("");
     if (password.length < 5) {
       setError("Please enter the password");
       return;
     }
+    setLoading(true);
     const response = await fetch(
       `http://localhost:3000/api/users?email=${username}`
     );
     if (response.status === 400) {
       setError("User not found.");
+      setLoading(false);
       return;
     }
     try {
@@ -37,13 +41,28 @@ const Login: React.FC = () => {
       });
       if (rslt?.error) {
         setError("Invalid Credentials");
+        setLoading(false);
         return;
       }
-      router.replace("/");
+      const userResponse = await response.json();
+      const user = userResponse.existingUser;
+      if (user.role === 'buyer') {
+        router.replace("/");
+      } else if (user.role === 'seller') {
+        router.replace("/sellerDashboard");
+      } else {
+        setError("User role is not recognized.");
+        setLoading(false);
+      }
     } catch (error) {
+      setError("An unexpected error occurred.");
       console.log(error);
+      setLoading(false);
     }
   };
+  if (loading) {
+    return <LoadingPage message="Login Successful"/>;
+  }
   return (
     <div className="flex flex-col md:flex-row w-full bg-[#F7F1FB]">
       {/* Smaller screens layout */}
