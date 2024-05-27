@@ -1,0 +1,117 @@
+[
+    {
+        "productID":1,
+        "productName":"Havic HV G-92 Gamepad",
+        "category":"Gaming",
+        "price":192.00,
+        "currency":"USD",
+        "currencySymbol":"$ ",
+        "stock":20,
+        "description":"PlayStation 5 Controller Skin High quality vinyl with air channel adhesive for easy bubble free install & mess free removal Pressure sensitive.",
+        "addInfo":"None",
+        "model": "#8786867",
+        "style": "classic",
+        "certificate": "ISO-898921212",
+        "memory": "36GB RAM",
+        "number": "15",
+        "status": "In Stock",
+        "options":
+
+        [
+            {
+                
+            }
+        ],
+        "sizes":
+        [
+            {
+                "label":"XS",
+                "stock":10
+            },
+            {
+                "label":"S",
+                "stock":10
+            },
+            {
+                "label":"M",
+                "stock":10
+            },
+            {
+                "label":"L",
+                "stock":0
+            },
+            {
+                "label":"XL",
+                "stock":10
+            },
+            {
+                "label":"2XL",
+                "stock":10
+            }
+
+        ],
+        "colors":
+        [
+            {
+                "label":"Black",
+                "stock":10
+            },
+            {
+                "label":"Blue",
+                "stock":0
+            },
+            {
+                "label":"White",
+                "stock":10
+            },
+            {
+                "label":"Gray",
+                "stock":10
+            }
+        ],
+        "size":["XS","S","M","L","XL","2XL"],
+        "color":["Black","Blue","White","Gray"],
+        "reviews":
+        [
+            {
+                "rating":"4.8",
+                "date":"27-01-2001",
+                "userID":"Dabbey Daba",
+                "reviewHeading": "The best product In Market",
+                "reviewDescription":"Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of Latin literature from 45 BC, making it over 2000 years old.",
+                "images":
+                [
+                    {
+                        "src":"product-1.png",
+                        "alt":"product-1"
+                    }
+
+                ]
+            }
+        ],
+        "averageRating":4.4,
+        "sellerID":1,
+        "images":
+        [
+            {
+                "src":"product-1.png",
+                "alt":"product-1"
+            },
+            {
+                "src":"product-2.png",
+                "alt":"product-detail-02"
+            },
+            {
+                "src":"product-3.png",
+                "alt":"product-detail-03"
+            },
+            
+            {
+                "src":"product-4.png",
+                "alt":"product-detail-04"
+            }
+            
+        ]
+        
+    }
+]
