@@ -12,6 +12,7 @@ import { IShoppingCart } from '../../models/shoppingCart';
 import { ObjectId } from 'mongodb'; 
 import { IOrder } from '../../models/orders';
 import { Order } from '../components/manageprofilecomponents/OrderHistory';
+import { OrderProduct } from '../components/manageprofilecomponents/OrderHistory';
 import TogglePasswordButton from '../components/manageprofilecomponents/TogglePassword';
 import icon from "../../public/profile-icon.png";
 import bcrypt from "bcryptjs";
@@ -155,32 +156,26 @@ const ProfilePage: React.FC = () => {
         }
         const orderData = await orderResponse.json();
         const orders = orderData.orders;
+        console.log('Orders at manageProfile: ',orders);
         // Fetch product details for each product in orders
-        const transformedOrders = [];
-        for (const order of orders) {
-          const productsWithDetails = [];
-          for (const productId of order.productID) {
-            const productResponse = await fetch(`http://localhost:3000/api/products/${productId}`);
-            if (!productResponse.ok) {
-              throw new Error(`Failed to fetch product with ID ${productId}`);
-            }
-            const productData = await productResponse.json(); 
-            const product = productData.existingProduct;
-            productsWithDetails.push({
-              id: product._id,
-              name: product.name,
-              price: product.price,
-              imageSrc: product.images[0].src,
-              imageAlt: product.images[0].alt,
-            });
-          }
+        // Transform orders to match the OrderHistoryProps interface
+      const transformedOrders: Order[] = orders.map((order: any) => {
+        const productsWithDetails: OrderProduct[] = order.products.map((product: any) => ({
+          id: product.productID,
+          name: product.productName,
+          price: product.productPrice,
+          imageSrc: product.productImage,
+          imageAlt: product.productName,
+        }));
 
-          transformedOrders.push({
-            number: order._id,
-            date: extractDate(order.date),
-            products: productsWithDetails,
-          });
-        }
+        return {
+          number: order._id,
+          status: order.orderStatus,
+          date: extractDate(order.date),
+          products: productsWithDetails,
+        };
+      });
+        console.log('Transformed Orders: ',transformedOrders);
         setOrderHistory(transformedOrders);
       } catch (error) {
         setError("An unexpected error occurred.");
@@ -397,11 +392,6 @@ const ProfilePage: React.FC = () => {
         <div className='flex justify-end'>
           <Pagination />
         </div>
-      </div>
-
-      {/* Footer */}
-      <div>
-        Add Footer Component
       </div>
     </div>
   );

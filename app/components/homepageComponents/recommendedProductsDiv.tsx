@@ -2,12 +2,13 @@ import Image from "next/image";
 import SingleProductDiv from "../SingleProductDiv";
 import SliderArrow from "../../../public/svg/productArrowButton.svg";
 import { IProduct } from "@/models/products";
+import { useEffect } from "react";
 
 const RecommendedProductsDiv = ({
   recommendations,
-}: {
-  recommendations: IProduct[];
-}) => {
+}: {recommendations: IProduct[];}) => {
+  useEffect(() => {
+  }, [recommendations]);
   const slideLeftRecommendation = () => {
     var slider = document.getElementById("recommendationSlider");
     if (slider) slider.scrollLeft = slider.scrollLeft - 200;

@@ -7,6 +7,8 @@ interface IUser {
   role: string;
   phone: number;
   wishlist?: any[];
+  recom_id?: string;
+  walletAddress: string;
 }
 
 const userSchema = new Schema<IUser>({
@@ -39,6 +41,14 @@ const userSchema = new Schema<IUser>({
   wishlist: {
     type: [Schema.Types.Mixed],
     required: false,
+  },
+  recom_id: {
+    type: String,
+    required: false,
+  },
+  walletAddress: {
+    type: String,
+    required: true,
   },
 });
 const User = models.User || model<IUser>("User", userSchema);

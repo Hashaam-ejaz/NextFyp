@@ -55,7 +55,7 @@ const Navbar = () => {
               </Link>
             </div>
             <div className="flex flex-col p-3 justify-center  ">
-              <Link href="#">
+              <Link href="/cart">
                 <Image src={CartLogo} alt="CartLogo" className="inline-block" />
                 <span className="md:text-sm text-[#666666] ml-1 mt-1 hidden md:inline ">
                   Cart
@@ -63,7 +63,7 @@ const Navbar = () => {
               </Link>
             </div>
             <div className="flex flex-col p-3 justify-center   ">
-              <Link href="#">
+              <Link href="/manageProfile">
                 <Image
                   src={WishlistLogo}
                   alt="WishlistLogo"
