@@ -8,16 +8,29 @@ import deliveryIcon from "../../../public/images/icon-delivery.png";
 import returnIcon from "../../../public/images/Icon-return.png";
 import ProductDetailsTable from "../product-details-table.jsx";
 import Image from "next/image.js";
+import { useSession } from "next-auth/react";
+import { fetchData } from "next-auth/client/_utils";
 
 function ProductDetailDiv({ product }) {
   const [information, setInformation] = useState(product.description);
   const [showReviews, setToggleReviews] = useState(false);
   const [showAdditionalInfo, setToggleInfo] = useState(false);
-
+  const [userID, setUserID] = useState("");
   const [itemCount, setItemCount] = useState(1);
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
+  const { data: session } = useSession();
 
+  useEffect(() => {
+      const fetchData = async () => {
+      const response = await fetch(`/api/users?email=${session.user.email}`);
+      const data = await response.json();
+      const user = data.existingUser;
+      setUserID(user._id);
+      }
+      fetchData();
+  }, [product, size, color, itemCount]);
+  // console.log(product);
   const decreaseQuantity = () => {
     if (itemCount > 1) {
       setItemCount(itemCount - 1);
@@ -136,7 +149,7 @@ function ProductDetailDiv({ product }) {
                   </div>
                 </div>
                 <div className="my-4">
-                  <AddToCart />
+                  <AddToCart product={product} itemCount={itemCount} userID={userID}/>
                 </div>
               </div>
               <div className="mx-4 sm:mx-auto w-full sm:max-w-screen-md">

@@ -13,6 +13,7 @@ interface OrderProduct {
 
 interface Order {
   number: string;
+  status: string;
   date: string;
   products: OrderProduct[];
 }
@@ -76,19 +77,21 @@ const OrderHistory: React.FC<OrderHistoryProps> = ({ orders, userID }) => {
                             </div>
                           </td>
                           <td className="hidden py-6 pr-8 sm:table-cell">{product.price}</td>
-                          <td className="hidden py-6 pr-8 sm:table-cell">Delivered</td>
-                          <td className="whitespace-nowrap py-6 text-right font-medium">
-                            <a
-                              onClick={() => {
-                                setSelectedProduct(product);
-                                setShowReviewModal(true);
-                              }}
-                              className="text-[#806491] border border-[#806491] hover:bg-[#806491] hover:text-white h-[1.5rem] py-3 px-4 rounded-[0.278rem] sm:ml-3"
-                            >
-                              Review<span className="hidden lg:inline"> Product</span>
-                              <span className="sr-only">, {product.name}</span>
-                            </a>
-                          </td>
+                          <td className="hidden py-6 pr-8 sm:table-cell">{order.status}</td>
+                          {order.status === 'delivered' && (
+                            <td className="whitespace-nowrap py-6 text-right font-medium">
+                              <a
+                                onClick={() => {
+                                  setSelectedProduct(product);
+                                  setShowReviewModal(true);
+                                }}
+                                className="text-[#806491] border border-[#806491] hover:bg-[#806491] hover:text-white h-[1.5rem] py-3 px-4 rounded-[0.278rem] sm:ml-3"
+                              >
+                                Review<span className="hidden lg:inline"> Product</span>
+                                <span className="sr-only">, {product.name}</span>
+                              </a>
+                            </td>
+                          )}
                         </tr>
                       </tbody>
                       

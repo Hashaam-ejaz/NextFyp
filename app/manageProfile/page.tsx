@@ -162,18 +162,17 @@ const ProfilePage: React.FC = () => {
         }
         const orderData = await orderResponse.json();
         const orders = orderData.orders;
+        console.log('Orders at manageProfile: ',orders);
         // Fetch product details for each product in orders
         const transformedOrders = [];
         for (const order of orders) {
           const productsWithDetails = [];
           for (const productId of order.productID) {
-            const productResponse = await fetch(
-              `http://localhost:3000/api/products/${productId}`
-            );
+            const productResponse = await fetch(`http://localhost:3000/api/products/${productId}`);
             if (!productResponse.ok) {
               throw new Error(`Failed to fetch product with ID ${productId}`);
             }
-            const productData = await productResponse.json();
+            const productData = await productResponse.json(); 
             const product = productData.existingProduct;
             productsWithDetails.push({
               id: product._id,
@@ -477,7 +476,9 @@ const ProfilePage: React.FC = () => {
       </div>
 
       {/* Footer */}
-      <div>Add Footer Component</div>
+      <div>
+        Add Footer Component
+      </div>
     </div>
   );
 };

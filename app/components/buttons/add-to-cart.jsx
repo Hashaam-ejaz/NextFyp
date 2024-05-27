@@ -1,7 +1,27 @@
+import { useEffect } from "react"
+
 //used to add products to cart
-export default function AddToCart(){
-    
-    const handleClick=()=>{
+export default function AddToCart({product, itemCount, userID}){
+    useEffect(() => {
+    },[product, itemCount, userID]) 
+    const handleClick= async ()=>{
+      console.log('adding product to cart...')
+      const newCart = {
+        productID: product._id,
+        userID: userID,
+        quantity: itemCount
+      }
+      console.log('New Cart', newCart)
+        const response = await fetch('/api/shoppingCart', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newCart),
+          });
+          if (!response.ok) {
+            throw new Error(response.statusText);
+          }
         alert('One Product has been added to cart')
 
     }

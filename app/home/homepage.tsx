@@ -8,9 +8,15 @@ import BestSellingProductsDiv from "../components/homepageComponents/bestSelling
 import RecommendedProductsDiv from "../components/homepageComponents/recommendedProductsDiv";
 import { useEffect, useState } from "react";
 import { IProduct } from "@/models/products";
+import { useSession } from "next-auth/react";
+import { IOrder } from "@/models/orders";
 
 const Homepage = () => {
   const [products, setProducts] = useState<IProduct[] | null>([]);
+  const [recommendations, setRecommendations] = useState<IProduct[]>([]);
+  const [userId, setUserId] = useState<string | null>(null);
+  const { data: session } = useSession();
+  // console.log("Session:", session);
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -23,6 +29,70 @@ const Homepage = () => {
     };
 
     fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    
+    const fetchRecommendations1 = async () => {
+      try {
+        const userRes = await fetch(`http://localhost:3000/api/users?email=${session?.user?.email}`)
+        const userData = await userRes.json();
+        const user = userData.existingUser;
+        setUserId(user._id);
+        const userOrdersRes = await fetch(`http://localhost:3000/api/orders/${user._id}`);
+        const userOrdersData = await userOrdersRes.json();
+        const userOrders = userOrdersData.orders;
+        const productIds = userOrders.map((order : IOrder) => order.products.map((product) => product.productID));
+
+        const prodSKURes = await fetch(`http://localhost:3000/api/products/${productIds[0].toString()}`);
+        const prodData = await prodSKURes.json();
+        const prod = prodData.existingProduct;
+
+        const response = await fetch("http://localhost:3000/api/recommendations", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userid: user.recom_id,
+            productid: prod.sku,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch recommendations");
+        }
+
+        const data = await response.json();
+        // console.log("Recommendations data:", data);
+        const recommendedProductIds = data.recommended_products;
+        // console.log("Recommended products:", recommendedProductIds);
+
+        const recommendedProductsPromises = recommendedProductIds.map(async (id: string) => {
+          const productResponse = await fetch(`http://localhost:3000/api/products/sku/${id}`);
+          return await productResponse.json();
+        });
+
+        const recommendedProductsData = await Promise.all(recommendedProductsPromises);
+        // console.log("Recommended products data:", recommendedProductsData);
+        const uniqueProductIds = new Set();
+        const filteredRecommendedProductsData = recommendedProductsData
+          .filter(productGroup => productGroup && productGroup.products && productGroup.products[0])
+          .map(productGroup => productGroup.products[0])
+          .filter(product => {
+            if (!uniqueProductIds.has(product._id)) {
+              uniqueProductIds.add(product._id);
+              return true;
+            }
+            return false;
+          });
+          // console.log("Filtered recommended products data:", filteredRecommendedProductsData);
+        setRecommendations(filteredRecommendedProductsData);
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      }
+    };
+    fetchRecommendations1();
   }, []);
 
   function getTopSellingProducts(products: IProduct[]): IProduct[] {
@@ -55,7 +125,7 @@ const Homepage = () => {
       <CategoryCardDiv />
       <FeaturedProductsDiv featuredProd={featuredProducts} />
       <BestSellingProductsDiv bestSellers={topSellingProducts} />
-      <RecommendedProductsDiv recommendations={featuredProducts} />
+      <RecommendedProductsDiv recommendations={recommendations.length === 0? featuredProducts : recommendations} />
     </>
   );
 };

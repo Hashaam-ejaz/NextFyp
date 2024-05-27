@@ -107,10 +107,9 @@ const Cart = () => {
         buyerName: session?.user?.name,
         sellerID: sellerId,
         products: productsForSeller,
-        totalAmount: productsForSeller.reduce(
+        totalAmount: (productsForSeller.reduce(
           (acc, curr) => acc + curr.subtotal,
-          0
-        ),
+          0)) + 500 - discount,
         paymentStatus: "",
         orderStatus: "",
         address: "",

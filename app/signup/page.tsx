@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import Image from "next/image";
-
+import LoadingPage from "../components/loadingComponent";
 import homepageRect from "../../public/svg/homepage.svg";
 import loginLogo from "../../public/svg/logo.svg";
 import googleLogo from "../../public/svg/google.svg";
@@ -16,12 +16,17 @@ const Signup: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<number>();
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   async function handleSubmit(
     event: FormEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
+    if (fullName.length < 0) {
+      setError("Please enter a name");
+      return;
+    }
     if (password.length < 5) {
       setError("Please enter a password");
       return;
@@ -30,11 +35,13 @@ const Signup: React.FC = () => {
       setError("Please enter a phone number");
       return;
     }
+    setLoading(true);
     const response = await fetch(
       `http://localhost:3000/api/users?email=${email.toLowerCase()}`
     );
     if (response.status === 202) {
       setError("This Email is already registered.");
+      setLoading(false);
       return;
     }
     const newUser: IUser = {
@@ -43,7 +50,7 @@ const Signup: React.FC = () => {
       password: password,
       role: userType,
       phone: phoneNumber,
-      wishlist: [""],
+      wishlist: [],
     };
     try {
       const response = await fetch("http://localhost:3000/api/users", {
@@ -55,16 +62,21 @@ const Signup: React.FC = () => {
       });
       if (!response.ok) {
         setError("This phone number is already in use.");
+        setLoading(false);
         return;
       }
     } catch (error) {
       console.error("Error sending user data:", error);
+      setLoading(false);
     }
     if (userType == "seller") {
       router.push("/sellerAccount");
       return;
     }
     router.push("/login");
+  }
+  if (loading) {
+    return <LoadingPage message="Registration Successful"/>;
   }
 
   return (
