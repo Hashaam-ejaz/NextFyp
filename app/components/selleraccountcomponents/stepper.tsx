@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useRef, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import BasicInfoForm from './BasicInfoForm';
-import AddressInfoForm from './AddressInfoForm';
-import BankInfoForm from './BankInfoForm';
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef, useEffect } from "react";
+import { useSession } from "next-auth/react";
+import BasicInfoForm from "./BasicInfoForm";
+import AddressInfoForm from "./AddressInfoForm";
+import BankInfoForm from "./BankInfoForm";
+import { useRouter } from "next/navigation";
+import { ethers } from "ethers";
 
 interface StepperProps {
   steps: number;
@@ -23,21 +24,53 @@ interface FormData {
   cnic: string;
 }
 
-
 const Stepper: React.FC<StepperProps> = ({ steps }) => {
+  const abi = [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "sellerAddress",
+          type: "address",
+        },
+      ],
+      name: "registerSeller",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "", type: "address" }],
+      name: "sellerCatalogs",
+      outputs: [{ internalType: "address", name: "", type: "address" }],
+      stateMutability: "view",
+      type: "function",
+    },
+  ];
+  const MarketplaceContractAddress: string =
+    "0x236bBED2c834a956591016e5043dBa5AC6b3E27a";
+  const provider = new ethers.providers.JsonRpcProvider(
+    "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+  );
+  const wallet = new ethers.Wallet(
+    process.env.NEXT_PUBLIC_METAMASK_PRIVATE_KEY as string,
+    provider
+  );
+
+  const contract = new ethers.Contract(MarketplaceContractAddress, abi, wallet);
   const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
-    shopName: '',
-    mobileNo: '',
-    address: '',
-    area: '',
-    city: '',
-    district: '',
-    accName: '',
-    bankName: '',
-    iban: '',
-    cnic: '',
+    shopName: "",
+    mobileNo: "",
+    address: "",
+    area: "",
+    city: "",
+    district: "",
+    accName: "",
+    bankName: "",
+    iban: "",
+    cnic: "",
   });
   const router = useRouter();
   const handleNext = (data: object) => {
@@ -56,12 +89,22 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
   const handleSubmit = async () => {
     if (!session || !session.user) return;
     try {
-      const userResponse = await fetch(`http://localhost:3000/api/users?email=${session.user.email}`);
+      const userResponse = await fetch(
+        `http://localhost:3000/api/users?email=${session.user.email}`
+      );
       const userData = await userResponse.json();
       const user = userData.existingUser;
+      console.log(userData);
       const updatedUserData = {
         phone: formData.mobileNo,
-        address: formData.address + ', ' + formData.area + ', ' + formData.city + ', ' + formData.district,
+        address:
+          formData.address +
+          ", " +
+          formData.area +
+          ", " +
+          formData.city +
+          ", " +
+          formData.district,
       };
       const userBankInfo = {
         userID: user._id,
@@ -71,43 +114,66 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
         accName: formData.accName,
         cnic: formData.cnic,
       };
-      console.log('Making request to submit user data...');
-      const response = await fetch(`http://localhost:3000/api/users/${user._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedUserData),
-      });
+      console.log("Making request to make seller Catalog Contract");
+      const transaction = await contract
+        .connect(wallet)
+        .registerSeller(user.walletAddress);
+      const receipt = await transaction.wait();
+      if (receipt.status == 0) {
+        throw new Error(
+          "Failed to Create Seller Catalog Contract on the blockchain"
+        );
+      }
+      console.log("Making request to submit user data...");
+
+      const response = await fetch(
+        `http://localhost:3000/api/users/${user._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedUserData),
+        }
+      );
       if (!response.ok) {
-        throw new Error('Failed to submit user data');
+        throw new Error("Failed to submit user data");
       }
-      console.log('Making request to submit bank info...');
-      const bankInfoResponse = await fetch('http://localhost:3000/api/bankInfo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userBankInfo),
-      });
+      console.log("Making request to submit bank info...");
+      const bankInfoResponse = await fetch(
+        "http://localhost:3000/api/bankInfo",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userBankInfo),
+        }
+      );
       if (!bankInfoResponse.ok) {
-        throw new Error('Failed to submit bank info');
+        throw new Error("Failed to submit bank info");
       }
-      console.log('Data submitted successfully');
-      router.push('/sellerAccountCreated');
+      console.log("Data submitted successfully");
+      router.push("/sellerAccountCreated");
     } catch (error) {
-      console.error('Error submitting user data:', error);
+      console.error("Error submitting user data:", error);
     }
   };
 
-  const stepNames = ['Basic Information', 'Address Information', 'Bank Information'];
+  const stepNames = [
+    "Basic Information",
+    "Address Information",
+    "Bank Information",
+  ];
 
   const renderFormForStep = () => {
     switch (currentStep) {
       case 1:
         return <BasicInfoForm formData={formData} setFormData={setFormData} />;
       case 2:
-        return <AddressInfoForm formData={formData} setFormData={setFormData} />;
+        return (
+          <AddressInfoForm formData={formData} setFormData={setFormData} />
+        );
       case 3:
         return <BankInfoForm formData={formData} setFormData={setFormData} />;
       default:
@@ -118,19 +184,19 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
   return (
     <div className="bg-white min-h-screen flex flex-col justify-center items-center">
       <div className="lg:w-full lg:max-w-4xl md:max-w-md sm:max-w-md flex justify-center items-start">
-      <ul className="relative flex flex-col sm:flex-row gap-x-2 mt-8 sm:my-4 md:gap-x-2 lg:w-full">
-
+        <ul className="relative flex flex-col sm:flex-row gap-x-2 mt-8 sm:my-4 md:gap-x-2 lg:w-full">
           {Array.from({ length: steps }, (_, index) => (
             <li
               key={index}
               className={`flex items-center gap-x-2 shrink basis-0 flex-1 group ' ${
-                index + 1 === currentStep ? 'active' : ''
+                index + 1 === currentStep ? "active" : ""
               }`}
-
             >
               <div className="flex items-center">
-              {index !== 0 && (
-                  <div className="hidden sm:flex items-center justify-center mx-2"> {/* Hide for small screens */}
+                {index !== 0 && (
+                  <div className="hidden sm:flex items-center justify-center mx-2">
+                    {" "}
+                    {/* Hide for small screens */}
                     <svg
                       className="w-4 h-4 text-gray-600 mx-5"
                       xmlns="http://www.w3.org/2000/svg"
@@ -138,22 +204,27 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </div>
                 )}
                 <span
                   className={`min-w-7 min-h-7 group inline-flex items-center text-xs align-middle focus:outline-none disabled:opacity-50 disabled:pointer-events-none ${
-                    index + 1 === currentStep ? 'hs-stepper-active' : ''
+                    index + 1 === currentStep ? "hs-stepper-active" : ""
                   }`}
                 >
                   <span
                     className={`size-7 flex justify-center items-center flex-shrink-0 font-medium text-white rounded-full group-focus:bg-gray-200 ${
                       index + 1 === currentStep
-                        ? 'bg-[#806491]'
+                        ? "bg-[#806491]"
                         : index + 1 < currentStep
-                        ? 'bg-[#037400]'
-                        : 'bg-[#E1E1E6]'
+                        ? "bg-[#037400]"
+                        : "bg-[#E1E1E6]"
                     }`}
                   >
                     {index + 1 < currentStep && index + 1 !== steps ? (
