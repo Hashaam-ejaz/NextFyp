@@ -35,6 +35,7 @@ export function ImagesDisplayDiv({ product }) {
 
   return (
     <>
+    
       <div className="flex  flex-row no-wrap  bg-white w-full">
         <div className="basis-1/5 px-4 bg-white  flex flex-col no-wrap">
           {product.images.map((item, index) => (
@@ -56,7 +57,7 @@ export function ImagesDisplayDiv({ product }) {
 
         <div className="basis-4/5 bg-white relative items-center overflow-hidden">
           <Image
-            className="w-full h-auto max-w-full max-h-full transition-transform"
+            className="w-auto h-full max-w-full max-h-full transition-transform object-contain"
             alt={selectedImage.alt}
             src={selectedImage.src}
             fill={true}
