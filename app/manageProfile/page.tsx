@@ -389,9 +389,9 @@ const ProfilePage: React.FC = () => {
             description="Description of Product 1"
           /> */}
         </div>
-        <div className='flex justify-end'>
+        {/* <div className='flex justify-end'>
           <Pagination />
-        </div>
+        </div> */}
       </div>
 
       {/* Order History */}
@@ -399,7 +399,7 @@ const ProfilePage: React.FC = () => {
         <h2 className="text-xl font-semibold">Order History</h2>
         <OrderHistory orders={orderHistory} userID={userId}/>
         <div className='flex justify-end'>
-          <Pagination />
+          <Pagination items={orderHistory}/>
         </div>
       </div>
     </div>

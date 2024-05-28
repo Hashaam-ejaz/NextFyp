@@ -93,7 +93,7 @@ const Homepage = () => {
       }
     };
     fetchRecommendations1();
-  }, []);
+  }, [session]);
 
   function getTopSellingProducts(products: IProduct[]): IProduct[] {
     const sortedProducts = products.sort((a, b) => b.noSales - a.noSales);
