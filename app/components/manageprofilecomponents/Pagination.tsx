@@ -1,16 +1,34 @@
 "use client";
 import React, { useState } from 'react';
+import { Order } from '../../components/manageprofilecomponents/OrderHistory';
 
-const Pagination = () => {
+interface PaginationProps {
+    items: Order[];
+}
+// const items = [
+//     "Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6",
+//     // Add more items as needed
+// ];
+
+const itemsPerPage = 2;
+
+const Pagination: React.FC<PaginationProps> = ({items}) => {
     const [currentPage, setCurrentPage] = useState(1);
 
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+
     const goToNextPage = () => {
-        setCurrentPage(prevPage => prevPage + 1);
+        setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
     };
 
     const goToPreviousPage = () => {
-        setCurrentPage(prevPage => prevPage - 1);
+        setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
     };
+
+    const currentItems = items.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     return (
         <nav className="flex justify-center mt-4" aria-label="Pagination">

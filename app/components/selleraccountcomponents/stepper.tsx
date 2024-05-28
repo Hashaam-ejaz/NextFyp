@@ -109,7 +109,11 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       console.log(userData);
       const updatedUserData = {
         phone: formData.mobileNo,
-        address:
+      };
+      const userBankInfo = {
+        userID: user._id,
+        shopName: formData.shopName,
+        shopAddress:
           formData.address +
           ", " +
           formData.area +
@@ -117,10 +121,14 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
           formData.city +
           ", " +
           formData.district,
-      };
-      const userBankInfo = {
-        userID: user._id,
-        shopName: formData.shopName,
+        returnAddress:
+          formData.address +
+          ", " +
+          formData.area +
+          ", " +
+          formData.city +
+          ", " +
+          formData.district,
         bankName: formData.bankName,
         iban: formData.iban,
         accName: formData.accName,
@@ -150,6 +158,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       if (!response.ok) {
         throw new Error("Failed to submit user data");
       }
+      console.log(userBankInfo);
       console.log("Making request to submit bank info...");
       const bankInfoResponse = await fetch(
         "http://localhost:3000/api/bankInfo",

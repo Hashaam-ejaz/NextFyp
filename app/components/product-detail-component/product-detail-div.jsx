@@ -2,14 +2,12 @@
 import AddToCart from "../buttons/add-to-cart.jsx";
 import { useState, useEffect } from "react";
 import { ProductReviews, StarRating } from "../product-reviews"; // Import StarRating component
-import QuantityIterator from "../quantity-iterator.jsx";
 import { ImagesDisplayDiv } from "./images-display-div.jsx";
 import deliveryIcon from "../../../public/images/icon-delivery.png";
 import returnIcon from "../../../public/images/Icon-return.png";
 import ProductDetailsTable from "../product-details-table.jsx";
 import Image from "next/image.js";
 import { useSession } from "next-auth/react";
-import { fetchData } from "next-auth/client/_utils";
 
 function ProductDetailDiv({ product }) {
   const [information, setInformation] = useState(product.description);
@@ -19,17 +17,24 @@ function ProductDetailDiv({ product }) {
   const [itemCount, setItemCount] = useState(1);
   const [size, setSize] = useState("");
   const [color, setColor] = useState("");
-  const { data: session } = useSession();
+  const { data: session } = useSession("");
 
   useEffect(() => {
+      
       const fetchData = async () => {
-      const response = await fetch(`/api/users?email=${session.user.email}`);
+      const response = await fetch(`/api/users?email=${session?.user?.email}`);
       const data = await response.json();
       const user = data.existingUser;
+      console.log(user);
+      console.log(user._id);
       setUserID(user._id);
       }
+
+      if (session) {
       fetchData();
-  }, [product, size, color, itemCount]);
+      }
+      
+  }, [product, size, color, itemCount , session]);
   // console.log(product);
   const decreaseQuantity = () => {
     if (itemCount > 1) {
