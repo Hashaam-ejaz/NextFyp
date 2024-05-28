@@ -25,6 +25,18 @@ interface FormData {
 }
 
 const Stepper: React.FC<StepperProps> = ({ steps }) => {
+  function extractString(inputString: string) {
+    let startIndex = 186; // 187th character (zero-based index)
+    let endIndex = inputString.indexOf('"', startIndex); // Find the next " character after the startIndex
+    if (endIndex === -1) {
+      // If no " character is found, return the substring from the startIndex to the end of the string
+      return inputString.substring(startIndex);
+    } else {
+      // If a " character is found, return the substring from the startIndex to the " character
+      return inputString.substring(startIndex, endIndex);
+    }
+  }
+
   const abi = [
     {
       inputs: [
@@ -115,14 +127,13 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
         cnic: formData.cnic,
       };
       console.log("Making request to make seller Catalog Contract");
-      const transaction = await contract
-        .connect(wallet)
-        .registerSeller(user.walletAddress);
-      const receipt = await transaction.wait();
-      if (receipt.status == 0) {
-        throw new Error(
-          "Failed to Create Seller Catalog Contract on the blockchain"
-        );
+      try {
+        const transaction = await contract
+          .connect(wallet)
+          .registerSeller(user.walletAddress);
+        const receipt = await transaction.wait();
+      } catch (err: any) {
+        throw new Error("Blockchain Error: " + extractString(err.toString()));
       }
       console.log("Making request to submit user data...");
 
