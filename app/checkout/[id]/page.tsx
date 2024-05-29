@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { IOrder } from "../../../models/orders";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ethers } from "ethers";
 import { ObjectId } from "mongodb";
 import { useSession } from "next-auth/react";
@@ -173,6 +174,7 @@ const CheckoutPage: React.FC = () => {
     marketplaceABI,
     backendWallet
   );
+  const router = useRouter();
 
   const [shippingFormData, setShippingFormData] = useState({
     fullName: "",
@@ -188,6 +190,55 @@ const CheckoutPage: React.FC = () => {
     cvv: "",
     saveCard: false,
   });
+  const validateShippingForm = () => {
+    const { fullName, address, city, postalCode, phoneNumber, walletAddress } =
+      shippingFormData;
+    if (
+      !fullName ||
+      !address ||
+      !city ||
+      !postalCode ||
+      !phoneNumber ||
+      !walletAddress
+    ) {
+      setError("Please fill out all shipping details.");
+      return;
+    }
+    if (!/^\d{5}$/.test(postalCode)) {
+      setError("Invalid postal code. It should be a 5-digit number.");
+      return;
+    }
+    if (!/^\+?\d{10,15}$/.test(phoneNumber)) {
+      setError("Invalid phone number.");
+      return;
+    }
+    if (!/^0x[a-fA-F0-9]{40}$/.test(walletAddress)) {
+      setError("Invalid wallet address.");
+      return;
+    }
+    return null;
+  };
+
+  const validateBillingForm = () => {
+    const { cardNumber, expiry, cvv } = billingFormData;
+    if (!cardNumber || !expiry || !cvv) {
+      setError("Please fill out all payment details.");
+      return;
+    }
+    if (!/^\d{16}$/.test(cardNumber)) {
+      setError("Invalid card number. It should be a 16-digit number.");
+      return;
+    }
+    if (!/^(0[1-9]|1[0-2])\/?([0-9]{2})$/.test(expiry)) {
+      setError("Invalid expiry date. It should be in MM/YY format.");
+      return;
+    }
+    if (!/^\d{3,4}$/.test(cvv)) {
+      setError("Invalid CVV. It should be a 3 or 4-digit number.");
+      return;
+    }
+    return null;
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -215,10 +266,17 @@ const CheckoutPage: React.FC = () => {
   console.log("addresses of Sellers", addresses[0]);
   console.log("buyer", data2[0].buyerWalletAddress);
   const handleSubmits = async () => {
-    try {
-      //Generate random tracking number
+    const shippingError = validateShippingForm();
+    const billingError = validateBillingForm();
 
-      const postOrders = async (data2: any) => {
+    if (shippingError || billingError) {
+      setError("Please fill all the required (*) fields correctly.");
+      return;
+    }
+
+    setError(null);
+    try {
+      const postOrders = async (data2: IOrder[]) => {
         for (const order of data2) {
           productIDs.push(order.products.blockchainID);
           const trackingNo = Math.random().toString(36).substring(7);
@@ -304,6 +362,7 @@ const CheckoutPage: React.FC = () => {
         console.error("Error clearing shopping cart");
       }
       console.log("Shopping cart cleared successfully");
+      router.push("/paymentSuccessful");
     } catch (error) {
       console.log(error);
     }

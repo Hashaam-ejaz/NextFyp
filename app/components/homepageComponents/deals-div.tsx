@@ -17,7 +17,7 @@ const DealsDiv = ({ discountedProd }: { discountedProd: IProduct[] }) => {
               className="flex flex-col md:w-[20%] w-1/3 h-full  items-center"
             >
               <DealsCategoryDiv
-                imageLink={item.images[0].src}
+                imageLink={item.images[0].src || ''}
                 categoryName={item.subCategory}
                 percentage={item.discount as number}
               />

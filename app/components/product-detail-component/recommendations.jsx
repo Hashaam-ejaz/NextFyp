@@ -22,7 +22,7 @@ export default function Recommendations({recommendations}) {
     <>
       <div className=" mt-[10px] mb-[33px] w-full max-w-full justify-items-center">
         <div className="font-semibold text-xl w-[90%] mx-auto mb-[10px] ">
-          Recommendations
+          People Also Viewed
         </div>
         <div className="relative flex items-center ">
           <div>

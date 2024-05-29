@@ -3,10 +3,14 @@
 import { IProduct } from "@/models/products";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const SingleprodDiv: React.FC<{ prod: IProduct }> = ({ prod }) => {
   const StarRating = ({ rating }: { rating: number }) => {
     const stars: JSX.Element[] = [];
+
+    // useEffect(() => {
+    // }, [prod]);
 
     for (let i = 1; i <= 5; i++) {
       if (i <= rating) {
