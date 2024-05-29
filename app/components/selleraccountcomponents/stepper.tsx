@@ -60,9 +60,9 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
     },
   ];
   const MarketplaceContractAddress: string =
-    "0x236bBED2c834a956591016e5043dBa5AC6b3E27a";
+    "0xF45fdc4eAfA28984C81e9A6B8c7f98ea8dEBceCC";
   const provider = new ethers.providers.JsonRpcProvider(
-    "https://data-seed-prebsc-1-s1.bnbchain.org:8545"
+    "https://data-seed-prebsc-2-s1.binance.org:8545"
   );
   const wallet = new ethers.Wallet(
     process.env.NEXT_PUBLIC_METAMASK_PRIVATE_KEY as string,
@@ -158,7 +158,6 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       if (!response.ok) {
         throw new Error("Failed to submit user data");
       }
-      console.log(userBankInfo);
       console.log("Making request to submit bank info...");
       const bankInfoResponse = await fetch(
         "http://localhost:3000/api/bankInfo",

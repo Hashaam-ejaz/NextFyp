@@ -1,14 +1,178 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { IOrder } from "../../../models/orders";
 import { usePathname } from "next/navigation";
+import { ethers } from "ethers";
+import { ObjectId } from "mongodb";
+import { useSession } from "next-auth/react";
+import { resolve } from "path";
 
 const CheckoutPage: React.FC = () => {
+  const session = useSession();
   const [error, setError] = useState<string | null>(null);
   const pathname = usePathname();
   const stringdata = decodeURIComponent(pathname.slice(10, pathname.length));
+  const [addresses, setAddresses] = useState<string[]>([]);
+  const [buyerAddress, setBuyerAddress] = useState<string[]>([]);
   const data2 = JSON.parse(stringdata);
+  console.log(data2);
+  let sellerIDs: ObjectId[] = [];
+  let productIDs: ObjectId[] = [];
+  for (const order of data2) {
+    let count = 0;
+    sellerIDs.push(order.sellerID);
+    for (const prod of order.products) {
+      productIDs.push(prod.blockchainID);
+      count += 1;
+      if (count > 1) {
+        console.log("pushing again");
+        sellerIDs.push(order.sellerID);
+      }
+    }
+  }
+
+  useEffect(() => {
+    async function getSellerAddresses() {
+      for (const seller of sellerIDs) {
+        const response = await fetch(
+          `http://localhost:3000/api/users/${seller}`
+        );
+        const SellerWalletdata = await response.json();
+        setAddresses((prevAddresses) => [
+          ...prevAddresses,
+          SellerWalletdata.user.walletAddress,
+        ]);
+
+        console.log("pushing : " + SellerWalletdata.user.walletAddress);
+      }
+    }
+    getSellerAddresses();
+  }, []);
+
+  function extractString(inputString: string) {
+    let startIndex = 186;
+    let endIndex = inputString.indexOf('"', startIndex);
+    if (endIndex === -1) {
+      return inputString.substring(startIndex);
+    } else {
+      return inputString.substring(startIndex, endIndex);
+    }
+  }
+  const marketplaceABI = [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "sellerAddress",
+          type: "address",
+        },
+      ],
+      name: "registerSeller",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "", type: "address" }],
+      name: "sellerCatalogs",
+      outputs: [{ internalType: "address", name: "", type: "address" }],
+      stateMutability: "view",
+      type: "function",
+    },
+  ];
+
+  const sellerABI = [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "buyerAddress",
+          type: "address",
+        },
+        {
+          internalType: "uint256[]",
+          name: "productId",
+          type: "uint256[]",
+        },
+        {
+          internalType: "uint256[]",
+          name: "quantity",
+          type: "uint256[]",
+        },
+      ],
+      name: "buyProduct",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "productId",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "name",
+          type: "string",
+        },
+        {
+          internalType: "uint256",
+          name: "quantity",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "uri",
+          type: "string",
+        },
+      ],
+      name: "listProduct",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      name: "products",
+      outputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string",
+        },
+        {
+          internalType: "string",
+          name: "uri",
+          type: "string",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+  ];
+  const MarketplaceContractAddress: string =
+    "0xF45fdc4eAfA28984C81e9A6B8c7f98ea8dEBceCC";
+  const provider = new ethers.providers.JsonRpcProvider(
+    "https://data-seed-prebsc-2-s1.binance.org:8545/"
+  );
+  const backendWallet = new ethers.Wallet(
+    process.env.NEXT_PUBLIC_METAMASK_PRIVATE_KEY as string,
+    provider
+  );
+  const marketplaceContract = new ethers.Contract(
+    MarketplaceContractAddress,
+    marketplaceABI,
+    backendWallet
+  );
 
   const [shippingFormData, setShippingFormData] = useState({
     fullName: "",
@@ -42,12 +206,21 @@ const CheckoutPage: React.FC = () => {
       }));
     }
   };
+
+  console.log("IDS", productIDs);
+
+  console.log(ethers.utils.parseEther(productIDs[0].toString()));
+  console.log();
+  console.log("Seller ids", sellerIDs);
+  console.log("addresses of Sellers", addresses[0]);
+  console.log("buyer", data2[0].buyerWalletAddress);
   const handleSubmits = async () => {
     try {
       //Generate random tracking number
 
-      const postOrders = async (data2: IOrder[]) => {
+      const postOrders = async (data2: any) => {
         for (const order of data2) {
+          productIDs.push(order.products.blockchainID);
           const trackingNo = Math.random().toString(36).substring(7);
           const newOrder = {
             buyerID: order.buyerID,
@@ -88,6 +261,38 @@ const CheckoutPage: React.FC = () => {
         }
       };
       postOrders(data2);
+      const transferNFT = async () => {
+        try {
+          const sellerCatalogAddress = await marketplaceContract
+            .connect(backendWallet)
+            .sellerCatalogs(addresses[0]);
+          console.log(sellerCatalogAddress);
+          const sellerContract = new ethers.Contract(
+            sellerCatalogAddress,
+            sellerABI,
+            backendWallet
+          );
+
+          // const transaction = sellerContract
+          //   .connect(backendWallet)
+          //   .buyProduct(
+          //     data2[0].buyerWalletAddress,
+          //     [ethers.utils.parseUnits(productIDs[0].toString(), 0)],
+          //     [
+          //       ethers.utils.parseUnits(
+          //         data2[0].products[0].quantity.toString(),
+          //         0
+          //       ),
+          //     ]
+          //   );
+          // const receipt = transaction.wait();
+          // console.log(receipt);
+        } catch (err: any) {
+          console.log(err);
+          throw new Error("Blockchain Error: " + extractString(err.toString()));
+        }
+      };
+      transferNFT();
 
       const response5 = await fetch(
         `http://localhost:3000/api/shoppingCart/${data2[0].buyerID}`,

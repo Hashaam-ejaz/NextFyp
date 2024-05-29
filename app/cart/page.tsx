@@ -17,6 +17,7 @@ const Cart = () => {
   const [couponValue, setCouponValue] = useState("");
   const [isValidCoupon, setIsValidCoupon] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [userAddress, setUserAddress] = useState();
   const [finalTotal, setfinalTotal] = useState<number>();
   const [cartItems, setCartItems] = useState<
     {
@@ -58,6 +59,8 @@ const Cart = () => {
         );
         const data = await response.json();
         setUserId(data.existingUser._id);
+        setUserAddress(data.existingUser.walletAddress);
+
         const response2 = await fetch(
           `http://localhost:3000/api/shoppingCart/${data.existingUser._id}`
         );
@@ -66,7 +69,7 @@ const Cart = () => {
     };
 
     fetchCartInfo();
-  }, [session]);
+  }, [session, userAddress]);
 
   const settingCouponCodeValue = (value: string) => {
     setCouponValue(value);
@@ -99,6 +102,7 @@ const Cart = () => {
             productPrice: prod?.price,
             quantity: item.quantity,
             subtotal: item.totalPrice,
+            blockchainID: prod?.barcode,
           };
         });
 
@@ -107,9 +111,10 @@ const Cart = () => {
         buyerName: session?.user?.name,
         sellerID: sellerId,
         products: productsForSeller,
-        totalAmount: (productsForSeller.reduce(
-          (acc, curr) => acc + curr.subtotal,
-          0)) + 500 - discount,
+        totalAmount:
+          productsForSeller.reduce((acc, curr) => acc + curr.subtotal, 0) +
+          500 -
+          discount,
         paymentStatus: "",
         orderStatus: "",
         address: "",
@@ -120,6 +125,7 @@ const Cart = () => {
         ),
         trackingNo: "",
         trackingLink: "",
+        buyerWalletAddress: userAddress,
       };
     });
     return orders;
