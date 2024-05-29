@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from 'react';
-import BasicInfoForm from '../addProductComponents/BasicInfoForm';
-import Description from '../addProductComponents/Description';
-import StocksPrice from '../addProductComponents/StocksPrice';
-import ProductListedModal from '../addProductComponents/ProductListed';
-import { useSession } from 'next-auth/react';
+import React, { useState } from "react";
+import BasicInfoForm from "../addProductComponents/BasicInfoForm";
+import Description from "../addProductComponents/Description";
+import StocksPrice from "../addProductComponents/StocksPrice";
+import ProductListedModal from "../addProductComponents/ProductListed";
+import { useSession } from "next-auth/react";
+import { ethers } from "ethers";
 
 interface StepperProps {
   steps: number;
@@ -15,7 +16,7 @@ interface formData {
   subCategory: string;
   featured: boolean;
   sku: string;
-  barcode: string;
+  barcode: number;
   deliveryPrice: string;
   stock: string;
   discountPercentage: string;
@@ -33,26 +34,150 @@ interface formData {
 }
 
 const Stepper: React.FC<StepperProps> = ({ steps }) => {
+  function extractString(inputString: string) {
+    let startIndex = 186;
+    let endIndex = inputString.indexOf('"', startIndex);
+    if (endIndex === -1) {
+      return inputString.substring(startIndex);
+    } else {
+      return inputString.substring(startIndex, endIndex);
+    }
+  }
+  const marketplaceABI = [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "sellerAddress",
+          type: "address",
+        },
+      ],
+      name: "registerSeller",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [{ internalType: "address", name: "", type: "address" }],
+      name: "sellerCatalogs",
+      outputs: [{ internalType: "address", name: "", type: "address" }],
+      stateMutability: "view",
+      type: "function",
+    },
+  ];
+
+  const sellerABI = [
+    {
+      inputs: [
+        {
+          internalType: "address",
+          name: "buyerAddress",
+          type: "address",
+        },
+        {
+          internalType: "uint256[]",
+          name: "productId",
+          type: "uint256[]",
+        },
+        {
+          internalType: "uint256[]",
+          name: "quantity",
+          type: "uint256[]",
+        },
+      ],
+      name: "buyProduct",
+      outputs: [],
+      stateMutability: "payable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "productId",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "name",
+          type: "string",
+        },
+        {
+          internalType: "uint256",
+          name: "quantity",
+          type: "uint256",
+        },
+        {
+          internalType: "string",
+          name: "uri",
+          type: "string",
+        },
+      ],
+      name: "listProduct",
+      outputs: [],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+    {
+      inputs: [
+        {
+          internalType: "uint256",
+          name: "",
+          type: "uint256",
+        },
+      ],
+      name: "products",
+      outputs: [
+        {
+          internalType: "string",
+          name: "name",
+          type: "string",
+        },
+        {
+          internalType: "string",
+          name: "uri",
+          type: "string",
+        },
+      ],
+      stateMutability: "view",
+      type: "function",
+    },
+  ];
+  const MarketplaceContractAddress: string =
+    "0x46AA0fd9141463E1023a0A387BEFE2De38D40eb8";
+  const provider = new ethers.providers.JsonRpcProvider(
+    "https://data-seed-prebsc-2-s1.binance.org:8545"
+  );
+  const backendWallet = new ethers.Wallet(
+    process.env.NEXT_PUBLIC_METAMASK_PRIVATE_KEY as string,
+    provider
+  );
+  const marketplaceContract = new ethers.Contract(
+    MarketplaceContractAddress,
+    marketplaceABI,
+    backendWallet
+  );
+
   const { data: session } = useSession();
   const [currentStep, setCurrentStep] = useState(1);
   const [productListed, setProductListed] = useState(false);
-  const [formData, setFormData] = useState<formData> ({
-  category: '',
-  subCategory: '',
-  featured: false,
-  sku: '',
-  barcode: '',
-  deliveryPrice: '',
-  stock: '',
-  discountPercentage: '',
-  shippingWeight: '',
-  productDescription: '',
-  productName: '',
-  productColor: '',
-  productPrice: '',
-  productSize: '',
-  productMaterial: '',
-  productImages: [],
+  const [formData, setFormData] = useState<formData>({
+    category: "",
+    subCategory: "",
+    featured: false,
+    sku: "",
+    barcode: 0,
+    deliveryPrice: "",
+    stock: "",
+    discountPercentage: "",
+    shippingWeight: "",
+    productDescription: "",
+    productName: "",
+    productColor: "",
+    productPrice: "",
+    productSize: "",
+    productMaterial: "",
+    productImages: [],
   });
 
   const handleNext = (data: object) => {
@@ -79,13 +204,15 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
       !formData.stock ||
       !formData.shippingWeight
     ) {
-      alert('Please fill in all required fields.');
+      alert("Please fill in all required fields.");
       return;
     }
-    console.log('Adding Product...');
+    console.log("Adding Product...");
     if (!session || !session.user) return;
     try {
-      const userResponse = await fetch(`http://localhost:3000/api/users?email=${session.user.email}`);
+      const userResponse = await fetch(
+        `http://localhost:3000/api/users?email=${session.user.email}`
+      );
       const userData = await userResponse.json();
       const user = userData.existingUser;
       const sellerId = user._id;
@@ -109,31 +236,54 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
         sellerId: sellerId,
         featured: formData.featured,
         noSales: 0,
+        barcode: formData.barcode,
         status: parseInt(formData.stock) > 0 ? true : false,
-        images: formData.productImages.map(image => ({
+        images: formData.productImages.map((image) => ({
           src: image.src,
-          alt: image.alt
-        }))
-        
+          alt: image.alt,
+        })),
       };
-      const response = await fetch('http://localhost:3000/api/products', {
-        method: 'POST',
+      const response = await fetch("http://localhost:3000/api/products", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(newProductData),
       });
       if (!response.ok) {
-        throw new Error('Failed to submit product data');
+        throw new Error("Failed to submit product data");
       }
-      console.log('Product Added Successfully');
+      console.log("Product Added Successfully");
+      console.log("Now Minting Product NFT to Seller");
+      try {
+        const sellerContractAddress = await marketplaceContract
+          .connect(backendWallet)
+          .sellerCatalogs(user.walletAddress);
+        const sellerContract = new ethers.Contract(
+          sellerContractAddress,
+          sellerABI,
+          backendWallet
+        );
+        console.log(sellerContractAddress);
+        const transaction = sellerContract
+          .connect(backendWallet)
+          .listProduct(
+            formData.barcode,
+            formData.productName,
+            formData.stock,
+            "https://ecommerce-fyp.s3.amazonaws.com/controller.json"
+          );
+      } catch (err: any) {
+        console.log(err);
+        throw new Error("Blockchain Error: " + extractString(err.toString()));
+      }
       setProductListed(true);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     }
   };
 
-  const stepNames = ['Basic Information', 'Description', 'Stocks & Price'];
+  const stepNames = ["Basic Information", "Description", "Stocks & Price"];
 
   const renderFormForStep = () => {
     switch (currentStep) {
@@ -156,7 +306,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
             <li
               key={index}
               className={`flex items-center gap-x-2 shrink basis-0 flex-1 group ${
-                index + 1 === currentStep ? 'active' : ''
+                index + 1 === currentStep ? "active" : ""
               }`}
             >
               <div className="flex items-center">
@@ -169,22 +319,28 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
                       viewBox="0 0 24 24"
                       stroke="currentColor"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
                     </svg>
                   </div>
                 )}
                 <span
                   className={`min-w-7 min-h-7 group inline-flex items-center text-xs align-middle focus:outline-none disabled:opacity-50 disabled:pointer-events-none ${
-                    index + 1 === currentStep ? 'hs-stepper-active' : ''
+                    index + 1 === currentStep ? "hs-stepper-active" : ""
                   }`}
                 >
                   <span
                     className={`size-7 flex justify-center items-center flex-shrink-0 font-medium text-white rounded-full group-focus:bg-gray-200 ${
-                      (index + 1 === currentStep && !productListed) || (index + 1 === steps && productListed)
-                        ? 'bg-[#806491]'
+                      (index + 1 === currentStep && !productListed) ||
+                      (index + 1 === steps && productListed)
+                        ? "bg-[#806491]"
                         : index + 1 < currentStep
-                        ? 'bg-[#037400]'
-                        : 'bg-[#E1E1E6]'
+                        ? "bg-[#037400]"
+                        : "bg-[#E1E1E6]"
                     }`}
                   >
                     {index + 1 < currentStep && index + 1 !== steps ? (
@@ -210,7 +366,12 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
                         viewBox="0 0 24 24"
                         stroke="currentColor"
                       >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M5 13l4 4L19 7"
+                        />
                       </svg>
                     ) : (
                       index + 1
@@ -262,7 +423,11 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
           productName={formData.productName}
           productDescription={formData.productDescription}
           productPrice={parseInt(formData.productPrice)}
-          productImage={formData.productImages.length > 0 && formData.productImages[0].src ? formData.productImages[0].src : ''}
+          productImage={
+            formData.productImages.length > 0 && formData.productImages[0].src
+              ? formData.productImages[0].src
+              : ""
+          }
         />
       )}
     </div>

@@ -20,7 +20,9 @@ const Navbar = () => {
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const { data: session } = useSession();
   useEffect(() => {
-    setShowProfile(true);
+    if (session?.user?.email !== undefined) {
+      setShowProfile(true);
+    }
   }, [session]);
   const handleSearch = (value: string) => {
     setSearchValue(value);

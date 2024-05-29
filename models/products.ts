@@ -33,6 +33,7 @@ interface IProduct {
   }[];
   noSales: number;
   featured: boolean;
+  barcode: number;
 }
 
 const productSchema = new Schema<IProduct>({
@@ -122,6 +123,10 @@ const productSchema = new Schema<IProduct>({
   featured: {
     type: Boolean,
     required: false,
+  },
+  barcode: {
+    type: Number,
+    required: true,
   },
 });
 productSchema.index({ name: "text", description: "text" });
