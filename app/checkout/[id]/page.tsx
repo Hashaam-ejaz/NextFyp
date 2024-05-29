@@ -8,6 +8,7 @@ import { ethers } from "ethers";
 import { ObjectId } from "mongodb";
 import { useSession } from "next-auth/react";
 import { resolve } from "path";
+import { url } from "inspector";
 
 const CheckoutPage: React.FC = () => {
   const session = useSession();
@@ -161,7 +162,7 @@ const CheckoutPage: React.FC = () => {
     },
   ];
   const MarketplaceContractAddress: string =
-    "0xF45fdc4eAfA28984C81e9A6B8c7f98ea8dEBceCC";
+    "0x46AA0fd9141463E1023a0A387BEFE2De38D40eb8";
   const provider = new ethers.providers.JsonRpcProvider(
     "https://data-seed-prebsc-2-s1.binance.org:8545/"
   );
@@ -273,10 +274,10 @@ const CheckoutPage: React.FC = () => {
       setError("Please fill all the required (*) fields correctly.");
       return;
     }
-
+    let encodedLink = "";
     setError(null);
     try {
-      const postOrders = async (data2: IOrder[]) => {
+      const postOrders = async (data2: any) => {
         for (const order of data2) {
           productIDs.push(order.products.blockchainID);
           const trackingNo = Math.random().toString(36).substring(7);
@@ -331,20 +332,22 @@ const CheckoutPage: React.FC = () => {
             backendWallet
           );
 
-          // const transaction = sellerContract
-          //   .connect(backendWallet)
-          //   .buyProduct(
-          //     data2[0].buyerWalletAddress,
-          //     [ethers.utils.parseUnits(productIDs[0].toString(), 0)],
-          //     [
-          //       ethers.utils.parseUnits(
-          //         data2[0].products[0].quantity.toString(),
-          //         0
-          //       ),
-          //     ]
-          //   );
-          // const receipt = transaction.wait();
-          // console.log(receipt);
+          const transaction = await sellerContract
+            .connect(backendWallet)
+            .buyProduct(
+              data2[0].buyerWalletAddress,
+              [ethers.utils.parseUnits(productIDs[0].toString(), 0)],
+              [
+                ethers.utils.parseUnits(
+                  data2[0].products[0].quantity.toString(),
+                  0
+                ),
+              ]
+            );
+          const receipt = await transaction.wait();
+          console.log("receipt", receipt);
+          const link = `testnet.bscscan.com/tx/${receipt.transactionHash}`;
+          encodedLink = encodeURIComponent(link);
         } catch (err: any) {
           console.log(err);
           throw new Error("Blockchain Error: " + extractString(err.toString()));
@@ -362,7 +365,7 @@ const CheckoutPage: React.FC = () => {
         console.error("Error clearing shopping cart");
       }
       console.log("Shopping cart cleared successfully");
-      router.push("/paymentSuccessful");
+      router.push(`/paymentSuccessful/${encodedLink}`);
     } catch (error) {
       console.log(error);
     }

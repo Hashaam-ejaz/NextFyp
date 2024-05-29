@@ -144,7 +144,7 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
     },
   ];
   const MarketplaceContractAddress: string =
-    "0xF45fdc4eAfA28984C81e9A6B8c7f98ea8dEBceCC";
+    "0x46AA0fd9141463E1023a0A387BEFE2De38D40eb8";
   const provider = new ethers.providers.JsonRpcProvider(
     "https://data-seed-prebsc-2-s1.binance.org:8545"
   );
