@@ -25,8 +25,8 @@ function ProductDetailDiv({ product }) {
       const response = await fetch(`/api/users?email=${session?.user?.email}`);
       const data = await response.json();
       const user = data.existingUser;
-      console.log(user);
-      console.log(user._id);
+      // console.log(user);
+      // console.log(user._id);
       setUserID(user._id);
       }
 

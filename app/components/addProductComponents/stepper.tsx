@@ -71,6 +71,17 @@ const Stepper: React.FC<StepperProps> = ({ steps }) => {
   };
 
   const handleSubmit = async () => {
+    if (
+      !formData.productName ||
+      !formData.productDescription ||
+      !formData.productPrice ||
+      !formData.deliveryPrice ||
+      !formData.stock ||
+      !formData.shippingWeight
+    ) {
+      alert('Please fill in all required fields.');
+      return;
+    }
     console.log('Adding Product...');
     if (!session || !session.user) return;
     try {
